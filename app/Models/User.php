@@ -4,13 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +24,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'gender',
+        'date_of_birth',
+        'phone',
+        'village_id',
+        'district_id',
+        'regency_kode',
+        'province_kode',
     ];
 
     /**
@@ -43,6 +53,28 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'date_of_birth' => 'date',
+            // 'gender' => 'enum',
         ];
+    }
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class, 'province_kode', 'kode');
+    }
+
+    public function regency(): BelongsTo
+    {
+        return $this->belongsTo(Regency::class, 'regency_kode', 'kode');
+    }
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'district_kode', 'kode');
+    }
+
+    public function village(): BelongsTo
+    {
+        return $this->belongsTo(Village::class, 'village_id', 'kode');
     }
 }
