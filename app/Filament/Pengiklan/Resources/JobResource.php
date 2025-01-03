@@ -21,6 +21,11 @@ use Filament\Support\Enums\IconPosition;
 use App\Enums\JobType;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class JobResource extends Resource
 {
@@ -37,6 +42,7 @@ class JobResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $defaultView = 'view';
     public static function form(Form $form): Form
     {
         return $form
@@ -141,10 +147,10 @@ class JobResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('type'),
-                Tables\Columns\TextColumn::make('platform'),
-                Tables\Columns\TextColumn::make('quota'),
-                Tables\Columns\TextColumn::make('reward'),
+                Tables\Columns\TextColumn::make('type')->label('Job Type'),
+                Tables\Columns\TextColumn::make('platform')->label('Platform'),
+                Tables\Columns\TextColumn::make('quota')->label('Quota'),
+                Tables\Columns\TextColumn::make('reward')->label('Reward'),
                 Tables\Columns\TextColumn::make('status')->badge()->icon(fn ($state) => match ($state) {
                     'publish' => 'heroicon-o-check-circle',
                     'draft' => 'heroicon-o-exclamation-circle',
@@ -154,18 +160,165 @@ class JobResource extends Resource
                     'draft' => 'warning',
                 }),
                 Tables\Columns\TextColumn::make('start_date')->date()->toggleable(),
-                Tables\Columns\TextColumn::make('end_date') ->date()->toggleable(),
+                Tables\Columns\TextColumn::make('end_date')->date()->toggleable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('publish')
+                        ->label('Publish')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'draft')
+                        ->action(function (JobCampaign $record) {
+                            try {
+                                $record->update(['status' => 'publish']);
+                                Notification::make()
+                                    ->title('Successfully published')
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Failed to publish')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+                        Tables\Actions\Action::make('draft')
+                        ->label('Draft')
+                        ->icon('heroicon-o-exclamation-circle')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'publish')
+                        ->action(function (JobCampaign $record) {
+                            try {
+                                $record->update(['status' => 'draft']);
+                                Notification::make()
+                                    ->title('Successfully drafted')
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Failed to draft')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('publish')
+                        ->label('Publish')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            try {
+                                $records->each->update(['status' => 'publish']);
+                                Notification::make()
+                                    ->title('Successfully published')
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Failed to publish')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+                    Tables\Actions\BulkAction::make('draft')
+                        ->label('Draft')
+                        ->icon('heroicon-o-exclamation-circle')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            try {
+                                $records->each->update(['status' => 'draft']);
+                                Notification::make()
+                                    ->title('Successfully drafted')
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Failed to draft')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
                 ]),
+            ]);
+    }
+
+    
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Job Overview')
+                    ->schema([
+                        Infolists\Components\Split::make([
+                            Infolists\Components\Grid::make(2)
+                                ->schema([
+                                    Infolists\Components\Group::make([
+                                        Infolists\Components\TextEntry::make('title'),
+                                        Infolists\Components\TextEntry::make('type'),
+                                        Infolists\Components\TextEntry::make('platform'),
+
+                                       
+                                    ]),
+                                    Infolists\Components\Group::make([
+                                        Infolists\Components\TextEntry::make('quota'),
+                                        Infolists\Components\TextEntry::make('reward'),
+                                            // ->icon('heroicon-o-cash')
+                                        Infolists\Components\TextEntry::make('status')->badge()->color(fn ($state) => match ($state) {
+                                            'publish' => 'success',
+                                            'draft' => 'warning',
+                                        })
+                                        ]),
+                                        Infolists\Components\IconEntry::make('is_multiple')
+                                            ->label('Multiple')
+                                            ->icon(fn (string $state): string => match ($state) {
+                                                '1' => 'heroicon-o-check-circle',
+                                                '0' => 'heroicon-o-x-circle',
+                                            })
+                                            ->color(fn (string $state): string => match ($state) {
+                                                '1' => 'success',
+                                                '0' => 'danger',
+                                            }),
+                                ]),
+                            
+                            Infolists\Components\Group::make([
+                                Infolists\Components\ImageEntry::make('jobDetail.image')
+                                    ->hiddenLabel()
+                                    ->grow(false),
+                                Infolists\Components\TextEntry::make('start_date'),
+                                Infolists\Components\TextEntry::make('end_date'),
+                            ])->grow(false),
+                        ])->from('lg'),
+                    ]),
+                Infolists\Components\Section::make('Job Detail')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('jobDetail.description')
+                            ->label('Description')
+                            ->prose()
+                            ->markdown(),
+                            Infolists\Components\TextEntry::make('instructions')
+                            ->label('Instructions')
+                            ->prose()
+                            ->markdown(),
+                            // ->hiddenLabel(),
+
+                    ])
+
+                    ->collapsible(),
             ]);
     }
 
@@ -181,7 +334,7 @@ class JobResource extends Resource
         return [
             'index' => Pages\ListJobs::route('/'),
             'create' => Pages\CreateJob::route('/create'),
-
+            'view' => Pages\ViewJob::route('/{record}'),
             'edit' => Pages\EditJob::route('/{record}/edit'),
         ];
     }

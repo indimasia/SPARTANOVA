@@ -31,4 +31,9 @@ class CreateJob extends CreateRecord
             // $this->getCancelFormAction(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('view', ['record' => $this->record->getKey()]);
+    }
 }
