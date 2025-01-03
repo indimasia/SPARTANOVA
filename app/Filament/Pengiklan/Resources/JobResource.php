@@ -19,6 +19,7 @@ use Filament\Support\Enums\IconSize;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\IconPosition;
 use App\Enums\JobType;
+use App\Enums\PlatformEnum;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Infolists;
@@ -53,25 +54,14 @@ class JobResource extends Resource
                     Wizard\Step::make('Job Campaign')
                         ->schema([
                             Forms\Components\Select::make('type')
-                                ->options([
-                                    JobType::KOMENTAR->value => 'Komentar',
-                                    JobType::VIEW->value => 'View',
-                                    JobType::POSTING->value => 'Posting',
-                                    JobType::SHARE_RETWEET->value => 'Share retweet',
-                                    JobType::RATING_REVIEW->value => 'Rating & Review',
-                                    JobType::DOWNLOAD_RATING_REVIEW->value => 'Download, Rating, Review',
-                                    JobType::LIKE_POLLING_VOTE->value => 'Like Polling Vote',
-                                    JobType::SURVEI->value => 'Survei',
-                                    JobType::SUBSCRIBE_FOLLOW->value => 'Subscribe Follow',
-                                    JobType::FOLLOW_MARKETPLACE->value => 'Follow Marketplace',
-
-                                ])
+                                ->options(JobType::options())
                                 ->searchable()
                                 ->required(),
 
-                            Forms\Components\TextInput::make('platform')
-                                ->required()
-                                ->maxLength(255),
+                            Forms\Components\Select::make('platform')
+                                ->options(PlatformEnum::options())
+                                ->searchable()
+                                ->required(),
                             Forms\Components\TextInput::make('quota')
                                 ->required()
                                 ->numeric()
@@ -148,7 +138,9 @@ class JobResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('type')->label('Job Type'),
-                Tables\Columns\TextColumn::make('platform')->label('Platform'),
+                Tables\Columns\TextColumn::make('platform')
+                    ->label('Platform')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('quota')->label('Quota'),
                 Tables\Columns\TextColumn::make('reward')->label('Reward'),
                 Tables\Columns\TextColumn::make('status')->badge()->icon(fn ($state) => match ($state) {

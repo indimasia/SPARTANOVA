@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Enums\JobType;
+use App\Enums\PlatformEnum;
 
 class JobCampaign extends Model
 {
@@ -15,6 +16,7 @@ class JobCampaign extends Model
 
     protected $casts = [
         'type' => JobType::class,
+        'platform' => PlatformEnum::class,
     ];
 
     public function jobDetail(): HasOne

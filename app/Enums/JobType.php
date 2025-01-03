@@ -14,4 +14,9 @@ enum JobType: string
     case SURVEI = 'Survei';
     case SUBSCRIBE_FOLLOW = 'Subscribe/Follow';
     case FOLLOW_MARKETPLACE = 'Follow Marketplace';
+
+    public static function options()
+    {
+        return collect(self::cases())->pluck('value', 'value');
+    }
 }
