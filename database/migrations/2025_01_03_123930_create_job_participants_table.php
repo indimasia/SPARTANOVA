@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('job_participants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->constrained('jobs_campaigns');
+            $table->foreignId('job_id')->constrained('job_campaigns');
             $table->foreignId('user_id')->constrained('users');
             $table->string('status');
             $table->integer('reward');

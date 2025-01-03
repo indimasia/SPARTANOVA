@@ -35,7 +35,7 @@ class JobResource extends Resource
     protected static ?string $navigationGroup = 'Manage Campaign';
     protected static ?string $navigationLabel = 'Job Campaign';
     protected static ?int $navigationSort = 1;
-    protected static ?string $recordTitleAttribute = 'title';
+    // protected static ?string $recordTitleAttribute = 'Job Campaign';
     protected static ?string $pluralModelLabel = 'Campaign Job ';
     protected static ?string $pluralLabel = 'Campaign Job';
     protected static ?string $modelLabel = 'Campaign Job';
@@ -137,6 +137,7 @@ class JobResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('participant_count')->label('Participant Count'),
                 Tables\Columns\TextColumn::make('type')->label('Job Type'),
                 Tables\Columns\TextColumn::make('platform')
                     ->label('Platform')
@@ -263,28 +264,30 @@ class JobResource extends Resource
                                         Infolists\Components\TextEntry::make('title'),
                                         Infolists\Components\TextEntry::make('type'),
                                         Infolists\Components\TextEntry::make('platform'),
-
+                                        Infolists\Components\IconEntry::make('is_multiple')
+                                        ->label('Multiple')
+                                        ->icon(fn (string $state): string => match ($state) {
+                                            '1' => 'heroicon-o-check-circle',
+                                            '0' => 'heroicon-o-x-circle',
+                                        })
+                                        ->color(fn (string $state): string => match ($state) {
+                                            '1' => 'success',
+                                            '0' => 'danger',
+                                        }),
                                        
                                     ]),
                                     Infolists\Components\Group::make([
-                                        Infolists\Components\TextEntry::make('quota'),
+                                        Infolists\Components\TextEntry::make('participant_count')
+                                            ->label('Participant')
+                                            ->getStateUsing(fn ($record) => $record->getParticipantCountAttribute() . ' / ' . $record->quota),
                                         Infolists\Components\TextEntry::make('reward'),
                                             // ->icon('heroicon-o-cash')
                                         Infolists\Components\TextEntry::make('status')->badge()->color(fn ($state) => match ($state) {
                                             'publish' => 'success',
                                             'draft' => 'warning',
-                                        })
+                                        }),
+                                       
                                         ]),
-                                        Infolists\Components\IconEntry::make('is_multiple')
-                                            ->label('Multiple')
-                                            ->icon(fn (string $state): string => match ($state) {
-                                                '1' => 'heroicon-o-check-circle',
-                                                '0' => 'heroicon-o-x-circle',
-                                            })
-                                            ->color(fn (string $state): string => match ($state) {
-                                                '1' => 'success',
-                                                '0' => 'danger',
-                                            }),
                                 ]),
                             
                             Infolists\Components\Group::make([
@@ -317,7 +320,7 @@ class JobResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ParticipantsRelationManager::class,
         ];
     }
 
