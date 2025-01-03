@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role as ModelsRole;
+use App\Enums\UserRole;
 
 class UserSeeder extends Seeder
 {
@@ -16,9 +17,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = ModelsRole::create(['name' => 'admin']);
-        $pengiklanRole = ModelsRole::create(['name' => 'pengiklan']);
-        $pejuangRole = ModelsRole::create(['name' => 'pejuang']);
+        $adminRole = ModelsRole::create(['name' => UserRole::ADMIN->value]);
+        $pengiklanRole = ModelsRole::create(['name' => UserRole::PENGIKLAN->value]);
+        $pejuangRole = ModelsRole::create(['name' => UserRole::PEJUANG->value]);
 
         // Create Admin User
         $admin = User::create([
