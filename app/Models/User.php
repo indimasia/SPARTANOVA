@@ -27,8 +27,8 @@ class User extends Authenticatable
         'gender',
         'date_of_birth',
         'phone',
-        'village_id',
-        'district_id',
+        'village_kode',
+        'district_kode',
         'regency_kode',
         'province_kode',
     ];
