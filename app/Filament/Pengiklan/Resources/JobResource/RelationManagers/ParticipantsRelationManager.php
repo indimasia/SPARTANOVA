@@ -15,8 +15,8 @@ use Filament\Notifications\Notification;
 class ParticipantsRelationManager extends RelationManager
 {
     protected static string $relationship = 'participants';
-    protected static ?string $title = 'Participants';
-    
+    protected static ?string $title = 'Peserta';
+
 
     public function form(Form $form): Form
     {
@@ -24,7 +24,8 @@ class ParticipantsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
-                    ->required(),
+                    ->required()
+                    ->label('Nama Peserta'),
                 Forms\Components\Select::make('status')
                     ->options([
                         'pending' => 'Pending',
@@ -33,17 +34,20 @@ class ParticipantsRelationManager extends RelationManager
                         'rejected' => 'Rejected',
                     ])
                     ->default('pending')
-                    ->required(),
+                    ->required()
+                    ->label('Status'),
                 Forms\Components\TextInput::make('reward')
                     ->required()
                     ->numeric()
                     ->default(fn ($record) => $this->getOwnerRecord()->reward)
-                    ->readOnly(),
+                    ->readOnly()
+                    ->label('Reward'),
                 Forms\Components\FileUpload::make('attachment')
                     ->label('Attachment')
                     ->image()
                     ->imageEditor()
                     ->required()
+                    ->label('Bukti Pengerjaan'),
             ]);
 
         }
