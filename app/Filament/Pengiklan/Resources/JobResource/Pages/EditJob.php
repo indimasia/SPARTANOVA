@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pengiklan\Resources\JobResource\Pages;
 
+use App\Enums\PackageEnum;
 use App\Filament\Pengiklan\Resources\JobResource;
 use App\Models\JobDetail;
 use Filament\Actions;
@@ -34,6 +35,7 @@ class EditJob extends EditRecord
     }
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        $data['package_rate'] = $data['quota'] > PackageEnum::TEN_THOUSAND->value ? PackageEnum::LAINNYA->value : $data['quota'];
 
         $jobDetail = JobDetail::where('job_id', $data['id'])->first();
         if ($jobDetail) {

@@ -37,7 +37,18 @@ class UserResource extends Resource
 
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required()
+                    ->required(fn ($context) => $context === 'create')
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->placeholder(function (string $operation) {
+                        if ($operation === 'edit') {
+                            return 'Isi untuk mengubah password';
+                        }
+                    })
+                    ->hint(function (string $operation) {
+                        if ($operation === 'edit') {
+                            return 'Biarkan kosong jika tidak ingin mengubah password';
+                        }
+                    })
                     ->maxLength(255),
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
@@ -110,7 +121,7 @@ class UserResource extends Resource
                 ->state(fn($record) => $record->gender == 'L' ? 'Laki-Laki' : 'Perempuan')
                 ->color(fn($record) => $record->gender == 'L' ? 'warning' : 'danger'),
 
-                Tables\Columns\TextColumn::make('date_of_birth'),
+                Tables\Columns\TextColumn::make('date_of_birth')->date(),
             ])
             ->filters([
                 //

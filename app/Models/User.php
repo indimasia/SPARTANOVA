@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function village(): BelongsTo
     {
-        return $this->belongsTo(Village::class, 'village_id', 'kode');
+        return $this->belongsTo(Village::class, 'village_kode', 'kode');
     }
 
     public function sosialMediaAccounts(): HasMany

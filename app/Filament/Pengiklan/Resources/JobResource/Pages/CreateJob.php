@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pengiklan\Resources\JobResource\Pages;
 
+use App\Enums\PackageEnum;
 use App\Filament\Pengiklan\Resources\JobResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -10,6 +11,12 @@ use Illuminate\Database\Eloquent\Model;
 class CreateJob extends CreateRecord
 {
     protected static string $resource = JobResource::class;
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if($data['package_rate'] != PackageEnum::LAINNYA->value){            $data['quota'] = $data['package_rate'];
+        }
+        return $data;
+    }
     protected function handleRecordCreation(array $data): Model
     {
         $jobData = static::getModel()::create($data);

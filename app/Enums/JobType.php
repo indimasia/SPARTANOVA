@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use App\Models\PackageRate;
+
 enum JobType: string
 {
     case KOMENTAR = 'Komentar';
@@ -19,4 +21,13 @@ enum JobType: string
     {
         return collect(self::cases())->pluck('value', 'value');
     }
+
+    public static function optionsWithout(): array
+    {
+        return collect(self::cases())
+            ->whereNotIn('value', PackageRate::pluck('type')->toArray())
+            ->pluck('value', 'value')
+            ->toArray();
+    }
 }
+

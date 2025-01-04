@@ -19,9 +19,12 @@ use Filament\Support\Enums\IconSize;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\IconPosition;
 use App\Enums\JobType;
+use App\Enums\PackageEnum;
 use App\Enums\PlatformEnum;
+use App\Models\PackageRate;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Get;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
@@ -57,12 +60,14 @@ class JobResource extends Resource
                                 ->options(JobType::options())
                                 ->label('Tipe Pekerjaan')
                                 ->searchable()
+                                ->live()
+                                ->afterStateUpdated(function (callable $set, $state) {
+                                    $set('package_rate', null);
+                                })
                                 ->required()
                                 ->validationMessages([
                                     'required' => 'Tipe Pekerjaan Harus Diisi',
-                                ])
-                                ,
-
+                                ]),
                             Forms\Components\Select::make('platform')
                                 ->options(PlatformEnum::options())
                                 ->searchable()
@@ -72,23 +77,42 @@ class JobResource extends Resource
                                     'required' => 'Social Media Harus Diisi',
                                 ])
                                 ,
-                            Forms\Components\TextInput::make('quota')
+                            Forms\Components\Select::make('package_rate')
+                                ->options(function(Get $get){
+                                    return PackageRate::packageList($get('type'));
+                                })
+                                ->live()
+                                ->searchable()
+                                // ->afterStateUpdated(function (callable $set, $state) {
+                                //     $selectedPackage = PackageRate::find($state);
+                                //     if ($selectedPackage) {
+                                //         $set('reward', $selectedPackage->price);
+                                //     } else {
+                                //         $set('reward', null);
+                                //     }
+                                // })
+                                ->label('Paket')
                                 ->required()
+                                ->validationMessages([
+                                    'required' => 'Paket Harus Diisi',
+                                ]),
+                            Forms\Components\TextInput::make('quota')
+                                ->visible(fn(Get $get)=>$get('package_rate') == PackageEnum::LAINNYA->value && $get('package_rate') != '')
                                 ->numeric()
-                                ->maxLength(255)
+                                ->minValue(10001)
                                 ->label('Kuota')
+                                ->required()
                                 ->validationMessages([
                                     'required' => 'Kuota Harus Diisi',
-                                ])
-                                ,
+                                    'min' => 'Kuota Harus Lebih Besar Dari 10000',
+                                ]),
                             Forms\Components\TextInput::make('reward')
                                 ->required()
                                 ->numeric()
                                 ->label('Hadiah')
                                 ->validationMessages([
                                     'required' => 'Hadiah Harus Diisi',
-                                ])
-                                ,
+                                ]),
                             Forms\Components\Select::make('status')
                                 ->options([
                                     'publish' => 'Publikasi',
@@ -97,8 +121,7 @@ class JobResource extends Resource
                                 ->required()
                                 ->validationMessages([
                                     'required' => 'Status Harus Diisi',
-                                ])
-                                ,
+                                ]),
                             Grid::make(2)
                                 ->schema([
                                     Forms\Components\DatePicker::make('start_date')
@@ -106,12 +129,14 @@ class JobResource extends Resource
                                         ->reactive()
                                         ->required()
                                         ->label('Tanggal Mulai')
+                                        ->afterStateUpdated(fn(callable $set, $state)=>$set('end_date',null))
                                         ->validationMessages([
                                             'required' => 'Tanggal Mulai Harus Diisi',
                                         ]),
                                     Forms\Components\DatePicker::make('end_date')
                                         ->live()
                                         ->reactive()
+                                        ->minDate(fn(Get $get)=>$get('start_date'))
                                         ->required()
                                         ->rules(['after_or_equal:start_date'])
                                         ->label('Tanggal Selesai')
@@ -371,8 +396,6 @@ class JobResource extends Resource
                             ->label('Instruksi')
                             ->prose()
                             ->markdown(),
-                            // ->hiddenLabel(),
-
                     ])
 
                     ->collapsible(),
