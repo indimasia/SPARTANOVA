@@ -32,14 +32,14 @@ class JobResource extends Resource
 {
     protected static ?string $model = JobCampaign::class;
 
-    protected static ?string $navigationGroup = 'Manage Campaign';
-    protected static ?string $navigationLabel = 'Job Campaign';
+    protected static ?string $navigationGroup = 'Atur Pekerjaan';
+    protected static ?string $navigationLabel = 'Pekerjaan';
     protected static ?int $navigationSort = 1;
     // protected static ?string $recordTitleAttribute = 'Job Campaign';
-    protected static ?string $pluralModelLabel = 'Campaign Job ';
-    protected static ?string $pluralLabel = 'Campaign Job';
-    protected static ?string $modelLabel = 'Campaign Job';
-    protected static ?string $label = 'Campaign Job';
+    protected static ?string $pluralModelLabel = 'Pekerjaan';
+    protected static ?string $pluralLabel = 'Pekerjaan';
+    protected static ?string $modelLabel = 'Pekerjaan';
+    protected static ?string $label = 'Pekerjaan';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -51,51 +51,92 @@ class JobResource extends Resource
 
                 Wizard::make([
 
-                    Wizard\Step::make('Job Campaign')
+                    Wizard\Step::make('Pekerjaan')
                         ->schema([
                             Forms\Components\Select::make('type')
                                 ->options(JobType::options())
+                                ->label('Tipe Pekerjaan')
                                 ->searchable()
-                                ->required(),
+                                ->required()
+                                ->validationMessages([
+                                    'required' => 'Tipe Pekerjaan Harus Diisi',
+                                ])
+                                ,
 
                             Forms\Components\Select::make('platform')
                                 ->options(PlatformEnum::options())
                                 ->searchable()
-                                ->required(),
+                                ->label('Social Media')
+                                ->required()
+                                ->validationMessages([
+                                    'required' => 'Social Media Harus Diisi',
+                                ])
+                                ,
                             Forms\Components\TextInput::make('quota')
                                 ->required()
                                 ->numeric()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->label('Kuota')
+                                ->validationMessages([
+                                    'required' => 'Kuota Harus Diisi',
+                                ])
+                                ,
                             Forms\Components\TextInput::make('reward')
                                 ->required()
-                                ->numeric(),
+                                ->numeric()
+                                ->label('Hadiah')
+                                ->validationMessages([
+                                    'required' => 'Hadiah Harus Diisi',
+                                ])
+                                ,
                             Forms\Components\Select::make('status')
                                 ->options([
-                                    'publish' => 'Publish',
+                                    'publish' => 'Publikasi',
                                     'draft' => 'Draft',
                                 ])
-                                ->required(),
+                                ->required()
+                                ->validationMessages([
+                                    'required' => 'Status Harus Diisi',
+                                ])
+                                ,
                             Grid::make(2)
                                 ->schema([
                                     Forms\Components\DatePicker::make('start_date')
                                         ->live()
                                         ->reactive()
-                                        ->required(),
+                                        ->required()
+                                        ->label('Tanggal Mulai')
+                                        ->validationMessages([
+                                            'required' => 'Tanggal Mulai Harus Diisi',
+                                        ]),
                                     Forms\Components\DatePicker::make('end_date')
                                         ->live()
                                         ->reactive()
                                         ->required()
-                                        ->rules(['after_or_equal:start_date']),
+                                        ->rules(['after_or_equal:start_date'])
+                                        ->label('Tanggal Selesai')
+                                        ->validationMessages([
+                                            'required' => 'Tanggal Selesai Harus Diisi',
+                                            'after_or_equal' => 'Tanggal Selesai Harus Setelah Tanggal Mulai',
+                                        ])
+                                        ,
                                 ]),
                             Forms\Components\Toggle::make('is_multiple')
+                                ->label('Dapat Diikuti Berulang')
                                 ->required(),
                         ]),
-                    Wizard\Step::make('Job Detail')
+                    Wizard\Step::make('Detail Pekerjaan')
                         ->schema([
                             Forms\Components\TextInput::make('title')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->label('Nama Pekerjaan')
+                            ->validationMessages([
+                                'required' => 'Nama Pekerjaan Harus Diisi',
+                            ])
+                            ,
                             Forms\Components\FileUpload::make('jobDetail.image')
+                                ->label('Gambar')
                                 ->required()
                                 ->image()
                                 ->disk('public')
@@ -103,22 +144,40 @@ class JobResource extends Resource
                                 ->imageCropAspectRatio('16:9')
                                 ->imageResizeMode('cover')
                                 ->imageResizeTargetWidth('1024')
-                                ->imageResizeTargetHeight('576'),
+                                ->imageResizeTargetHeight('576')
+                                ->validationMessages([
+                                    'required' => 'Gambar Harus Diisi',
+                                ])
+                                ,
                             Forms\Components\TextInput::make('jobDetail.description')
+                                ->label('Deskripsi')
                                 ->required()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->validationMessages([
+                                    'required' => 'Deskripsi Harus Diisi',
+                                ])
+                                ,
                             Forms\Components\RichEditor::make('instructions')
-                            ->toolbarButtons([
-                                'bulletList',
-                                'orderedList',
-                                'redo',
-                                'undo',
-                            ])
-                                ->required(),
+                                ->toolbarButtons([
+                                    'bulletList',
+                                    'orderedList',
+                                    'redo',
+                                    'undo',
+                                ])
+                                ->required()
+                                ->validationMessages([
+                                    'required' => 'Instruksi Harus Diisi',
+                                ])
+                                ,
                             Forms\Components\TextInput::make('jobDetail.url_link')
+                                ->label('Link')
                                 ->required()
                                 ->url()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->validationMessages([
+                                    'required' => 'Link Harus Diisi',
+                                ])
+                                ,
                         ]),
                 ])->columnSpanFull()
                 ->submitAction(new HtmlString(Blade::render(<<<BLADE
@@ -126,7 +185,7 @@ class JobResource extends Resource
                             type="submit"
                             size="md"
                         >
-                            Submit
+                            Simpan
                         </x-filament::button>
                     BLADE)))
             ]);
@@ -137,13 +196,13 @@ class JobResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('participant_count')->label('Participant Count'),
-                Tables\Columns\TextColumn::make('type')->label('Job Type'),
+                Tables\Columns\TextColumn::make('participant_count')->label('Jumlah Peserta'),
+                Tables\Columns\TextColumn::make('type')->label('Tipe Pekerjaan'),
                 Tables\Columns\TextColumn::make('platform')
-                    ->label('Platform')
+                    ->label('Social Media')
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('quota')->label('Quota'),
-                Tables\Columns\TextColumn::make('reward')->label('Reward'),
+                Tables\Columns\TextColumn::make('quota')->label('Kuota'),
+                Tables\Columns\TextColumn::make('reward')->label('Hadiah'),
                 Tables\Columns\TextColumn::make('status')->badge()->icon(fn ($state) => match ($state) {
                     'publish' => 'heroicon-o-check-circle',
                     'draft' => 'heroicon-o-exclamation-circle',
@@ -152,8 +211,8 @@ class JobResource extends Resource
                     'publish' => 'success',
                     'draft' => 'warning',
                 }),
-                Tables\Columns\TextColumn::make('start_date')->date()->toggleable(),
-                Tables\Columns\TextColumn::make('end_date')->date()->toggleable(),
+                Tables\Columns\TextColumn::make('start_date')->date()->label('Tanggal Mulai')->toggleable(),
+                Tables\Columns\TextColumn::make('end_date')->date()->label('Tanggal Selesai')->toggleable(),
             ])
             ->filters([
                 //
@@ -163,7 +222,7 @@ class JobResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\Action::make('publish')
-                        ->label('Publish')
+                        ->label('Publikasi')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
@@ -172,12 +231,12 @@ class JobResource extends Resource
                             try {
                                 $record->update(['status' => 'publish']);
                                 Notification::make()
-                                    ->title('Successfully published')
+                                    ->title('Berhasil Publikasi')
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
                                 Notification::make()
-                                    ->title('Failed to publish')
+                                    ->title('Gagal Publikasi')
                                     ->danger()
                                     ->send();
                             }
@@ -192,12 +251,12 @@ class JobResource extends Resource
                             try {
                                 $record->update(['status' => 'draft']);
                                 Notification::make()
-                                    ->title('Successfully drafted')
+                                    ->title('Berhasil Draft')
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
                                 Notification::make()
-                                    ->title('Failed to draft')
+                                    ->title('Gagal Draft')
                                     ->danger()
                                     ->send();
                             }
@@ -209,7 +268,7 @@ class JobResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\BulkAction::make('publish')
-                        ->label('Publish')
+                        ->label('Publikasi')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
@@ -217,12 +276,12 @@ class JobResource extends Resource
                             try {
                                 $records->each->update(['status' => 'publish']);
                                 Notification::make()
-                                    ->title('Successfully published')
+                                    ->title('Berhasil Publikasi')
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
                                 Notification::make()
-                                    ->title('Failed to publish')
+                                    ->title('Gagal Publikasi')
                                     ->danger()
                                     ->send();
                             }
@@ -236,12 +295,12 @@ class JobResource extends Resource
                             try {
                                 $records->each->update(['status' => 'draft']);
                                 Notification::make()
-                                    ->title('Successfully drafted')
+                                    ->title('Berhasil Draft')
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
                                 Notification::make()
-                                    ->title('Failed to draft')
+                                    ->title('Gagal Draft')
                                     ->danger()
                                     ->send();
                             }
@@ -250,22 +309,25 @@ class JobResource extends Resource
             ]);
     }
 
-    
+
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Job Overview')
+                Infolists\Components\Section::make('Pekerjaan')
                     ->schema([
                         Infolists\Components\Split::make([
                             Infolists\Components\Grid::make(2)
                                 ->schema([
                                     Infolists\Components\Group::make([
-                                        Infolists\Components\TextEntry::make('title'),
-                                        Infolists\Components\TextEntry::make('type'),
-                                        Infolists\Components\TextEntry::make('platform'),
+                                        Infolists\Components\TextEntry::make('title')
+                                        ->label('Nama Pekerjaan'),
+                                        Infolists\Components\TextEntry::make('type')
+                                        ->label('Tipe Pekerjaan'),
+                                        Infolists\Components\TextEntry::make('platform')
+                                        ->label('Social Media'),
                                         Infolists\Components\IconEntry::make('is_multiple')
-                                        ->label('Multiple')
+                                        ->label('Dapat Diikuti Berulang')
                                         ->icon(fn (string $state): string => match ($state) {
                                             '1' => 'heroicon-o-check-circle',
                                             '0' => 'heroicon-o-x-circle',
@@ -274,11 +336,11 @@ class JobResource extends Resource
                                             '1' => 'success',
                                             '0' => 'danger',
                                         }),
-                                       
+
                                     ]),
                                     Infolists\Components\Group::make([
                                         Infolists\Components\TextEntry::make('participant_count')
-                                            ->label('Participant')
+                                            ->label('Jumlah Peserta')
                                             ->getStateUsing(fn ($record) => $record->getParticipantCountAttribute() . ' / ' . $record->quota),
                                         Infolists\Components\TextEntry::make('reward'),
                                             // ->icon('heroicon-o-cash')
@@ -286,27 +348,27 @@ class JobResource extends Resource
                                             'publish' => 'success',
                                             'draft' => 'warning',
                                         }),
-                                       
+
                                         ]),
                                 ]),
-                            
+
                             Infolists\Components\Group::make([
                                 Infolists\Components\ImageEntry::make('jobDetail.image')
                                     ->hiddenLabel()
                                     ->grow(false),
-                                Infolists\Components\TextEntry::make('start_date'),
-                                Infolists\Components\TextEntry::make('end_date'),
+                                Infolists\Components\TextEntry::make('start_date')->label('Tanggal Mulai'),
+                                Infolists\Components\TextEntry::make('end_date')->label('Tanggal Selesai'),
                             ])->grow(false),
                         ])->from('lg'),
                     ]),
-                Infolists\Components\Section::make('Job Detail')
+                Infolists\Components\Section::make('Detail Pekerjaan')
                     ->schema([
                         Infolists\Components\TextEntry::make('jobDetail.description')
-                            ->label('Description')
+                            ->label('Deskripsi')
                             ->prose()
                             ->markdown(),
                             Infolists\Components\TextEntry::make('instructions')
-                            ->label('Instructions')
+                            ->label('Instruksi')
                             ->prose()
                             ->markdown(),
                             // ->hiddenLabel(),
