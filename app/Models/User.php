@@ -6,9 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\SosialMediaAccount;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
-use App\Enums\UserRole;
 
 class User extends Authenticatable
 {
@@ -27,8 +28,8 @@ class User extends Authenticatable
         'gender',
         'date_of_birth',
         'phone',
-        'village_id',
-        'district_id',
+        'village_kode',
+        'district_kode',
         'regency_kode',
         'province_kode',
     ];
@@ -76,5 +77,10 @@ class User extends Authenticatable
     public function village(): BelongsTo
     {
         return $this->belongsTo(Village::class, 'village_id', 'kode');
+    }
+
+    public function sosialMediaAccounts(): HasMany
+    {
+        return $this->hasMany(SosialMediaAccount::class);
     }
 }
