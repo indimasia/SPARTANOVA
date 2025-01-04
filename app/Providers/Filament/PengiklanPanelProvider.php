@@ -25,6 +25,9 @@ class PengiklanPanelProvider extends PanelProvider
         return $panel
             ->id('pengiklan')
             ->path('pengiklan')
+            ->brandLogo(asset('images/spartav_logo.png'))
+            ->brandLogoHeight('4rem')
+            ->brandName('Spartav')
             ->colors([
                 'primary' => Color::Amber,
             ])
