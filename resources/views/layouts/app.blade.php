@@ -26,7 +26,7 @@
             <div class="container mx-auto px-4 py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex-shrink-0 transition-transform duration-300 hover:scale-105">
-                        <img src="{{ asset('images/spartav_logo.png') }}" alt="{{ config('app.name', 'SpartaNova') }}"
+                        <img src="{{ asset('images/spartav_logo.png') }}" alt="{{ config('app.name', 'Spartav') }}"
                             class="h-12">
                     </div>
                     <div class="hidden md:flex flex-grow justify-center space-x-8">
@@ -74,8 +74,110 @@
         </header>
 
         <!-- Page Content -->
-        <main class="flex-grow pt-16">
-            {{ $slot }}
+        <main class="flex-grow pt-16 mt-5">
+            @auth
+                @if (auth()->user())
+                    <div class="flex">
+                        <!-- Sidebar -->
+                        <div class="w-56 bg-white shadow-sm border-r border-gray-100 min-h-screen">
+                            <!-- Navigation Menu -->
+                            <nav class="py-2">
+                                <a href="{{ route('pejuang') }}"
+                                    class="flex items-center px-4 py-2 text-xs bg-yellow-50 border-l-2 border-yellow-400 text-gray-700 hover:bg-yellow-100 transition-all duration-150">
+                                    <i class="fas fa-chart-line text-xs mr-2 text-yellow-600"></i>
+                                    <span>Dashboard</span>
+                                </a>
+
+                                <a href="{{ route('pejuang.apply-job') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-briefcase text-xs mr-2 text-gray-400"></i>
+                                    <span>Pekerjaan</span>
+                                </a>
+
+                                <a href="{{ route('pejuang.riwayat-pekerjaan') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-briefcase text-xs mr-2 text-gray-400"></i>
+                                    <span>Riwayat Pekerjaan</span>
+                                </a>
+
+                                {{-- <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-user text-xs mr-2 text-gray-400"></i>
+                                    <span>Profil</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-key text-xs mr-2 text-gray-400"></i>
+                                    <span>Ganti Password</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-credit-card text-xs mr-2 text-gray-400"></i>
+                                    <span>Rekening Bank</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-wallet text-xs mr-2 text-gray-400"></i>
+                                    <span>Dompet Saya</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-plus-circle text-xs mr-2 text-gray-400"></i>
+                                    <span>Open Order</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-comments text-xs mr-2 text-gray-400"></i>
+                                    <span>Komentar Saya</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-money-bill-wave text-xs mr-2 text-gray-400"></i>
+                                    <span>Penghasilan</span>
+                                </a>
+
+                                <div class="px-4 py-2">
+                                    <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">Kampanye
+                                        Premium</p>
+                                    <div class="mt-1 space-y-1">
+                                        <a href="#"
+                                            class="flex items-center pl-2 py-1.5 text-xs text-gray-600 hover:bg-gray-50 rounded transition-colors duration-150">
+                                            <i class="fas fa-bullhorn text-xs mr-2 text-gray-400"></i>
+                                            <span>Kampanye Saya</span>
+                                        </a>
+                                        <a href="#"
+                                            class="flex items-center pl-2 py-1.5 text-xs text-gray-600 hover:bg-gray-50 rounded transition-colors duration-150">
+                                            <i class="fas fa-check-circle text-xs mr-2 text-gray-400"></i>
+                                            <span>Kampanye Sukses</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-money-bill-transfer text-xs mr-2 text-gray-400"></i>
+                                    <span>Tarik Tunai</span>
+                                </a> --}}
+                            </nav>
+                        </div>
+
+                        <!-- Main Content with Margin -->
+                        <div class="flex-1">
+                            {{ $slot }}
+                        </div>
+                    </div>
+                @else
+                    {{ $slot }}
+                @endif
+            @else
+                {{ $slot }}
+            @endauth
         </main>
 
         <!-- Footer -->
