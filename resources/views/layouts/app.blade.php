@@ -188,15 +188,15 @@
             <div class="container mx-auto px-4 py-8">
                 <div class="flex flex-col md:flex-row justify-between">
                     <div class="mb-6 md:mb-0">
-                        <img src="{{ asset('images/spartav_logo.png') }}" alt="Logo SpartaNova" class="h-12 mb-4">
+                        <img src="{{ asset('images/spartav_logo.png') }}" alt="Logo Spartav" class="h-12 mb-4">
                         <h4 class="text-lg font-bold mb-2">Tentang Kami</h4>
-                        <p class="text-gray-400">SpartaNova adalah mitra terpercaya Anda dalam keunggulan pemasaran
+                        <p class="text-gray-400">Spartav adalah mitra terpercaya Anda dalam keunggulan pemasaran
                             digital.</p>
                     </div>
                     <div class="mb-6 md:mb-0">
                         <h4 class="text-lg font-bold mb-2">Kontak</h4>
                         <ul class="space-y-2 text-gray-400">
-                            <li><i class="fas fa-envelope mr-2"></i>Email: info@spartanova.com</li>
+                            <li><i class="fas fa-envelope mr-2"></i>Email: info@spartav.com</li>
                             <li><i class="fas fa-phone mr-2"></i>Telepon: (123) 456-7890</li>
                             <li><i class="fas fa-map-marker-alt mr-2"></i>Alamat: Jakarta, Indonesia</li>
                         </ul>
@@ -217,7 +217,7 @@
                     </div>
                 </div>
                 <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                    <p>&copy; 2024 SpartaNova. Semua hak dilindungi.</p>
+                    <p>&copy; 2024 Spartav. Semua hak dilindungi.</p>
                 </div>
             </div>
         </footer>
