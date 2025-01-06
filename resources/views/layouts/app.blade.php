@@ -82,21 +82,24 @@
                         <div class="w-56 bg-white shadow-sm border-r border-gray-100 min-h-screen">
                             <!-- Navigation Menu -->
                             <nav class="py-2">
-                                <a href="{{ route('pejuang') }}"
-                                    class="flex items-center px-4 py-2 text-xs bg-yellow-50 border-l-2 border-yellow-400 text-gray-700 hover:bg-yellow-100 transition-all duration-150">
-                                    <i class="fas fa-chart-line text-xs mr-2 text-yellow-600"></i>
+                                <a href="{{ route('dashboard') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-yellow-50 hover:border-l-2 hover:border-yellow-400 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-yellow-50 border-l-2 border-yellow-400' : '' }}">
+                                    <i
+                                        class="fas fa-chart-line text-xs mr-2 {{ request()->routeIs('dashboard') ? 'text-yellow-400' : 'text-gray-400' }}"></i>
                                     <span>Dashboard</span>
                                 </a>
 
-                                <a href="{{ route('pejuang.apply-job') }}"
-                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
-                                    <i class="fas fa-briefcase text-xs mr-2 text-gray-400"></i>
+                                <a href="{{ route('pasukan.apply-job') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-yellow-50 hover:border-l-2 hover:border-yellow-400 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-yellow-50 border-l-2 border-yellow-400' : '' }}">
+                                    <i
+                                        class="fas fa-briefcase text-xs mr-2 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-400' : 'text-gray-400' }}"></i>
                                     <span>Pekerjaan</span>
                                 </a>
 
-                                <a href="{{ route('pejuang.riwayat-pekerjaan') }}"
-                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
-                                    <i class="fas fa-briefcase text-xs mr-2 text-gray-400"></i>
+                                <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-yellow-50 hover:border-l-2 hover:border-yellow-400 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-yellow-50 border-l-2 border-yellow-400' : '' }}">
+                                    <i
+                                        class="fas fa-briefcase text-xs mr-2 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-400' : 'text-gray-400' }}"></i>
                                     <span>Riwayat Pekerjaan</span>
                                 </a>
 

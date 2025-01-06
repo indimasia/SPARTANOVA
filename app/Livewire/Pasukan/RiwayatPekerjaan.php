@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pejuang;
+namespace App\Livewire\Pasukan;
 
 use Livewire\Component;
 use App\Models\JobParticipant;
@@ -19,6 +19,6 @@ class RiwayatPekerjaan extends Component
 
     public function render()
     {
-        return view('livewire.pejuang.riwayat-pekerjaan')->layout('layouts.app');
+        return view('livewire.pasukan.riwayat-pekerjaan')->layout('layouts.app');
     }
 }

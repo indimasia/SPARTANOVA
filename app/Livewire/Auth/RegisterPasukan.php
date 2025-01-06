@@ -15,7 +15,7 @@ use Illuminate\Validation\Rules\Password;
 use App\Models\SosialMediaAccount;
 use App\Enums\PlatformEnum;
 
-class RegisterPejuang extends Component
+class RegisterPasukan extends Component
 {
     public $name;
     public $email;
@@ -127,12 +127,12 @@ class RegisterPejuang extends Component
 
         Auth::login($user);
 
-        $this->redirect(route('home', absolute: false), navigate: true);
+        $this->redirect(route('dashboard', absolute: false), navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.auth.register-pejuang', [
+        return view('livewire.auth.register-pasukan', [
             'provinces' => $this->provinces,
             'regencies' => $this->regencies,
             'districts' => $this->districts,

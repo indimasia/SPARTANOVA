@@ -17,12 +17,12 @@ new #[Layout('layouts.app')] class extends Component {
         Session::regenerate();
 
         $user = Auth::user();
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole(App\Enums\UserRole::ADMIN->value)) {
             $this->redirect(route('filament.admin.pages.dashboard'), navigate: false);
-        } elseif ($user->hasRole('pengiklan')) {
+        } elseif ($user->hasRole(App\Enums\UserRole::PENGIKLAN->value)) {
             $this->redirect(route('filament.pengiklan.pages.dashboard'), navigate: false);
-        } else {
-            $this->redirect(route('pejuang'), navigate: false);
+        } elseif ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
+            $this->redirect(route('dashboard'), navigate: false);
         }
     }
 }; ?>

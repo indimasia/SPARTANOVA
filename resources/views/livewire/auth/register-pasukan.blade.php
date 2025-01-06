@@ -4,8 +4,8 @@
             <div class="p-8">
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Daftar Sebagai Pejuang</h2>
-                    <p class="mt-2 text-gray-600">Bergabunglah dengan komunitas pejuang digital kami</p>
+                    <h2 class="text-3xl font-bold text-gray-900">Daftar Sebagai Pasukan</h2>
+                    <p class="mt-2 text-gray-600">Bergabunglah dengan komunitas pasukan digital kami</p>
                 </div>
 
                 <form wire:submit.prevent="register" class="space-y-6">

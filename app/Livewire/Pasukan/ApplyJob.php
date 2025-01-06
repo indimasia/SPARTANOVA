@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pejuang;
+namespace App\Livewire\Pasukan;
 
 use Livewire\Component;
 use App\Models\JobDetail;
@@ -81,6 +81,6 @@ class ApplyJob extends Component
 
     public function render()
     {
-        return view('livewire.pejuang.apply-job')->layout('layouts.app');
+        return view('livewire.pasukan.apply-job')->layout('layouts.app');
     }
 }
