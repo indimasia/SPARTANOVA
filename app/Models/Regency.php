@@ -30,7 +30,7 @@ class Regency extends Model
     public static function accountCount($kode): int
     {
         return User::where('regency_kode', $kode)->whereHas('roles', function($query){
-            $query->where('name', UserRole::PEJUANG->value);
+            $query->where('name', UserRole::PASUKAN->value);
         })->count();
     }
 }
