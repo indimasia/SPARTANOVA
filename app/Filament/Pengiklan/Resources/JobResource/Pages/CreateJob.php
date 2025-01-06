@@ -13,7 +13,8 @@ class CreateJob extends CreateRecord
     protected static string $resource = JobResource::class;
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if($data['package_rate'] != PackageEnum::LAINNYA->value){            $data['quota'] = $data['package_rate'];
+        if($data['package_rate'] != PackageEnum::LAINNYA->value){
+             $data['quota'] = $data['package_rate'];
         }
         return $data;
     }

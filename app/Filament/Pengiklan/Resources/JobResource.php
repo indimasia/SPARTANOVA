@@ -21,7 +21,11 @@ use Filament\Support\Enums\IconPosition;
 use App\Enums\JobType;
 use App\Enums\PackageEnum;
 use App\Enums\PlatformEnum;
+use App\Models\District;
 use App\Models\PackageRate;
+use App\Models\Province;
+use App\Models\Regency;
+use App\Models\Village;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Get;
@@ -53,7 +57,124 @@ class JobResource extends Resource
             ->schema([
 
                 Wizard::make([
+                    Wizard\Step::make('Target Pasukan')
+                    ->schema([
 
+                        Forms\Components\Section::make('Spesifikasi Akun Pasukan')
+                            ->description('Setiap Penambahan Sepesifikasi Akun Pasukan dikenakan biaya tambahan 10%')
+                            ->aside()
+                            ->schema([
+                                Forms\Components\Toggle::make('specific_gender')
+                                    ->label('Gender Pasukan')
+                                    ->live()
+                                    ->validationMessages([
+                                        'required' => 'Gender Pasukan Harus Diisi',
+                                ]),
+                                Forms\Components\ToggleButtons::make('gender')
+                                    ->options([
+                                        'S' => 'Semua',
+                                        'L' => 'Laki-laki',
+                                        'P' => 'Perempuan',
+                                    ])
+                                    ->colors([
+                                        'S' => 'success',
+                                        'L' => 'info',
+                                        'P' => 'danger',
+                                    ])
+                                    ->label('Gender Pasukan')
+                                    ->required()
+                                    ->inline()
+                                    ->visible(fn(Get $get)=>$get('specific_gender'))
+                                    ->validationMessages([
+                                        'required' => 'Gender Pasukan Harus Diisi',
+                                ]),
+                                Forms\Components\Toggle::make('specific_location')
+                                    ->label('Lokasi Pasukan')
+                                    ->live()
+                                    ->validationMessages([
+                                        'required' => 'Lokasi Pasukan Harus Diisi',
+                                ]),
+                                Grid::make(2)
+                                ->schema([
+                                    Forms\Components\Select::make('province_kode')
+                                    ->label('Provinsi')
+                                    ->options(Province::getAvailableWarriorInProvince())
+                                    ->multiple()
+                                    ->placeholder('pilih wilayah yang ditargetkan"')
+                                    ->preload()
+                                    ->searchable()
+                                    ->required(),
+                                    Forms\Components\Select::make('regency_kode')
+                                        ->label('Kabupaten/Kota')
+                                        ->placeholder('pilih wilayah yang ditargetkan"')
+                                        ->preload()
+                                        ->searchable()
+                                        ->multiple()
+                                        ->options(function(Get $get){
+                                            return Regency::getAvailableWarriorInRegency($get('province_kode'));
+                                        })
+                                        ->live()
+                                        ->required(),
+                                    Forms\Components\Select::make('district_kode')
+                                        ->label('Kecamatan')
+                                        ->placeholder('pilih wilayah yang ditargetkan"')
+                                        ->preload()
+                                        ->searchable()
+                                        ->multiple()
+                                        ->options(function(Get $get){
+                                            return District::getAvailableWarriorInDistrict($get('regency_kode'));
+                                        })
+                                        ->live()
+                                        ->required(),
+                                    Forms\Components\Select::make('village_kode')
+                                        ->label('Kelurahan')
+                                        ->placeholder('pilih wilayah yang ditargetkan"')
+                                        ->preload()
+                                        ->searchable()
+                                        ->multiple()
+                                        ->options(function(Get $get){
+                                            return Village::getAvailableWarriorInVillage($get('district_kode'));
+                                        })
+                                        ->live()
+                                        ->required(),
+                                 ])->visible(fn(Get $get)=>$get('specific_location')),
+                                Forms\Components\Toggle::make('specific_interest')
+                                    ->label('Interest Pasukan')
+                                    ->live()
+                                    ->validationMessages([
+                                        'required' => 'Interest Pasukan Harus Diisi',
+                                ]),
+
+                                Forms\Components\ToggleButtons::make('interest')
+                                    ->visible(fn(Get $get)=>$get('specific_interest'))
+                                    ->label('Interest Pasukan')
+                                    ->options([
+                                       'Travel',
+                                       'Food',
+                                       'Fashion',
+                                       'Beauty',
+                                       'Technology',
+                                       'Health',
+                                       'Sports',
+                                       'Music',
+                                       'Art',
+                                       'Gaming',
+                                       'Movies',
+                                       'Books',
+                                       'Technology',
+                                       'Science',
+                                       'History',
+                                       'Travel',
+                                    ])
+                                    ->required()
+                                    ->inline()
+                                    ->multiple()
+                                    ->validationMessages([
+                                        'required' => 'Interest Pasukan Harus Diisi',
+                                ]),
+
+                                ]),
+                    ]),
                     Wizard\Step::make('Pekerjaan')
                         ->schema([
                             Forms\Components\Select::make('type')
@@ -64,20 +185,24 @@ class JobResource extends Resource
                                 ->afterStateUpdated(function (callable $set, $state) {
                                     $set('package_rate', null);
                                 })
+                                // ->inline()
                                 ->required()
                                 ->validationMessages([
                                     'required' => 'Tipe Pekerjaan Harus Diisi',
                                 ]),
-                            Forms\Components\Select::make('platform')
+                            Forms\Components\ToggleButtons::make('platform')
                                 ->options(PlatformEnum::options())
-                                ->searchable()
+                                // ->searchable()
                                 ->label('Social Media')
                                 ->required()
+                                ->inline()
+                                ->helperText(fn(Get $get) => $get('type') == JobType::POSTING->value ? 'Video dan caption  yang diposting tidak boleh menjatuhkan orang/produk lain.' : '')
                                 ->validationMessages([
                                     'required' => 'Social Media Harus Diisi',
-                                ])
-                                ,
-                            Forms\Components\Select::make('package_rate')
+                                ]),
+                            Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('package_rate')
                                 ->options(function(Get $get){
                                     return PackageRate::packageList($get('type'));
                                 })
@@ -93,35 +218,27 @@ class JobResource extends Resource
                                 // })
                                 ->label('Paket')
                                 ->required()
-                                ->validationMessages([
-                                    'required' => 'Paket Harus Diisi',
-                                ]),
-                            Forms\Components\TextInput::make('quota')
-                                ->visible(fn(Get $get)=>$get('package_rate') == PackageEnum::LAINNYA->value && $get('package_rate') != '')
-                                ->numeric()
-                                ->minValue(10001)
-                                ->label('Kuota')
-                                ->required()
-                                ->validationMessages([
-                                    'required' => 'Kuota Harus Diisi',
-                                    'min' => 'Kuota Harus Lebih Besar Dari 10000',
-                                ]),
-                            Forms\Components\TextInput::make('reward')
-                                ->required()
-                                ->numeric()
-                                ->label('Hadiah')
-                                ->validationMessages([
-                                    'required' => 'Hadiah Harus Diisi',
-                                ]),
-                            Forms\Components\Select::make('status')
-                                ->options([
-                                    'publish' => 'Publikasi',
-                                    'draft' => 'Draft',
-                                ])
-                                ->required()
-                                ->validationMessages([
-                                    'required' => 'Status Harus Diisi',
-                                ]),
+                                    ->validationMessages([
+                                        'required' => 'Paket Harus Diisi',
+                                    ]),
+                                    Forms\Components\TextInput::make('quota')
+                                        ->visible(fn(Get $get)=>$get('package_rate') == PackageEnum::LAINNYA->value && $get('package_rate') != '')
+                                        ->numeric()
+                                        ->minValue(10001)
+                                        ->label('Kuota')
+                                        ->required()
+                                        ->validationMessages([
+                                            'required' => 'Kuota Harus Diisi',
+                                            'min' => 'Kuota Harus Lebih Besar Dari 10000',
+                                        ]),
+                                    Forms\Components\TextInput::make('reward')
+                                        ->required()
+                                        ->numeric()
+                                        ->label('Hadiah')
+                                        ->validationMessages([
+                                            'required' => 'Hadiah Harus Diisi',
+                                        ]),
+                                    ]),
                             Grid::make(2)
                                 ->schema([
                                     Forms\Components\DatePicker::make('start_date')
@@ -145,11 +262,32 @@ class JobResource extends Resource
                                             'after_or_equal' => 'Tanggal Selesai Harus Setelah Tanggal Mulai',
                                         ])
                                         ,
+                                        Forms\Components\ToggleButtons::make('status')
+                                            ->options([
+                                                'publish' => 'Publikasi',
+                                                'draft' => 'Draft',
+                                            ])
+
+                                            ->colors([
+                                                'publish' => 'success',
+                                                'draft' => 'warning',
+                                            ])
+                                            ->icons([
+                                                'publish' => 'heroicon-o-check-circle',
+                                                'draft' => 'heroicon-o-exclamation-circle',
+                                            ])
+                                            ->required()
+                                            ->inline()
+                                            ->validationMessages([
+                                                'required' => 'Status Harus Diisi',
+                                            ]),
+                                        Forms\Components\Toggle::make('is_multiple')
+                                            ->label('Dapat Diikuti Berulang')
+                                            ->required(),
                                 ]),
-                            Forms\Components\Toggle::make('is_multiple')
-                                ->label('Dapat Diikuti Berulang')
-                                ->required(),
+
                         ]),
+
                     Wizard\Step::make('Detail Pekerjaan')
                         ->schema([
                             Forms\Components\TextInput::make('title')
@@ -203,6 +341,13 @@ class JobResource extends Resource
                                     'required' => 'Link Harus Diisi',
                                 ])
                                 ,
+                        ]),
+                    Wizard\Step::make('Tinjauan')
+                        ->schema([
+                            Forms\Components\Placeholder::make('title')
+                            ->content(fn(Get $get)=>$get('title'))
+                            ->label('Nama Pekerjaan')
+                            ->columnSpanFull()
                         ]),
                 ])->columnSpanFull()
                 ->submitAction(new HtmlString(Blade::render(<<<BLADE
