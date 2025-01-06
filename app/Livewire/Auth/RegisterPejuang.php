@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules\Password;
 use App\Models\SosialMediaAccount;
+use App\Enums\PlatformEnum;
 
 class RegisterPejuang extends Component
 {
@@ -27,8 +28,7 @@ class RegisterPejuang extends Component
     public $district_kode;
     public $regency_kode;
     public $province_kode;
-    public $social_media;
-    public $social_media_account;
+    public $social_media = [];
 
     public $villages = [];
     public $districts = [];
@@ -46,13 +46,15 @@ class RegisterPejuang extends Component
         'district_kode' => 'required',
         'regency_kode' => 'required',
         'province_kode' => 'required',
-        'social_media' => 'required|string',
-        'social_media_account' => 'required|string|max:255',
+        'social_media.*' => ['nullable', 'string']
     ];
 
     public function mount()
     {
         $this->provinces = Province::all();
+        foreach (PlatformEnum::cases() as $platform) {
+            $this->social_media[$platform->value] = '';
+        }
     }
 
     public function updatedProvinceKode($value)
@@ -92,19 +94,34 @@ class RegisterPejuang extends Component
             'district_kode' => ['required'],
             'regency_kode' => ['required'],
             'province_kode' => ['required'],
-            'social_media' => ['required', 'string'],
-            'social_media_account' => ['required', 'string', 'max:255'],
+            'social_media.*' => ['nullable', 'string']
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        $userData = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'gender' => $validated['gender'],
+            'date_of_birth' => $validated['date_of_birth'],
+            'phone' => $validated['phone'],
+            'village_kode' => $validated['village_kode'],
+            'district_kode' => $validated['district_kode'],
+            'regency_kode' => $validated['regency_kode'],
+            'province_kode' => $validated['province_kode'],
+        ];
 
-        event(new Registered($user = User::create($validated)));
+        $user = User::create($userData);
+        event(new Registered($user));
 
-        SosialMediaAccount::create([
-            'user_id' => $user->id,
-            'sosial_media' => $this->social_media,
-            'account' => $this->social_media_account,
-        ]);
+        foreach ($validated['social_media'] as $platform => $account) {
+            if (!empty($account)) {
+                SosialMediaAccount::create([
+                    'user_id' => $user->id,
+                    'sosial_media' => $platform,
+                    'account' => $account,
+                ]);
+            }
+        }
 
         $user->assignRole('pejuang');
 
