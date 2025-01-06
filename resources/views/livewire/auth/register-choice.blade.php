@@ -32,10 +32,10 @@
                         <i class="fas fa-comment-alt text-3xl"></i>
                     </div>
                 </div>
-                <h2 class="text-2xl font-semibold mb-4">Sebagai Pejuang</h2>
+                <h2 class="text-2xl font-semibold mb-4">Sebagai Pasukan</h2>
                 <p class="text-gray-600 mb-6">Saya ingin mendapatkan penghasilan dengan menulis komentar berkualitas di
                     medsos.</p>
-                <a href="{{ route('pejuang.register') }}"
+                <a href="{{ route('pasukan.register') }}"
                     class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 text-lg font-medium">Daftar
                     Sekarang</a>
             </div>

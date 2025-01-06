@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class PejuangMiddleware
+class PasukanMiddleware
 {
     /**
      * Handle an incoming request.
@@ -20,7 +20,7 @@ class PejuangMiddleware
             return redirect()->route('login');
         }
 
-        if (!Auth::user()->hasRole('pejuang')) {
+        if (!Auth::user()->hasRole('pasukan')) {
             return redirect()->back();
         }
 

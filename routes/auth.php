@@ -3,15 +3,15 @@
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Auth\RegisterPengiklan;
-use App\Livewire\Auth\RegisterPejuang;
+use App\Livewire\Auth\RegisterPasukan;
 use App\Http\Controllers\Auth\VerifyEmailController;
 
 Route::middleware('guest')->group(function () {
     Route::get('pengiklan/register', RegisterPengiklan::class)
         ->name('pengiklan.register');
 
-    Route::get('pejuang/register', RegisterPejuang::class)
-        ->name('pejuang.register');
+    Route::get('pasukan/register', RegisterPasukan::class)
+        ->name('pasukan.register');
 
     Volt::route('login', 'pages.auth.login')
         ->name('login');

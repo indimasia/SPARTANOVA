@@ -83,4 +83,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SosialMediaAccount::class);
     }
+
+    public function jobParticipants(): HasMany
+    {
+        return $this->hasMany(JobParticipant::class);
+    }
 }

@@ -26,7 +26,7 @@
             <div class="container mx-auto px-4 py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex-shrink-0 transition-transform duration-300 hover:scale-105">
-                        <img src="{{ asset('images/spartav_logo.png') }}" alt="{{ config('app.name', 'SpartaNova') }}"
+                        <img src="{{ asset('images/spartav_logo.png') }}" alt="{{ config('app.name', 'Spartav') }}"
                             class="h-12">
                     </div>
                     <div class="hidden md:flex flex-grow justify-center space-x-8">
@@ -74,8 +74,113 @@
         </header>
 
         <!-- Page Content -->
-        <main class="flex-grow pt-16">
-            {{ $slot }}
+        <main class="flex-grow pt-16 mt-5">
+            @auth
+                @if (auth()->user())
+                    <div class="flex">
+                        <!-- Sidebar -->
+                        <div class="w-56 bg-white shadow-sm border-r border-gray-100 min-h-screen">
+                            <!-- Navigation Menu -->
+                            <nav class="py-2">
+                                <a href="{{ route('dashboard') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-yellow-50 hover:border-l-2 hover:border-yellow-400 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-yellow-50 border-l-2 border-yellow-400' : '' }}">
+                                    <i
+                                        class="fas fa-chart-line text-xs mr-2 {{ request()->routeIs('dashboard') ? 'text-yellow-400' : 'text-gray-400' }}"></i>
+                                    <span>Dashboard</span>
+                                </a>
+
+                                <a href="{{ route('pasukan.apply-job') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-yellow-50 hover:border-l-2 hover:border-yellow-400 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-yellow-50 border-l-2 border-yellow-400' : '' }}">
+                                    <i
+                                        class="fas fa-briefcase text-xs mr-2 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-400' : 'text-gray-400' }}"></i>
+                                    <span>Pekerjaan</span>
+                                </a>
+
+                                <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-yellow-50 hover:border-l-2 hover:border-yellow-400 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-yellow-50 border-l-2 border-yellow-400' : '' }}">
+                                    <i
+                                        class="fas fa-briefcase text-xs mr-2 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-400' : 'text-gray-400' }}"></i>
+                                    <span>Riwayat Pekerjaan</span>
+                                </a>
+
+                                {{-- <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-user text-xs mr-2 text-gray-400"></i>
+                                    <span>Profil</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-key text-xs mr-2 text-gray-400"></i>
+                                    <span>Ganti Password</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-credit-card text-xs mr-2 text-gray-400"></i>
+                                    <span>Rekening Bank</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-wallet text-xs mr-2 text-gray-400"></i>
+                                    <span>Dompet Saya</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-plus-circle text-xs mr-2 text-gray-400"></i>
+                                    <span>Open Order</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-comments text-xs mr-2 text-gray-400"></i>
+                                    <span>Komentar Saya</span>
+                                </a>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-money-bill-wave text-xs mr-2 text-gray-400"></i>
+                                    <span>Penghasilan</span>
+                                </a>
+
+                                <div class="px-4 py-2">
+                                    <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">Kampanye
+                                        Premium</p>
+                                    <div class="mt-1 space-y-1">
+                                        <a href="#"
+                                            class="flex items-center pl-2 py-1.5 text-xs text-gray-600 hover:bg-gray-50 rounded transition-colors duration-150">
+                                            <i class="fas fa-bullhorn text-xs mr-2 text-gray-400"></i>
+                                            <span>Kampanye Saya</span>
+                                        </a>
+                                        <a href="#"
+                                            class="flex items-center pl-2 py-1.5 text-xs text-gray-600 hover:bg-gray-50 rounded transition-colors duration-150">
+                                            <i class="fas fa-check-circle text-xs mr-2 text-gray-400"></i>
+                                            <span>Kampanye Sukses</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <a href="#"
+                                    class="flex items-center px-4 py-2 text-xs text-gray-600 hover:bg-gray-50 hover:border-l-2 hover:border-gray-300 transition-all duration-150">
+                                    <i class="fas fa-money-bill-transfer text-xs mr-2 text-gray-400"></i>
+                                    <span>Tarik Tunai</span>
+                                </a> --}}
+                            </nav>
+                        </div>
+
+                        <!-- Main Content with Margin -->
+                        <div class="flex-1">
+                            {{ $slot }}
+                        </div>
+                    </div>
+                @else
+                    {{ $slot }}
+                @endif
+            @else
+                {{ $slot }}
+            @endauth
         </main>
 
         <!-- Footer -->
@@ -83,15 +188,15 @@
             <div class="container mx-auto px-4 py-8">
                 <div class="flex flex-col md:flex-row justify-between">
                     <div class="mb-6 md:mb-0">
-                        <img src="{{ asset('images/spartav_logo.png') }}" alt="Logo SpartaNova" class="h-12 mb-4">
+                        <img src="{{ asset('images/spartav_logo.png') }}" alt="Logo Spartav" class="h-12 mb-4">
                         <h4 class="text-lg font-bold mb-2">Tentang Kami</h4>
-                        <p class="text-gray-400">SpartaNova adalah mitra terpercaya Anda dalam keunggulan pemasaran
+                        <p class="text-gray-400">Spartav adalah mitra terpercaya Anda dalam keunggulan pemasaran
                             digital.</p>
                     </div>
                     <div class="mb-6 md:mb-0">
                         <h4 class="text-lg font-bold mb-2">Kontak</h4>
                         <ul class="space-y-2 text-gray-400">
-                            <li><i class="fas fa-envelope mr-2"></i>Email: info@spartanova.com</li>
+                            <li><i class="fas fa-envelope mr-2"></i>Email: info@spartav.com</li>
                             <li><i class="fas fa-phone mr-2"></i>Telepon: (123) 456-7890</li>
                             <li><i class="fas fa-map-marker-alt mr-2"></i>Alamat: Jakarta, Indonesia</li>
                         </ul>
@@ -112,7 +217,7 @@
                     </div>
                 </div>
                 <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                    <p>&copy; 2024 SpartaNova. Semua hak dilindungi.</p>
+                    <p>&copy; 2024 Spartav. Semua hak dilindungi.</p>
                 </div>
             </div>
         </footer>
