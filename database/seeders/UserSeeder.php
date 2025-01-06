@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
     {
         $adminRole = ModelsRole::create(['name' => UserRole::ADMIN->value]);
         $pengiklanRole = ModelsRole::create(['name' => UserRole::PENGIKLAN->value]);
-        $pejuangRole = ModelsRole::create(['name' => UserRole::PEJUANG->value]);
+        $pasukanRole = ModelsRole::create(['name' => UserRole::PASUKAN->value]);
 
         // Create Admin User
         $admin = User::create([
@@ -51,10 +51,10 @@ class UserSeeder extends Seeder
         ]);
         $user->assignRole($pengiklanRole);
 
-        // Create Pejuang User
+        // Create Pasukan User
         $user = User::create([
-            'name' => 'Pejuang User',
-            'email' => 'pejuang@gmail.com',
+            'name' => 'Pasukan User',
+            'email' => 'pasukan@gmail.com',
             'password' => Hash::make('12345678'),
             'gender' => 'L',
             'date_of_birth' => '1995-03-03',
@@ -64,6 +64,6 @@ class UserSeeder extends Seeder
             'district_kode' => '010101',
             'village_kode' => '01010101',
         ]);
-        $user->assignRole($pejuangRole);
+        $user->assignRole($pasukanRole);
     }
 }

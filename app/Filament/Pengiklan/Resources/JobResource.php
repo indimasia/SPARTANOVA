@@ -21,6 +21,7 @@ use Filament\Support\Enums\IconPosition;
 use App\Enums\JobType;
 use App\Enums\PackageEnum;
 use App\Enums\PlatformEnum;
+use App\Enums\UserInterestEnum;
 use App\Models\District;
 use App\Models\PackageRate;
 use App\Models\Province;
@@ -28,6 +29,7 @@ use App\Models\Regency;
 use App\Models\Village;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Get;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -100,32 +102,58 @@ class JobResource extends Resource
                                     ->label('Provinsi')
                                     ->options(Province::getAvailableWarriorInProvince())
                                     ->multiple()
-                                    ->placeholder('pilih wilayah yang ditargetkan"')
+                                    ->placeholder('pilih wilayah yang ditargetkan')
                                     ->preload()
                                     ->searchable()
                                     ->required(),
+
+                                    Forms\Components\ToggleButtons::make('all_regency')
+                                    ->boolean()
+                                    ->label('Pilih Semua Kabupaten/Kota?')
+                                    ->live()
+                                    ->default(true)
+                                    ->grouped()
+                                    ->required(),
                                     Forms\Components\Select::make('regency_kode')
                                         ->label('Kabupaten/Kota')
-                                        ->placeholder('pilih wilayah yang ditargetkan"')
+                                        ->placeholder('pilih wilayah yang ditargetkan')
                                         ->preload()
                                         ->searchable()
                                         ->multiple()
                                         ->options(function(Get $get){
                                             return Regency::getAvailableWarriorInRegency($get('province_kode'));
                                         })
+                                        ->visible(fn(Get $get)=>$get('all_regency') == false)
                                         ->live()
                                         ->required(),
+                                    Forms\Components\ToggleButtons::make('all_district')
+                                    ->boolean()
+                                    ->label('Pilih Semua Kecamatan?')
+                                    ->live()
+                                    ->visible(fn(Get $get)=>$get('all_regency') == false)
+                                    ->default(true)
+                                    ->grouped()
+                                    ->required(),
                                     Forms\Components\Select::make('district_kode')
                                         ->label('Kecamatan')
-                                        ->placeholder('pilih wilayah yang ditargetkan"')
+                                        ->placeholder('pilih wilayah yang ditargetkan')
                                         ->preload()
                                         ->searchable()
                                         ->multiple()
                                         ->options(function(Get $get){
                                             return District::getAvailableWarriorInDistrict($get('regency_kode'));
                                         })
+                                        ->visible(fn(Get $get)=>$get('all_district') == false)
                                         ->live()
                                         ->required(),
+                                    Forms\Components\ToggleButtons::make('all_village')
+                                    ->boolean()
+                                    ->label('Pilih Semua Kelurahan?')
+                                    ->live()
+                                    ->visible(fn(Get $get)=>$get('all_district') == false)
+                                    ->default(true)
+                                    ->grouped()
+                                    ->required(),
                                     Forms\Components\Select::make('village_kode')
                                         ->label('Kelurahan')
                                         ->placeholder('pilih wilayah yang ditargetkan"')
@@ -135,6 +163,7 @@ class JobResource extends Resource
                                         ->options(function(Get $get){
                                             return Village::getAvailableWarriorInVillage($get('district_kode'));
                                         })
+                                        ->visible(fn(Get $get)=>$get('all_village') == false)
                                         ->live()
                                         ->required(),
                                  ])->visible(fn(Get $get)=>$get('specific_location')),
@@ -148,24 +177,7 @@ class JobResource extends Resource
                                 Forms\Components\ToggleButtons::make('interest')
                                     ->visible(fn(Get $get)=>$get('specific_interest'))
                                     ->label('Interest Pasukan')
-                                    ->options([
-                                       'Travel',
-                                       'Food',
-                                       'Fashion',
-                                       'Beauty',
-                                       'Technology',
-                                       'Health',
-                                       'Sports',
-                                       'Music',
-                                       'Art',
-                                       'Gaming',
-                                       'Movies',
-                                       'Books',
-                                       'Technology',
-                                       'Science',
-                                       'History',
-                                       'Travel',
-                                    ])
+                                    ->options(UserInterestEnum::options())
                                     ->required()
                                     ->inline()
                                     ->multiple()

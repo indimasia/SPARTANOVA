@@ -123,7 +123,7 @@ class RegisterPejuang extends Component
             }
         }
 
-        $user->assignRole('pejuang');
+        $user->assignRole('pasukan');
 
         Auth::login($user);
 

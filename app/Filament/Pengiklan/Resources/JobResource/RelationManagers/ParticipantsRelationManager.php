@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Notifications\Notification;
+use App\Enums\JobStatusEnum;
 
 
 class ParticipantsRelationManager extends RelationManager
@@ -27,12 +28,7 @@ class ParticipantsRelationManager extends RelationManager
                     ->required()
                     ->label('Nama Peserta'),
                 Forms\Components\Select::make('status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'in_review' => 'In Review',
-                        'approved' => 'Approved',
-                        'rejected' => 'Rejected',
-                    ])
+                    ->options(JobStatusEnum::options())
                     ->default('pending')
                     ->required()
                     ->label('Status'),
@@ -64,7 +60,7 @@ class ParticipantsRelationManager extends RelationManager
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn ($record) => $record->status === 'pending' ? 'warning' : ($record->status === 'approved' ? 'success' : ($record->status === 'rejected' ? 'danger' : 'info'))),
+                    ->color(fn ($record) => $record->status === JobStatusEnum::APPLIED->value ? 'warning' : ($record->status === JobStatusEnum::APPROVED->value  ? 'success' : ($record->status === JobStatusEnum::REJECTED->value ? 'danger' : 'info'))),
                 Tables\Columns\TextColumn::make('reward'),
                 Tables\Columns\ImageColumn::make('attachment'),
             ])
@@ -86,7 +82,7 @@ class ParticipantsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->action(function ( $record) {
                             try {
-                                $record->update(['status' => 'in_review']);
+                                $record->update(['status' => JobStatusEnum::IN_REVIEW->value]);
                                 Notification::make()
                                     ->title('Successfully in review')
                                     ->success()
@@ -106,7 +102,7 @@ class ParticipantsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->action(function ( $record) {
                             try {
-                                $record->update(['status' => 'approved']);
+                                $record->update(['status' => JobStatusEnum::APPROVED->value]);
                                 Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
@@ -118,7 +114,7 @@ class ParticipantsRelationManager extends RelationManager
                                     ->send();
                             }
                         })
-                        ->visible(fn ($record) => $record->status === 'pending' || $record->status === 'rejected'),
+                        ->visible(fn ($record) => $record->status === 'pending' || JobStatusEnum::REJECTED->value),
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
                         ->icon('heroicon-o-x-circle')
@@ -126,7 +122,7 @@ class ParticipantsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->action(function ( $record) {
                             try {
-                                $record->update(['status' => 'rejected']);
+                                $record->update(['status' => JobStatusEnum::REJECTED->value]);
                                 Notification::make()
                                     ->title('Successfully rejected')
                                     ->success()
@@ -138,7 +134,7 @@ class ParticipantsRelationManager extends RelationManager
                                     ->send();
                             }
                         })
-                        ->visible(fn ( $record) => $record->status === 'pending' || $record->status === 'approved'),
+                        ->visible(fn ( $record) => $record->status === 'pending' || $record->status === JobStatusEnum::APPROVED->value),
                 ])->label('Action'),
             ])
             ->bulkActions([
@@ -151,7 +147,7 @@ class ParticipantsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->action(function ( $records) {
                             try {
-                                $records->each->update(['status' => 'approved']);
+                                $records->each->update(['status' => JobStatusEnum::APPROVED->value]);
                                 Notification::make()
                                     ->title('Successfully approved')
                                     ->success()

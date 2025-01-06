@@ -6,7 +6,7 @@ enum UserRole: string
 {
     case ADMIN = 'admin';
     case PENGIKLAN = 'pengiklan';
-    case PEJUANG = 'pejuang';
+    case PASUKAN = 'pasukan';
 
     public static function options()
     {
