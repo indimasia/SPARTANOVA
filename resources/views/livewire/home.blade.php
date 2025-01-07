@@ -5,14 +5,33 @@
             <h1 class="text-4xl md:text-6xl font-bold mb-6">Selamat datang di Spartav</h1>
             <p class="text-xl md:text-2xl mb-8 text-white/90">Gerbang Anda menuju Keunggulan Pemasaran Digital</p>
             <div class="flex justify-center gap-4">
-                <a href="{{ route('register') }}"
-                    class="bg-white text-yellow-600 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                    Mulai Sekarang
-                </a>
-                <a href="{{ route('login') }}"
-                    class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all duration-300">
-                    Masuk
-                </a>
+                @if (!auth()->check())
+                    <a href="{{ route('register') }}"
+                        class="bg-white text-yellow-600 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        Mulai Sekarang
+                    </a>
+                    <a href="{{ route('login') }}"
+                        class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all duration-300">
+                        Masuk
+                    </a>
+                @else
+                    @if(auth()->user()->hasRole('pasukan'))
+                        <a href="{{ route('dashboard') }}"
+                            class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all duration-300">
+                            Kembali ke Dashboard Pasukan
+                        </a>
+                    @elseif(auth()->user()->hasRole('admin'))
+                        <a href="{{ route('filament.admin.pages.dashboard') }}"
+                            class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all duration-300">
+                            Kembali ke Dashboard Admin
+                        </a>
+                    @elseif(auth()->user()->hasRole('pengiklan'))
+                        <a href="{{ route('filament.pengiklan.pages.dashboard') }}"
+                            class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all duration-300">
+                            Kembali ke Dashboard Pengiklan
+                        </a>
+                    @endif
+                @endif
             </div>
         </div>
     </section>

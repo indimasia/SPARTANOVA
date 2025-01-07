@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('job_details', function (Blueprint $table) {
             // Drop the existing foreign key constraint
+            $table->dropForeign(['job_id']);
             $table->dropColumn('job_id');
             // Add the new foreign key constraint
             $table->foreignId('job_id')->constrained('job_campaigns')->onDelete('cascade');
