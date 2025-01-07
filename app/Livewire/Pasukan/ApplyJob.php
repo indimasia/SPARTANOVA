@@ -3,32 +3,59 @@
 namespace App\Livewire\Pasukan;
 
 use Livewire\Component;
-use App\Models\JobDetail;
 use App\Models\JobCampaign;
+use App\Models\JobDetail;
 use App\Models\JobParticipant;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
+use App\Enums\PlatformEnum;
+use App\Enums\JobType;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.app')]
 class ApplyJob extends Component
 {
-    public $jobCampaigns;
     public $showModal = false;
-    public $selectedJob = null;
-    public $jobDetail = null;
+    public $selectedJob;
+    public $jobDetail;
 
-    public function mount()
+    // Search and filter properties
+    public $search = '';
+    public $selectedPlatform = '';
+    public $selectedType = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'selectedPlatform' => ['except' => ''],
+        'selectedType' => ['except' => '']
+    ];
+
+    public function render()
     {
-        $this->jobCampaigns = JobCampaign::where('status', 'publish')
-            ->where('end_date', '>=', Carbon::now())
-            ->where('quota', '>', 0)
+        $jobCampaigns = JobCampaign::query()
+            ->when($this->search, function ($query) {
+                $query->where('title', 'like', '%' . $this->search . '%');
+            })
+            ->when($this->selectedPlatform, function ($query) {
+                $query->where('platform', $this->selectedPlatform);
+            })
+            ->when($this->selectedType, function ($query) {
+                $query->where('type', $this->selectedType);
+            })
+            ->withCount('participants as participantCount')
+            ->latest()
             ->get();
+
+        return view('livewire.pasukan.apply-job', [
+            'jobCampaigns' => $jobCampaigns,
+            'platforms' => PlatformEnum::cases(),
+            'types' => JobType::cases()
+        ])->layout('layouts.app');
     }
 
-    public function showJobDetail($job_id)
+    public function showJobDetail($jobId)
     {
-        $this->selectedJob = JobCampaign::find($job_id);
-        $this->jobDetail = JobDetail::where('job_id', $job_id)->first();
+        $this->selectedJob = JobCampaign::withCount('participants as participantCount')->find($jobId);
+        $this->jobDetail = JobDetail::where('job_id', $jobId)->first();
         $this->showModal = true;
     }
 
@@ -39,48 +66,23 @@ class ApplyJob extends Component
         $this->jobDetail = null;
     }
 
-    public function applyJob($job_id)
+    public function applyJob($jobId)
     {
-        try {
-            $existingApplication = JobParticipant::where('user_id', Auth::id())
-                ->where('job_id', $job_id)
-                ->first();
+        $job = JobCampaign::withCount('participants as participantCount')->find($jobId);
 
-            if ($existingApplication) {
-                session()->flash('error', 'Anda sudah melamar untuk kampanye ini.');
-                return;
-            }
-
-            $job = JobCampaign::find($job_id);
-
-            if (!$job || $job->quota <= 0) {
-                session()->flash('error', 'Kuota kampanye sudah penuh atau tidak tersedia.');
-                return;
-            }
-            JobParticipant::create([
-                'user_id' => Auth::id(),
-                'job_id' => $job_id,
-                'status' => 'pending',
-                'reward' => $job->reward,
-                'attachment' => '',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-
-            $job->decrement('quota');
-
-            session()->flash('success', 'Berhasil melamar kampanye. Silakan tunggu persetujuan dari admin.');
-            $this->closeModal();
-
-            $this->mount();
-        } catch (\Exception $e) {
-            Log::error('Error in applyJob: ' . $e->getMessage());
-            session()->flash('error', 'Terjadi kesalahan. Silakan coba lagi nanti.');
+        if ($job->participantCount >= $job->quota) {
+            session()->flash('error', 'Kuota pekerjaan sudah penuh.');
+            return;
         }
-    }
 
-    public function render()
-    {
-        return view('livewire.pasukan.apply-job')->layout('layouts.app');
+        JobParticipant::create([
+            'user_id' => Auth::id(),
+            'job_id' => $jobId,
+            'status' => 'pending',
+            'reward' => $job->reward
+        ]);
+
+        $this->dispatch('success', 'Berhasil melamar pekerjaan.');
+        $this->closeModal();
     }
 }
