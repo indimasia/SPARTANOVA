@@ -8,6 +8,7 @@ use App\Models\JobDetail;
 use App\Models\JobParticipant;
 use App\Enums\PlatformEnum;
 use App\Enums\JobType;
+use App\Enums\JobStatusEnum;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 
@@ -78,7 +79,7 @@ class ApplyJob extends Component
         JobParticipant::create([
             'user_id' => Auth::id(),
             'job_id' => $jobId,
-            'status' => 'pending',
+            'status' => JobStatusEnum::APPLIED->value,
             'reward' => $job->reward
         ]);
 

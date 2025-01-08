@@ -121,7 +121,7 @@
                                     Sudah Dilamar
                                 </span>
                             @else
-                                <button wire:click="applyJob({{ $campaign->id }})"
+                                <button onclick="confirmApplyJob({{ $campaign->id }})"
                                     class="inline-flex items-center px-3 py-1.5 border border-yellow-500 text-sm font-medium rounded text-yellow-500 bg-white hover:bg-yellow-500 hover:text-white transition-colors duration-200">
                                     <i class="fas fa-paper-plane mr-1"></i>
                                     Lamar
@@ -267,3 +267,15 @@
             </div>
         @endif
     </div>
+
+<script>
+    function confirmApplyJob(ok) {
+        showConfirmation(
+                'Konfirmasi Lamar Pekerjaan',
+                'Apakah Anda yakin ingin melamar pekerjaan ini? Pastikan Anda memenuhi persyaratan yang diminta.',
+                () => {
+                    @this.applyJob(ok);
+                }
+            );
+    }
+</script>

@@ -32,6 +32,8 @@ class User extends Authenticatable
         'district_kode',
         'regency_kode',
         'province_kode',
+        'interest',
+        'contact_wa',
     ];
 
     /**
@@ -55,6 +57,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'date_of_birth' => 'date',
+            'interest' => 'array',
             // 'gender' => 'enum',
         ];
     }
