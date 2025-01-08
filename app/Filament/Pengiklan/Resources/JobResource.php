@@ -21,6 +21,7 @@ use Filament\Support\Enums\IconPosition;
 use App\Enums\JobType;
 use App\Enums\PackageEnum;
 use App\Enums\PlatformEnum;
+use App\Enums\GenEnum;
 use App\Enums\UserInterestEnum;
 use App\Models\District;
 use App\Models\PackageRate;
@@ -89,6 +90,21 @@ class JobResource extends Resource
                                     ->visible(fn(Get $get)=>$get('specific_gender'))
                                     ->validationMessages([
                                         'required' => 'Gender Pasukan Harus Diisi',
+                                ]),
+                                Forms\Components\Toggle::make('specific_generation')
+                                    ->label('Generasi Pasukan')
+                                    ->live()
+                                    ->validationMessages([
+                                        'required' => 'Generasi Pasukan Harus Diisi',
+                                ]),
+                                Forms\Components\ToggleButtons::make('generation')
+                                    ->options(GenEnum::options())
+                                    ->label('Generasi Pasukan')
+                                    ->required()
+                                    ->inline()
+                                    ->visible(fn(Get $get)=>$get('specific_generation'))
+                                    ->validationMessages([
+                                        'required' => 'Generasi Pasukan Harus Diisi',
                                 ]),
                                 Forms\Components\Toggle::make('specific_location')
                                     ->label('Lokasi Pasukan')
@@ -356,7 +372,7 @@ class JobResource extends Resource
                         ]),
                     Wizard\Step::make('Tinjauan')
                         ->schema([
-                            Forms\Components\Placeholder::make('title')
+                            Forms\Components\Placeholder::make('titlePlaceHolder')
                             ->content(fn(Get $get)=>$get('title'))
                             ->label('Nama Pekerjaan')
                             ->columnSpanFull()
