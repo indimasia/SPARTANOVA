@@ -107,13 +107,13 @@
                                 {{ $history->created_at->format('d M Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                @if ($history->status === 'approved' && !$history->attachment)
-                                    <button class="text-blue-600 hover:text-blue-900 text-xs font-medium">
+                                @if ($history->status === 'Applied' && $history->attachment == null)
+                                    <button wire:click="showUploadModal({{ $history->id }})" class="text-blue-600 hover:text-blue-900 text-xs font-medium">
                                         <i class="fas fa-upload mr-1"></i>
                                         Upload Bukti
                                     </button>
                                 @elseif($history->attachment)
-                                    <button class="text-green-600 hover:text-green-900 text-xs font-medium">
+                                    <button wire:click="showAttachmentModal({{ $history->id }})" class="text-green-600 hover:text-green-900 text-xs font-medium">
                                         <i class="fas fa-eye mr-1"></i>
                                         Lihat Bukti
                                     </button>
@@ -135,6 +135,40 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Modal Upload Bukti -->
+<div x-data="{ open: @entangle('showModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Upload Bukti</h3>
+        <form wire:submit.prevent="uploadBukti">
+            <div class="mb-4">
+                <label for="attachment" class="block text-sm font-medium text-gray-700">Pilih File</label>
+                <input type="file" id="attachment" wire:model="attachment" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md">
+                @error('attachment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            </div>
+    
+            <div class="flex justify-end gap-2">
+                <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Batal</button>
+                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md">Upload</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Lihat Bukti -->
+<div x-data="{ open: @entangle('viewAttachmentModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Lihat Bukti</h3>
+        <div class="mb-4">
+            <img :src="$wire.viewAttachmentPath" alt="Bukti Bayar" class="w-full h-auto rounded-lg shadow-md">
+        </div>
+        <div class="flex justify-end">
+            <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Tutup</button>
+        </div>
+    </div>
+</div>
+
+            
 
             <!-- Mobile View - Cards -->
             <div class="md:hidden space-y-4">
@@ -224,9 +258,9 @@
                                 @endswitch
                             </div>
 
-                            @if ($history->status === 'approved' && !$history->attachment)
+                            @if ($history->status === 'Applied' && $history->attachment == null)
                                 <div class="mt-3 text-center">
-                                    <button
+                                    <button wire:click="showUploadModal({{ $history->id }})"
                                         class="inline-flex items-center text-blue-600 hover:text-blue-900 text-sm font-medium">
                                         <i class="fas fa-upload mr-1"></i>
                                         Upload Bukti
@@ -234,12 +268,17 @@
                                 </div>
                             @elseif($history->attachment)
                                 <div class="mt-3 text-center">
-                                    <button
+                                    <button wire:click="showAttachmentModal({{ $history->id }})"
                                         class="inline-flex items-center text-green-600 hover:text-green-900 text-sm font-medium">
                                         <i class="fas fa-eye mr-1"></i>
                                         Lihat Bukti
                                     </button>
                                 </div>
+                            @else
+                                <span class="text-gray-500 text-sm">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Menunggu persetujuan
+                                </span>
                             @endif
                         </div>
                     </div>
