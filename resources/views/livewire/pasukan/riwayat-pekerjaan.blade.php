@@ -137,7 +137,7 @@
             </div>
 
             <!-- Modal Upload Bukti -->
-<div x-data="{ open: @entangle('showModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+<div x-data="{ open: @entangle('showModal') }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Upload Bukti</h3>
         <form wire:submit.prevent="uploadBukti">
@@ -156,7 +156,7 @@
 </div>
 
 <!-- Modal Lihat Bukti -->
-<div x-data="{ open: @entangle('viewAttachmentModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+<div x-data="{ open: @entangle('viewAttachmentModal') }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Lihat Bukti</h3>
         <div class="mb-4">
