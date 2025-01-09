@@ -27,6 +27,7 @@ class User extends Authenticatable
         'password',
         'gender',
         'date_of_birth',
+        'generation_category',
         'phone',
         'village_kode',
         'district_kode',

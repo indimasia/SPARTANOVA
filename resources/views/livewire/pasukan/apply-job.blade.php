@@ -144,127 +144,197 @@
 
         <!-- Job Detail Modal -->
         @if ($showModal)
-            <div class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
-                <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
-                    <!-- Modal Header -->
-                    <div class="p-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
-                        <h3 class="text-lg font-semibold text-gray-800">Detail Pekerjaan</h3>
-                        <button wire:click="closeModal" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-
-                    <!-- Modal Content -->
-                    <div class="p-4 overflow-y-auto">
-                        @if ($selectedJob)
-                            <!-- Platform & Date -->
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="inline-flex items-center gap-1 text-sm font-medium text-gray-600">
-                                    @switch(strtolower($selectedJob->platform->value))
-                                        @case('facebook')
-                                            <i class="fab fa-facebook text-blue-600 text-lg"></i>
-                                        @break
-
-                                        @case('instagram')
-                                            <i class="fab fa-instagram text-pink-600 text-lg"></i>
-                                        @break
-
-                                        @case('twitter')
-                                            <i class="fab fa-twitter text-blue-400 text-lg"></i>
-                                        @break
-
-                                        @case('tiktok')
-                                            <i class="fab fa-tiktok text-black text-lg"></i>
-                                        @break
-
-                                        @case('youtube')
-                                            <i class="fab fa-youtube text-red-600 text-lg"></i>
-                                        @break
-
-                                        @default
-                                            <i class="fas fa-globe text-gray-600 text-lg"></i>
-                                    @endswitch
-                                    {{ $selectedJob->platform->value }}
-                                </span>
-                                <span class="text-xs text-gray-500">
-                                    {{ $selectedJob->created_at->format('d M Y') }}
-                                </span>
-                            </div>
-
-                            <!-- Title -->
-                            <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                                {{ $selectedJob->title }}
-                            </h2>
-
-                            <!-- Type & Reward -->
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
+                    <h3 class="text-lg font-semibold text-gray-800">Detail Pekerjaan</h3>
+                    <button wire:click="closeModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+        
+                <!-- Modal Content -->
+                <div class="p-4 overflow-y-auto">
+                    @if ($selectedJob)
+                        <!-- Platform & Date -->
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="inline-flex items-center gap-1 text-sm font-medium text-gray-600">
+                                @switch(strtolower($selectedJob->platform->value))
+                                    @case('facebook')
+                                        <i class="fab fa-facebook text-blue-600 text-lg"></i>
+                                    @break
+        
+                                    @case('instagram')
+                                        <i class="fab fa-instagram text-pink-600 text-lg"></i>
+                                    @break
+        
+                                    @case('twitter')
+                                        <i class="fab fa-twitter text-blue-400 text-lg"></i>
+                                    @break
+        
+                                    @case('tiktok')
+                                        <i class="fab fa-tiktok text-black text-lg"></i>
+                                    @break
+        
+                                    @case('youtube')
+                                        <i class="fab fa-youtube text-red-600 text-lg"></i>
+                                    @break
+        
+                                    @default
+                                        <i class="fas fa-globe text-gray-600 text-lg"></i>
+                                @endswitch
+                                {{ $selectedJob->platform->value }}
+                            </span>
+                            <span class="text-xs text-gray-500">
+                                {{ $selectedJob->created_at->format('d M Y') }}
+                            </span>
+                        </div>
+        
+                        <!-- Title -->
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                            {{ $selectedJob->title }}
+                        </h2>
+        
+                        <!-- Type & Reward -->
+                        <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center justify-between mb-4">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     <i class="fas fa-tag mr-1"></i>
                                     {{ $selectedJob->type->value }}
                                 </span>
-                                <span class="text-lg font-semibold text-gray-900">
-                                    Rp {{ number_format($selectedJob->reward, 0, ',', '.') }}
-                                </span>
-                            </div>
+                                @if ($jobDetail && $jobDetail->url_link)
+    <a href="{{ $jobDetail->url_link }}" target="_blank" class="text-yellow-500 hover:text-yellow-600 text-sm font-medium flex items-center ml-2">
+        <i class="fas fa-link mr-1"></i> Kunjungi Link
+    </a>
+@endif
 
-                            <!-- Description -->
-                            @if ($jobDetail)
-                                <div class="prose prose-sm max-w-none mb-4">
-                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Deskripsi Pekerjaan:</h4>
+                            </div>
+                            
+                            <span class="text-lg font-semibold text-gray-900">
+                                Rp {{ number_format($selectedJob->reward, 0, ',', '.') }}
+                            </span>
+                        </div>
+        
+                        <!-- Description -->
+                        @if ($jobDetail)
+                            @if ($jobDetail->image)
+                                <div class="mb-4">
+                                    <img src="{{ asset('storage/' . $jobDetail->image) }}" alt="Job Image" class="w-full rounded-lg">
+                                </div>
+                            @endif
+                            @if ($jobDetail->description)
+                                <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-info-circle text-yellow-500 mr-1"></i> Deskripsi Pekerjaan:
+                                    </h4>
                                     <div class="text-sm text-gray-600 space-y-2">
                                         {!! nl2br(e($jobDetail->description)) !!}
                                     </div>
                                 </div>
+                            @endif
+        
+                            <!-- Requirements -->
+                            @if ($jobDetail->requirements)
+                                <div class="prose prose-sm max-w-none mb-4">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Persyaratan:</h4>
+                                    <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                                        @foreach (explode("\n", $jobDetail->requirements) as $requirement)
+                                            <li>{{ $requirement }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+        
+                            <!-- Instructions -->
+                            @if ($selectedJob->instructions)
+                                <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-lightbulb text-yellow-500 mr-1"></i> Petunjuk:
+                                    </h4>
+                                    <div class="text-sm text-gray-600 space-y-2">
+                                        {!! nl2br(e($selectedJob->instructions)) !!}
+                                    </div>
+                                </div>
+                            @endif
 
-                                <!-- Requirements -->
-                                @if ($jobDetail->requirements)
-                                    <div class="prose prose-sm max-w-none mb-4">
-                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Persyaratan:</h4>
+                            @foreach (['specific_gender', 'specific_generation', 'specific_interest', 'specific_province', 'specific_regency', 'specific_district', 'specific_village'] as $attribute)
+                                @if ($jobDetail->$attribute)
+                                    <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                                        <h4 class="text-sm font-semibold text-gray-700 mb-2">
+                                            <i class="fas fa-list-alt text-yellow-500 mr-1"></i> {{ ucwords(str_replace('_', ' ', $attribute)) }}:
+                                        </h4>
                                         <div class="text-sm text-gray-600 space-y-2">
-                                            {!! nl2br(e($jobDetail->requirements)) !!}
+                                            @if (is_array($jobDetail->$attribute))
+                                                <ul class="list-disc pl-5">
+                                                    @foreach ($jobDetail->$attribute as $item)
+                                                        <li>{{ $item }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                <p>{{ $jobDetail->$attribute }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                 @endif
-                            @endif
-
-                            <!-- Quota -->
-                            <div class="mb-4">
-                                <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
-                                    <span>Kuota Tersisa</span>
-                                    <span>{{ $selectedJob->participantCount }} / {{ $selectedJob->quota }}</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-yellow-500 h-2 rounded-full"
-                                        style="width: {{ $selectedJob->quota > 0 ? ($selectedJob->participantCount / $selectedJob->quota) * 100 : 0 }}%">
-                                    </div>
+                            @endforeach
+                        @endif
+        
+                        <!-- Quota -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
+                                <span>Kuota Tersisa</span>
+                                <span>{{ $selectedJob->participantCount }} / {{ $selectedJob->quota }}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full"
+                                    style="width: {{ $selectedJob->quota > 0 ? ($selectedJob->participantCount / $selectedJob->quota) * 100 : 0 }}%">
                                 </div>
                             </div>
-                        @endif
-                    </div>
-
-                    <!-- Modal Footer -->
-                    <div class="p-4 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0 bg-white">
-                        <button wire:click="closeModal"
-                            class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
-                            Tutup
+                        </div>
+        
+                        <!-- Dates -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-calendar-alt text-yellow-500 mr-1"></i> Tanggal Mulai:
+                                </h4>
+                                <p class="text-sm text-gray-600">{{ $selectedJob->start_date }}</p>
+                            </div>
+                            <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-calendar-check text-yellow-500 mr-1"></i> Tanggal Berakhir:
+                                </h4>
+                                <p class="text-sm text-gray-600">{{ $selectedJob->end_date }}</p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+        
+                <!-- Modal Footer -->
+                <div class="p-4 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0 bg-white">
+                    <button wire:click="closeModal"
+                        class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                        Tutup
+                    </button>
+                    @if (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists())
+                        <span
+                            class="inline-flex items-center px-4 py-2 border border-gray-200 text-sm font-medium rounded text-gray-400 bg-gray-50 cursor-not-allowed">
+                            <i class="fas fa-check mr-1"></i>
+                            Sudah Dilamar
+                        </span>
+                    @else
+                        <button wire:click="applyJob({{ $selectedJob->id }})"
+                            class="px-4 py-2 bg-yellow-500 text-white text-sm font-medium rounded hover:bg-yellow-600 transition-colors duration-200">
+                            <i class="fas fa-paper-plane mr-1"></i>
+                            Lamar Sekarang
                         </button>
-                        @if (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists())
-                            <span
-                                class="inline-flex items-center px-4 py-2 border border-gray-200 text-sm font-medium rounded text-gray-400 bg-gray-50 cursor-not-allowed">
-                                <i class="fas fa-check mr-1"></i>
-                                Sudah Dilamar
-                            </span>
-                        @else
-                            <button wire:click="applyJob({{ $selectedJob->id }})"
-                                class="px-4 py-2 bg-yellow-500 text-white text-sm font-medium rounded hover:bg-yellow-600 transition-colors duration-200">
-                                <i class="fas fa-paper-plane mr-1"></i>
-                                Lamar Sekarang
-                            </button>
-                        @endif
-                    </div>
+                    @endif
                 </div>
             </div>
+        </div>
+        
         @endif
     </div>
 

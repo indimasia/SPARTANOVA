@@ -97,6 +97,10 @@ class RegisterPasukan extends Component
             'social_media.*' => ['nullable', 'string']
         ]);
 
+        $birthYear = (int) date('Y', strtotime($validated['date_of_birth']));
+
+        $generationCategory = $this->determineGeneration($birthYear);
+
         $userData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -108,6 +112,7 @@ class RegisterPasukan extends Component
             'district_kode' => $validated['district_kode'],
             'regency_kode' => $validated['regency_kode'],
             'province_kode' => $validated['province_kode'],
+            'generation_category' => $generationCategory,
         ];
 
         $user = User::create($userData);
@@ -138,5 +143,22 @@ class RegisterPasukan extends Component
             'districts' => $this->districts,
             'villages' => $this->villages
         ])->layout('layouts.app');
+    }
+
+    private function determineGeneration(int $birthYear): string
+    {
+        if ($birthYear >= 1946 && $birthYear <= 1964) {
+            return 'Baby Boomers';
+        } elseif ($birthYear >= 1965 && $birthYear <= 1980) {
+            return 'Gen X';
+        } elseif ($birthYear >= 1981 && $birthYear <= 1996) {
+            return 'Gen Y';
+        } elseif ($birthYear >= 1997 && $birthYear <= 2012) {
+            return 'Gen Z';
+        } elseif ($birthYear >= 2013 && $birthYear <= 2025) {
+            return 'Gen Alpha';
+        }
+
+        return 'Unknown';
     }
 }
