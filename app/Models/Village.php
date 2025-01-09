@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Village extends Model
 {
     use HasFactory;
-
-    // protected $connection = 'andi_bebas';
-    // protected $table = 'rp_vvillages';
     protected $table = 'wil_villages';
     protected $primaryKey = 'kel_id';
 
@@ -26,6 +24,22 @@ class Village extends Model
 
     public function province()
     {
-        return $this->belongsTo(Province::class, 'prov_kode', 'kode');
+            return $this->belongsTo(Province::class, 'prov_kode', 'kode');
+    }
+
+    public static function getAvailableWarriorInVillage($district_kode)
+    {
+        return self::where('district_kode', $district_kode)->pluck('nama', 'kode')->mapWithKeys(function ($village, $kode) {
+            return [
+                $kode => $village . ' - ' . self::accountCount($kode) . ' Pasukan'
+            ];
+           });
+    }
+
+    public static function accountCount($kode): int
+    {
+        return User::where('village_kode', $kode)->whereHas('roles', function($query){
+            $query->where('name', UserRole::PASUKAN->value);
+        })->count();
     }
 }

@@ -6,14 +6,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\SosialMediaAccount;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-    use HasRoles;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -26,11 +27,14 @@ class User extends Authenticatable
         'password',
         'gender',
         'date_of_birth',
+        'generation_category',
         'phone',
-        'village_id',
-        'district_id',
+        'village_kode',
+        'district_kode',
         'regency_kode',
         'province_kode',
+        'interest',
+        'contact_wa',
     ];
 
     /**
@@ -54,6 +58,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'date_of_birth' => 'date',
+            'interest' => 'array',
             // 'gender' => 'enum',
         ];
     }
@@ -75,6 +80,16 @@ class User extends Authenticatable
 
     public function village(): BelongsTo
     {
-        return $this->belongsTo(Village::class, 'village_id', 'kode');
+        return $this->belongsTo(Village::class, 'village_kode', 'kode');
+    }
+
+    public function sosialMediaAccounts(): HasMany
+    {
+        return $this->hasMany(SosialMediaAccount::class);
+    }
+
+    public function jobParticipants(): HasMany
+    {
+        return $this->hasMany(JobParticipant::class);
     }
 }

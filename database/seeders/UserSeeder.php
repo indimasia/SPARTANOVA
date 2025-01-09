@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role as ModelsRole;
+use App\Enums\UserRole;
 
 class UserSeeder extends Seeder
 {
@@ -16,9 +17,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = ModelsRole::create(['name' => 'admin']);
-        $pengiklanRole = ModelsRole::create(['name' => 'pengiklan']);
-        $pejuangRole = ModelsRole::create(['name' => 'pejuang']);
+        $adminRole = ModelsRole::create(['name' => UserRole::ADMIN->value]);
+        $pengiklanRole = ModelsRole::create(['name' => UserRole::PENGIKLAN->value]);
+        $pasukanRole = ModelsRole::create(['name' => UserRole::PASUKAN->value]);
 
         // Create Admin User
         $admin = User::create([
@@ -50,10 +51,10 @@ class UserSeeder extends Seeder
         ]);
         $user->assignRole($pengiklanRole);
 
-        // Create Pejuang User
+        // Create Pasukan User
         $user = User::create([
-            'name' => 'Pejuang User',
-            'email' => 'pejuang@gmail.com',
+            'name' => 'Pasukan User',
+            'email' => 'pasukan@gmail.com',
             'password' => Hash::make('12345678'),
             'gender' => 'L',
             'date_of_birth' => '1995-03-03',
@@ -63,6 +64,6 @@ class UserSeeder extends Seeder
             'district_kode' => '010101',
             'village_kode' => '01010101',
         ]);
-        $user->assignRole($pejuangRole);
+        $user->assignRole($pasukanRole);
     }
 }

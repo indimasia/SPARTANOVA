@@ -1,0 +1,296 @@
+<div class="p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+            <i class="fas fa-history text-yellow-500"></i>
+            Riwayat Pekerjaan
+        </h2>
+
+        <!-- Desktop View - Table -->
+        <div class="hidden md:block overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Kampanye</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Platform</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Reward</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tanggal</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($jobHistory as $history)
+                        <tr class="hover:bg-gray-50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $history->job->title }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <span class="inline-flex items-center gap-1">
+                                    @switch(strtolower($history->job->platform->value))
+                                        @case('facebook')
+                                            <i class="fab fa-facebook text-blue-600"></i>
+                                        @break
+
+                                        @case('instagram')
+                                            <i class="fab fa-instagram text-pink-600"></i>
+                                        @break
+
+                                        @case('twitter')
+                                            <i class="fab fa-twitter text-blue-400"></i>
+                                        @break
+
+                                        @case('tiktok')
+                                            <i class="fab fa-tiktok text-black"></i>
+                                        @break
+
+                                        @case('youtube')
+                                            <i class="fab fa-youtube text-red-600"></i>
+                                        @break
+
+                                        @default
+                                            <i class="fas fa-globe text-gray-600"></i>
+                                    @endswitch
+                                    {{ $history->job->platform->value }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                Rp {{ number_format($history->reward, 0, ',', '.') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @switch($history->status)
+                                    @case('pending')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-clock mr-1"></i>
+                                            Menunggu
+                                        </span>
+                                    @break
+
+                                    @case('approved')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-check mr-1"></i>
+                                            Disetujui
+                                        </span>
+                                    @break
+
+                                    @case('rejected')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Ditolak
+                                        </span>
+                                    @break
+
+                                    @case('completed')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-check-double mr-1"></i>
+                                            Selesai
+                                        </span>
+                                    @break
+
+                                    @default
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            {{ $history->status }}
+                                        </span>
+                                @endswitch
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $history->created_at->format('d M Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                @if ($history->status === 'Applied' && $history->attachment == null)
+                                    <button wire:click="showUploadModal({{ $history->id }})" class="text-blue-600 hover:text-blue-900 text-xs font-medium">
+                                        <i class="fas fa-upload mr-1"></i>
+                                        Upload Bukti
+                                    </button>
+                                @elseif($history->attachment)
+                                    <button wire:click="showAttachmentModal({{ $history->id }})" class="text-green-600 hover:text-green-900 text-xs font-medium">
+                                        <i class="fas fa-eye mr-1"></i>
+                                        Lihat Bukti
+                                    </button>
+                                @else
+                                    <span class="text-gray-500 text-xs">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Menunggu persetujuan
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                    Belum ada riwayat pekerjaan
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal Upload Bukti -->
+<div x-data="{ open: @entangle('showModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Upload Bukti</h3>
+        <form wire:submit.prevent="uploadBukti">
+            <div class="mb-4">
+                <label for="attachment" class="block text-sm font-medium text-gray-700">Pilih File</label>
+                <input type="file" id="attachment" wire:model="attachment" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md">
+                @error('attachment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            </div>
+    
+            <div class="flex justify-end gap-2">
+                <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Batal</button>
+                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md">Upload</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Lihat Bukti -->
+<div x-data="{ open: @entangle('viewAttachmentModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Lihat Bukti</h3>
+        <div class="mb-4">
+            <img :src="$wire.viewAttachmentPath" alt="Bukti Bayar" class="w-full h-auto rounded-lg shadow-md">
+        </div>
+        <div class="flex justify-end">
+            <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Tutup</button>
+        </div>
+    </div>
+</div>
+
+            
+
+            <!-- Mobile View - Cards -->
+            <div class="md:hidden space-y-4">
+                @forelse($jobHistory as $history)
+                    <div
+                        class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="inline-flex items-center gap-1 text-sm font-medium text-gray-600">
+                                    @switch(strtolower($history->job->platform->value))
+                                        @case('facebook')
+                                            <i class="fab fa-facebook text-blue-600 text-lg"></i>
+                                        @break
+
+                                        @case('instagram')
+                                            <i class="fab fa-instagram text-pink-600 text-lg"></i>
+                                        @break
+
+                                        @case('twitter')
+                                            <i class="fab fa-twitter text-blue-400 text-lg"></i>
+                                        @break
+
+                                        @case('tiktok')
+                                            <i class="fab fa-tiktok text-black text-lg"></i>
+                                        @break
+
+                                        @case('youtube')
+                                            <i class="fab fa-youtube text-red-600 text-lg"></i>
+                                        @break
+
+                                        @default
+                                            <i class="fas fa-globe text-gray-600 text-lg"></i>
+                                    @endswitch
+                                    {{ $history->job->platform->value }}
+                                </span>
+                                <span class="text-xs text-gray-500">
+                                    {{ $history->created_at->format('d M Y') }}
+                                </span>
+                            </div>
+
+                            <h3 class="text-base font-medium text-gray-900 mb-2">
+                                {{ $history->job->title }}
+                            </h3>
+
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm font-semibold text-gray-900">
+                                    Rp {{ number_format($history->reward, 0, ',', '.') }}
+                                </span>
+                                @switch($history->status)
+                                    @case('pending')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-clock mr-1"></i>
+                                            Menunggu
+                                        </span>
+                                    @break
+
+                                    @case('approved')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-check mr-1"></i>
+                                            Disetujui
+                                        </span>
+                                    @break
+
+                                    @case('rejected')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-times mr-1"></i>
+                                            Ditolak
+                                        </span>
+                                    @break
+
+                                    @case('completed')
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-check-double mr-1"></i>
+                                            Selesai
+                                        </span>
+                                    @break
+
+                                    @default
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            {{ $history->status }}
+                                        </span>
+                                @endswitch
+                            </div>
+
+                            @if ($history->status === 'Applied' && $history->attachment == null)
+                                <div class="mt-3 text-center">
+                                    <button wire:click="showUploadModal({{ $history->id }})"
+                                        class="inline-flex items-center text-blue-600 hover:text-blue-900 text-sm font-medium">
+                                        <i class="fas fa-upload mr-1"></i>
+                                        Upload Bukti
+                                    </button>
+                                </div>
+                            @elseif($history->attachment)
+                                <div class="mt-3 text-center">
+                                    <button wire:click="showAttachmentModal({{ $history->id }})"
+                                        class="inline-flex items-center text-green-600 hover:text-green-900 text-sm font-medium">
+                                        <i class="fas fa-eye mr-1"></i>
+                                        Lihat Bukti
+                                    </button>
+                                </div>
+                            @else
+                                <span class="text-gray-500 text-sm">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Menunggu persetujuan
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    @empty
+                        <div class="text-center py-8">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                                <i class="fas fa-history text-2xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-sm font-medium text-gray-900 mb-1">Belum Ada Riwayat</h3>
+                            <p class="text-sm text-gray-500">Anda belum memiliki riwayat pekerjaan</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
