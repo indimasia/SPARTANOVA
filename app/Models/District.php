@@ -38,4 +38,9 @@ class District extends Model
             $query->where('name', UserRole::PASUKAN->value);
         })->count();
     }
+
+    public static function getDistrictName($specific_district)
+    {
+        return self::whereIn('kode', $specific_district)->pluck('nama')->toArray();
+    }
 }

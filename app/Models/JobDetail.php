@@ -26,4 +26,20 @@ class JobDetail extends Model
     {
         return $this->belongsTo(JobCampaign::class,'job_id');
     }
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class,'specific_province');
+    }
+    public function regency(): BelongsTo
+    {
+        return $this->belongsTo(Regency::class,'specific_regency');
+    }
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class,'specific_district');
+    }
+    public function village(): BelongsTo
+    {
+        return $this->belongsTo(Village::class,'specific_village');
+    }
 }

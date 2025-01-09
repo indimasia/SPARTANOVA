@@ -75,12 +75,10 @@ class JobResource extends Resource
                                 ]),
                                 Forms\Components\ToggleButtons::make('gender')
                                     ->options([
-                                        'S' => 'Semua',
                                         'L' => 'Laki-laki',
                                         'P' => 'Perempuan',
                                     ])
                                     ->colors([
-                                        'S' => 'success',
                                         'L' => 'info',
                                         'P' => 'danger',
                                     ])
@@ -128,6 +126,7 @@ class JobResource extends Resource
                                     ->label('Pilih Semua Kabupaten/Kota?')
                                     ->live()
                                     ->default(true)
+                                    ->afterStateUpdated(fn(callable $set, $state)=>$set('all_district',true))
                                     ->grouped()
                                     ->required(),
                                     Forms\Components\Select::make('regency_kode')
@@ -147,6 +146,8 @@ class JobResource extends Resource
                                     ->label('Pilih Semua Kecamatan?')
                                     ->live()
                                     ->visible(fn(Get $get)=>$get('all_regency') == false)
+                                    ->afterStateUpdated(fn(callable $set, $state)=>$set('all_village',true))
+                                    ->hidden(fn(Get $get) => $get('all_regency') == true)
                                     ->default(true)
                                     ->grouped()
                                     ->required(),
@@ -160,16 +161,19 @@ class JobResource extends Resource
                                             return District::getAvailableWarriorInDistrict($get('regency_kode'));
                                         })
                                         ->visible(fn(Get $get)=>$get('all_district') == false)
+                                        ->hidden(fn(Get $get) => $get('all_regency') == true)
                                         ->live()
                                         ->required(),
                                     Forms\Components\ToggleButtons::make('all_village')
-                                    ->boolean()
-                                    ->label('Pilih Semua Kelurahan?')
-                                    ->live()
-                                    ->visible(fn(Get $get)=>$get('all_district') == false)
-                                    ->default(true)
-                                    ->grouped()
-                                    ->required(),
+                                        ->boolean()
+                                        ->label('Pilih Semua Kelurahan?')
+                                        ->live()
+                                        ->visible(fn(Get $get) => $get('all_district') == false)
+
+                                        ->hidden(fn(Get $get) => $get('all_regency') == true || $get('all_district') == true)
+                                        ->default(true)
+                                        ->grouped()
+                                        ->required(),
                                     Forms\Components\Select::make('village_kode')
                                         ->label('Kelurahan')
                                         ->placeholder('pilih wilayah yang ditargetkan"')
@@ -180,6 +184,7 @@ class JobResource extends Resource
                                             return Village::getAvailableWarriorInVillage($get('district_kode'));
                                         })
                                         ->visible(fn(Get $get)=>$get('all_village') == false)
+                                        ->hidden(fn(Get $get) => $get('all_regency') == true  || $get('all_district') == true)
                                         ->live()
                                         ->required(),
                                  ])->visible(fn(Get $get)=>$get('specific_location')),
@@ -370,13 +375,13 @@ class JobResource extends Resource
                                 ])
                                 ,
                         ]),
-                    Wizard\Step::make('Tinjauan')
-                        ->schema([
-                            Forms\Components\Placeholder::make('titlePlaceHolder')
-                            ->content(fn(Get $get)=>$get('title'))
-                            ->label('Nama Pekerjaan')
-                            ->columnSpanFull()
-                        ]),
+                    // Wizard\Step::make('Tinjauan')
+                    //     ->schema([
+                    //         Forms\Components\Placeholder::make('titlePlaceHolder')
+                    //         ->content(fn(Get $get)=>$get('title'))
+                    //         ->label('Nama Pekerjaan')
+                    //         ->columnSpanFull()
+                    //     ]),
                 ])->columnSpanFull()
                 ->submitAction(new HtmlString(Blade::render(<<<BLADE
                         <x-filament::button
@@ -570,7 +575,32 @@ class JobResource extends Resource
                             ->prose()
                             ->markdown(),
                     ])
-
+                    ->collapsible(),
+                Infolists\Components\Section::make('Target Pasukan')
+                    ->schema([
+                        Infolists\Components\Grid::make(2)
+                                ->schema([
+                                    Infolists\Components\TextEntry::make('jobDetail.specific_gender')->label('Gender'),
+                                    Infolists\Components\TextEntry::make('jobDetail.specific_generation')->label('Generasi')->default('-'),
+                                    Infolists\Components\TextEntry::make('jobDetail.specific_province')
+                                        ->label('Provinsi')
+                                        ->getStateUsing(fn($record) => !empty($record->jobDetail->specific_province) ? Province::getProvinceName($record->jobDetail->specific_province) : '-')
+                                        ->badge(),
+                                    Infolists\Components\TextEntry::make('jobDetail.specific_regency')
+                                        ->label('Kabupaten/Kota')
+                                        ->getStateUsing(fn($record) => !empty($record->jobDetail->specific_regency) ? Regency::getRegencyName($record->jobDetail->specific_regency) : '-')
+                                        ->badge(),
+                                    Infolists\Components\TextEntry::make('jobDetail.specific_district')
+                                        ->label('Kecamatan')
+                                        ->getStateUsing(fn($record) => !empty($record->jobDetail->specific_district) ? District::getDistrictName($record->jobDetail->specific_district) : '-')
+                                        ->badge(),
+                                    Infolists\Components\TextEntry::make('jobDetail.specific_village')
+                                        ->label('Kelurahan')
+                                        ->getStateUsing(fn($record) => !empty($record->jobDetail->specific_village) ? Village::getVillageName($record->jobDetail->specific_village) : '-')
+                                        ->badge(),
+                                    Infolists\Components\TextEntry::make('jobDetail.specific_interest')->label('Interest')->default('-')->badge(),
+                                ])
+                    ])
                     ->collapsible(),
             ]);
     }

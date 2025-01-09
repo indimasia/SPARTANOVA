@@ -33,4 +33,9 @@ class Regency extends Model
             $query->where('name', UserRole::PASUKAN->value);
         })->count();
     }
+
+    public static function getRegencyName($specific_regency)
+    {
+        return self::whereIn('kode', $specific_regency)->pluck('nama')->toArray();
+    }
 }

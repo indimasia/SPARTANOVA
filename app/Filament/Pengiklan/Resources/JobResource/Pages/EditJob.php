@@ -22,14 +22,27 @@ class EditJob extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-
         $jobDetail = JobDetail::where('job_id', $this->record->id)->first() ?? new JobDetail();
         $jobDetail->job_id = $this->record->id;
         $jobDetail->image = $data['jobDetail']['image']?? $jobDetail->image;
         $jobDetail->description = $data['jobDetail']['description'] ?? $jobDetail->description;
         $jobDetail->url_link = $data['jobDetail']['url_link'] ?? $jobDetail->url_link;
+        $jobDetail->specific_gender = $data['specific_gender'] ?? false ? ($data['gender'] ?? null) : null;
+        $jobDetail->specific_generation = $data['specific_generation'] ?? false ? ($data['generation'] ?? null) : null;
+        $jobDetail->specific_interest = $data['specific_interest'] ?? false ? ($data['interest'] ?? null) : null;
+
+        if($data['specific_location'] ?? false){
+            $jobDetail->specific_province = $data['province_kode'] ?? $jobDetail->specific_province;
+            $jobDetail->specific_regency = isset($data['all_regency']) ? (!$data['all_regency'] ? ($data['regency_kode'] ?? null) : null) : null;
+            $jobDetail->specific_district = isset($data['all_district']) ? (!$data['all_district'] ? ($data['district_kode'] ?? null) : null) : null;
+            $jobDetail->specific_village = isset($data['all_village']) ? (!$data['all_village'] ? ($data['village_kode'] ?? null) : null) : null;
+        }else{
+            $jobDetail->specific_province = null;
+            $jobDetail->specific_regency = null;
+            $jobDetail->specific_district = null;
+            $jobDetail->specific_village = null;
+        }
         $jobDetail->save();
-        // dd($record);
         $record->update($data);
         return $record;
     }
@@ -38,6 +51,42 @@ class EditJob extends EditRecord
         $data['package_rate'] = $data['quota'] > PackageEnum::TEN_THOUSAND->value ? PackageEnum::LAINNYA->value : $data['quota'];
 
         $jobDetail = JobDetail::where('job_id', $data['id'])->first();
+        if($jobDetail->specific_gender){
+            $data['gender'] = $jobDetail->specific_gender;
+            $data['specific_gender'] =true;
+        }
+        if($jobDetail->specific_generation){
+            $data['generation'] = $jobDetail->specific_generation;
+            $data['specific_generation'] =true;
+        }
+        if($jobDetail->specific_interest){
+            $data['interest'] = $jobDetail->specific_interest;
+            $data['specific_interest'] =true;
+        }
+        if($jobDetail->specific_province){
+            $data['province_kode'] = $jobDetail->specific_province;
+            $data['specific_location'] =true;
+        }else{
+            $data['specific_location'] =false;
+        }
+        if($jobDetail->specific_regency){
+            $data['regency_kode'] = $jobDetail->specific_regency;
+            $data['all_regency'] = false;
+        }else{
+            $data['all_regency'] = true;
+        }
+        if($jobDetail->specific_district){
+            $data['district_kode'] = $jobDetail->specific_district;
+            $data['all_district'] = false;
+        }else{
+            $data['all_district'] = true;
+        }
+        if($jobDetail->specific_village){
+            $data['village_kode'] = $jobDetail->specific_village;
+            $data['all_village'] = false;
+        }else{
+            $data['all_village'] = true;
+        }
         if ($jobDetail) {
             $data['jobDetail']['image'] = $jobDetail->image;
             $data['jobDetail']['description'] = $jobDetail->description;
