@@ -145,7 +145,7 @@
         <!-- Job Detail Modal -->
         @if ($showModal)
         <div class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
                 <!-- Modal Header -->
                 <div class="p-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
                     <h3 class="text-lg font-semibold text-gray-800">Detail Pekerjaan</h3>
@@ -153,9 +153,8 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-        
                 <!-- Modal Content -->
-                <div class="p-4 overflow-y-auto">
+                <div class="p-4 overflow-y-auto max-h-[70vh]">
                     @if ($selectedJob)
                         <!-- Platform & Date -->
                         <div class="flex items-center justify-between mb-4">
@@ -205,11 +204,10 @@
                                     {{ $selectedJob->type->value }}
                                 </span>
                                 @if ($jobDetail && $jobDetail->url_link)
-    <a href="{{ $jobDetail->url_link }}" target="_blank" class="text-yellow-500 hover:text-yellow-600 text-sm font-medium flex items-center ml-2">
-        <i class="fas fa-link mr-1"></i> Kunjungi Link
-    </a>
-@endif
-
+                                    <a href="{{ $jobDetail->url_link }}" target="_blank" class="text-yellow-500 hover:text-yellow-600 text-sm font-medium flex items-center ml-2">
+                                        <i class="fas fa-link mr-1"></i> Kunjungi Link
+                                    </a>
+                                @endif
                             </div>
                             
                             <span class="text-lg font-semibold text-gray-900">
@@ -224,61 +222,92 @@
                                     <img src="{{ asset('storage/' . $jobDetail->image) }}" alt="Job Image" class="w-full rounded-lg">
                                 </div>
                             @endif
-                            @if ($jobDetail->description)
-                                <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
-                                    <h4 class="text-sm font-semibold text-gray-700 mb-2">
-                                        <i class="fas fa-info-circle text-yellow-500 mr-1"></i> Deskripsi Pekerjaan:
+                            @if ($jobDetail->description || $jobDetail->requirements || $selectedJob->instructions || collect(['specific_gender', 'specific_generation', 'specific_interest', 'specific_province', 'specific_regency', 'specific_district', 'specific_village'])->filter(fn($attr) => $jobDetail->$attr)->isNotEmpty())
+                                <div class="mb-6 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+                                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                        <i class="fas fa-briefcase text-yellow-500 mr-2"></i> Detail Pekerjaan
                                     </h4>
-                                    <div class="text-sm text-gray-600 space-y-2">
-                                        {!! nl2br(e($jobDetail->description)) !!}
-                                    </div>
-                                </div>
-                            @endif
-        
-                            <!-- Requirements -->
-                            @if ($jobDetail->requirements)
-                                <div class="prose prose-sm max-w-none mb-4">
-                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Persyaratan:</h4>
-                                    <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
-                                        @foreach (explode("\n", $jobDetail->requirements) as $requirement)
-                                            <li>{{ $requirement }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-        
-                            <!-- Instructions -->
-                            @if ($selectedJob->instructions)
-                                <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
-                                    <h4 class="text-sm font-semibold text-gray-700 mb-2">
-                                        <i class="fas fa-lightbulb text-yellow-500 mr-1"></i> Petunjuk:
-                                    </h4>
-                                    <div class="text-sm text-gray-600 space-y-2">
-                                        {!! nl2br(e($selectedJob->instructions)) !!}
-                                    </div>
-                                </div>
-                            @endif
 
-                            @foreach (['specific_gender', 'specific_generation', 'specific_interest', 'specific_province', 'specific_regency', 'specific_district', 'specific_village'] as $attribute)
-                                @if ($jobDetail->$attribute)
-                                    <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
-                                        <h4 class="text-sm font-semibold text-gray-700 mb-2">
-                                            <i class="fas fa-list-alt text-yellow-500 mr-1"></i> {{ ucwords(str_replace('_', ' ', $attribute)) }}:
-                                        </h4>
-                                        <div class="text-sm text-gray-600 space-y-2">
-                                            @if (is_array($jobDetail->$attribute))
-                                                <ul class="list-disc pl-5">
-                                                    @foreach ($jobDetail->$attribute as $item)
-                                                        <li>{{ $item }}</li>
+                                    <div class="space-y-6">
+                                        <!-- Deskripsi Pekerjaan -->
+                                        @if ($jobDetail->description)
+                                            <div>
+                                                <h5 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                    <i class="fas fa-info-circle text-yellow-500 mr-1"></i> Deskripsi Pekerjaan:
+                                                </h5>
+                                                <p class="text-sm text-gray-600 leading-relaxed">
+                                                    {!! nl2br(e($jobDetail->description)) !!}
+                                                </p>
+                                            </div>
+                                        @endif
+                        
+                                        <!-- Persyaratan -->
+                                        @if ($jobDetail->requirements)
+                                            <div>
+                                                <h5 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                    <i class="fas fa-check-circle text-yellow-500 mr-1"></i> Persyaratan:
+                                                </h5>
+                                                <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                                                    @foreach (explode("\n", $jobDetail->requirements) as $requirement)
+                                                        <li>{{ $requirement }}</li>
                                                     @endforeach
                                                 </ul>
-                                            @else
-                                                <p>{{ $jobDetail->$attribute }}</p>
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @endif
+                        
+                                        <!-- Petunjuk -->
+                                        @if ($selectedJob->instructions)
+                                            <div>
+                                                <h5 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                    <i class="fas fa-lightbulb text-yellow-500 mr-1"></i> Petunjuk:
+                                                </h5>
+                                                <p class="text-sm text-gray-600 leading-relaxed">
+                                                    {!! nl2br(e($selectedJob->instructions)) !!}
+                                                </p>
+                                            </div>
+                                        @endif
                                     </div>
-                                @endif
-                            @endforeach
+
+                                    <!-- Informasi Spesifik -->
+                                    @php
+                                        $specificAttributes = collect([
+                                            'specific_gender' => 'Jenis Kelamin',
+                                            'specific_generation' => 'Generasi',
+                                            'specific_interest' => 'Minat Khusus',
+                                            'specific_province' => 'Provinsi',
+                                            'specific_regency' => 'Kabupaten',
+                                            'specific_district' => 'Kecamatan',
+                                            'specific_village' => 'Desa',
+                                        ])->filter(fn($label, $key) => $jobDetail->$key);
+                                    @endphp
+
+                                    @if ($specificAttributes->isNotEmpty())
+                                        <div class="mt-6">
+                                            <h5 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <i class="fas fa-list-alt text-yellow-500 mr-1"></i> Informasi Tambahan:
+                                            </h5>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                @foreach ($specificAttributes as $key => $label)
+                                                    <div>
+                                                        <h6 class="text-sm font-semibold text-gray-800">{{ $label }}:</h6>
+                                                        <div class="text-sm text-gray-600">
+                                                            @if (is_array($jobDetail->$key))
+                                                                <ul class="list-disc pl-5">
+                                                                    @foreach ($jobDetail->$key as $item)
+                                                                        <li>{{ $item }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @else
+                                                                <p>{{ $jobDetail->$key }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
                         @endif
         
                         <!-- Quota -->
@@ -334,7 +363,6 @@
                 </div>
             </div>
         </div>
-        
         @endif
     </div>
 

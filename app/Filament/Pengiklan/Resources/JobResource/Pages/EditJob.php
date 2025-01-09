@@ -48,40 +48,41 @@ class EditJob extends EditRecord
     }
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        
         $data['package_rate'] = $data['quota'] > PackageEnum::TEN_THOUSAND->value ? PackageEnum::LAINNYA->value : $data['quota'];
-
+        
         $jobDetail = JobDetail::where('job_id', $data['id'])->first();
-        if($jobDetail->specific_gender){
+        if($jobDetail && $jobDetail->specific_gender){
             $data['gender'] = $jobDetail->specific_gender;
             $data['specific_gender'] =true;
         }
-        if($jobDetail->specific_generation){
+        if($jobDetail && $jobDetail->specific_generation){
             $data['generation'] = $jobDetail->specific_generation;
             $data['specific_generation'] =true;
         }
-        if($jobDetail->specific_interest){
+        if($jobDetail && $jobDetail->specific_interest){
             $data['interest'] = $jobDetail->specific_interest;
             $data['specific_interest'] =true;
         }
-        if($jobDetail->specific_province){
+        if($jobDetail && $jobDetail->specific_province){
             $data['province_kode'] = $jobDetail->specific_province;
             $data['specific_location'] =true;
         }else{
             $data['specific_location'] =false;
         }
-        if($jobDetail->specific_regency){
+        if($jobDetail && $jobDetail->specific_regency){
             $data['regency_kode'] = $jobDetail->specific_regency;
             $data['all_regency'] = false;
         }else{
             $data['all_regency'] = true;
         }
-        if($jobDetail->specific_district){
+        if($jobDetail && $jobDetail->specific_district){
             $data['district_kode'] = $jobDetail->specific_district;
             $data['all_district'] = false;
         }else{
             $data['all_district'] = true;
         }
-        if($jobDetail->specific_village){
+        if($jobDetail && $jobDetail->specific_village){
             $data['village_kode'] = $jobDetail->specific_village;
             $data['all_village'] = false;
         }else{
