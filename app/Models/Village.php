@@ -42,4 +42,9 @@ class Village extends Model
             $query->where('name', UserRole::PASUKAN->value);
         })->count();
     }
+
+    public static function getVillageName($specific_village)
+    {
+        return self::whereIn('kode', $specific_village)->pluck('nama')->toArray();
+    }
 }

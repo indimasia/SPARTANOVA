@@ -29,10 +29,10 @@ class CreateJob extends CreateRecord
             $jobDetail->specific_gender = $data['gender'] ?? null;
             $jobDetail->specific_generation = $data['generation'] ?? null;
             $jobDetail->specific_interest = $data['interest'] ?? null;
-            $jobDetail->specific_province = $data['province'] ?? null;
-            $jobDetail->specific_regency = $data['regency'] ?? null;
-            $jobDetail->specific_district = $data['district'] ?? null;
-            $jobDetail->specific_village = $data['village'] ?? null;
+            $jobDetail->specific_province = $data['province_kode'] ?? null;
+            $jobDetail->specific_regency = $data['regency_kode'] ?? null;
+            $jobDetail->specific_district = $data['district_kode'] ?? null;
+            $jobDetail->specific_village = $data['village_kode'] ?? null;
             $jobDetail->url_link = $data['jobDetail']['url_link'] ?? null;
             $jobDetail->save();
         }

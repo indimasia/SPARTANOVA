@@ -16,7 +16,7 @@ use App\Enums\JobStatusEnum;
 class ParticipantsRelationManager extends RelationManager
 {
     protected static string $relationship = 'participants';
-    protected static ?string $title = 'Peserta';
+    protected static ?string $title = 'Pasukan';
 
 
     public function form(Form $form): Form

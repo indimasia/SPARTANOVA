@@ -31,4 +31,9 @@ class Province extends Model
         })->count();
     }
 
+    public static function getProvinceName($specific_province)
+    {
+        return self::whereIn('kode', $specific_province)->pluck('nama')->toArray();
+    }
+
 }
