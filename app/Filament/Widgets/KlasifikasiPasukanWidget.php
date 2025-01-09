@@ -22,35 +22,35 @@ class KlasifikasiPasukanWidget extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Baby Boomers',
-                    'backgroundColor' => '#FF5733',
+                    'backgroundColor' => '#E63946',
                     'data' => [
                         '' => $baby_boomers,
                     ],
                 ],
                 [
                     'label' => 'Gen X',
-                    'backgroundColor' => '#33FF57',
+                    'backgroundColor' => '#F1FAEE',
                     'data' => [
                         '' => $gen_x,
                     ],
                 ],
                 [
                     'label' => 'Gen Y',
-                    'backgroundColor' => '#3357FF',
+                    'backgroundColor' => '#A8DADC',
                     'data' => [
                         '' => $gen_y,
                     ],
                 ],
                 [
                     'label' => 'Gen Z',
-                    'backgroundColor' => '#FF33A1',
+                    'backgroundColor' => '#457B9D',
                     'data' => [
                         '' => $gen_z,
                     ],
                 ],
                 [
                     'label' => 'Gen Alpha',
-                    'backgroundColor' => '#FFC733',
+                    'backgroundColor' => '#1D3557',
                     'data' => [
                         '' => $gen_alpha,
                     ],
