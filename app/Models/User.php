@@ -92,4 +92,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(JobParticipant::class);
     }
+
+    public function createdJobs(): HasMany
+    {
+        return $this->hasMany(JobCampaign::class, 'created_by');
+    }
 }

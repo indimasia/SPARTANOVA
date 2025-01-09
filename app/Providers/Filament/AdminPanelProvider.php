@@ -9,7 +9,9 @@ use Filament\PanelProvider;
 use Filament\Pages\Auth\Login;
 use Filament\Support\Colors\Color;
 use App\Filament\Widgets\DataJobWidget;
+use App\Filament\Widgets\PasukanWidget;
 use App\Http\Middleware\AdminMiddleware;
+use App\Filament\Widgets\PengiklanWidget;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -50,8 +52,10 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
-                KlasifikasiPasukanWidget::class,
                 DataJobWidget::class,
+                PengiklanWidget::class,
+                PasukanWidget::class,
+                KlasifikasiPasukanWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -13,7 +13,7 @@ class JobCampaign extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'type', 'platform', 'quota', 'reward', 'status', 'due_date', 'is_multiple', 'start_date', 'end_date', 'instructions'];
+    protected $fillable = ['title', 'type', 'platform', 'quota', 'reward', 'status', 'due_date', 'is_multiple', 'start_date', 'end_date', 'instructions', 'created_by'];
 
     protected $appends = ['participant_count'];
     
@@ -35,4 +35,11 @@ class JobCampaign extends Model
     {
         return $this->hasMany(JobParticipant::class,'job_id');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    
 }

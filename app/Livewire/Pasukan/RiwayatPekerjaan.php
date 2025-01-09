@@ -57,6 +57,11 @@ class RiwayatPekerjaan extends Component
     {
         $this->validate([
             'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ], [
+            'attachment.required' => 'File bukti harus diunggah.',
+            'attachment.file' => 'Harap unggah file yang valid.',
+            'attachment.mimes' => 'File harus berupa: jpg, jpeg, png, pdf.',
+            'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
         $jobParticipant = JobParticipant::find($this->selectedJobHistory);

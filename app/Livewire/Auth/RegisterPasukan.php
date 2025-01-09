@@ -95,7 +95,27 @@ class RegisterPasukan extends Component
             'regency_kode' => ['required'],
             'province_kode' => ['required'],
             'social_media.*' => ['nullable', 'string']
+        ], [
+            'name.required' => 'Nama harus diisi.',
+            'name.regex' => 'Nama hanya boleh mengandung huruf dan spasi.',
+            'name.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
+            'password.confirmed' => 'Password tidak cocok.',
+            'password.min' => 'Password harus terdiri dari setidaknya 6 karakter.',
+            'gender.required' => 'Jenis kelamin harus dipilih.',
+            'gender.in' => 'Jenis kelamin harus L atau P.',
+            'date_of_birth.required' => 'Tanggal lahir harus diisi.',
+            'phone.required' => 'Nomor telepon harus diisi.',
+            'phone.max' => 'Nomor telepon tidak boleh lebih dari 15 karakter.',
+            'village_kode.required' => 'Kode desa harus diisi.',
+            'district_kode.required' => 'Kode kecamatan harus diisi.',
+            'regency_kode.required' => 'Kode kabupaten harus diisi.',
+            'province_kode.required' => 'Kode provinsi harus diisi.',
         ]);
+        
 
         $birthYear = (int) date('Y', strtotime($validated['date_of_birth']));
 

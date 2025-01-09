@@ -2,41 +2,42 @@
 
 namespace App\Filament\Pengiklan\Resources;
 
-use App\Filament\Pengiklan\Resources\JobResource\Pages;
-use App\Filament\Pengiklan\Resources\JobResource\RelationManagers;
-use App\Models\JobCampaign;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Wizard;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\Blade;
-use Filament\Support\Enums\IconSize;
-use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\IconPosition;
-use App\Enums\JobType;
-use App\Enums\PackageEnum;
-use App\Enums\PlatformEnum;
 use App\Enums\GenEnum;
-use App\Enums\UserInterestEnum;
-use App\Models\District;
-use App\Models\PackageRate;
-use App\Models\Province;
+use App\Enums\JobType;
 use App\Models\Regency;
 use App\Models\Village;
-use Carbon\Carbon;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Get;
 use Filament\Infolists;
+use App\Models\District;
+use App\Models\Province;
+use Filament\Forms\Form;
+use App\Enums\PackageEnum;
+use Filament\Tables\Table;
+use App\Enums\PlatformEnum;
+use App\Models\JobCampaign;
+use App\Models\PackageRate;
+use App\Enums\UserInterestEnum;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Grid;
+use Filament\Support\Enums\IconSize;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Wizard;
+use Filament\Support\Enums\Alignment;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Filament\Support\Enums\IconPosition;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ToggleButtons;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Pengiklan\Resources\JobResource\Pages;
+use App\Filament\Pengiklan\Resources\JobResource\RelationManagers;
 
 class JobResource extends Resource
 {
@@ -420,6 +421,7 @@ class JobResource extends Resource
             ->filters([
                 //
             ])
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
@@ -603,6 +605,11 @@ class JobResource extends Resource
                     ])
                     ->collapsible(),
             ]);
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->where('created_by', Auth::id());
     }
 
     public static function getRelations(): array
