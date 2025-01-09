@@ -23,6 +23,7 @@ class KlasifikasiPasukanWidget extends ChartWidget
                 [
                     'label' => 'Baby Boomers',
                     'backgroundColor' => '#E63946',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $baby_boomers,
                     ],
@@ -30,6 +31,7 @@ class KlasifikasiPasukanWidget extends ChartWidget
                 [
                     'label' => 'Gen X',
                     'backgroundColor' => '#F1FAEE',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_x,
                     ],
@@ -37,6 +39,7 @@ class KlasifikasiPasukanWidget extends ChartWidget
                 [
                     'label' => 'Gen Y',
                     'backgroundColor' => '#A8DADC',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_y,
                     ],
@@ -44,6 +47,7 @@ class KlasifikasiPasukanWidget extends ChartWidget
                 [
                     'label' => 'Gen Z',
                     'backgroundColor' => '#457B9D',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_z,
                     ],
@@ -51,6 +55,7 @@ class KlasifikasiPasukanWidget extends ChartWidget
                 [
                     'label' => 'Gen Alpha',
                     'backgroundColor' => '#1D3557',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_alpha,
                     ],
