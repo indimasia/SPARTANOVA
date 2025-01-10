@@ -62,6 +62,8 @@ class JobResource extends Resource
 
                 Wizard::make([
                     Wizard\Step::make('Target Pasukan')
+                    ->icon('heroicon-s-funnel')
+                    ->completedIcon('heroicon-s-funnel')
                     ->schema([
 
                         Forms\Components\Section::make('Spesifikasi Akun Pasukan')
@@ -210,6 +212,8 @@ class JobResource extends Resource
                                 ]),
                     ]),
                     Wizard\Step::make('Pekerjaan')
+                    ->icon('heroicon-s-briefcase')
+                    ->completedIcon('heroicon-s-briefcase')
                         ->schema([
                             Forms\Components\Select::make('type')
                                 ->options(JobType::options())
@@ -323,6 +327,8 @@ class JobResource extends Resource
                         ]),
 
                     Wizard\Step::make('Detail Pekerjaan')
+                    ->icon('heroicon-s-document-text')
+                    ->completedIcon('heroicon-s-document-text')
                         ->schema([
                             Forms\Components\TextInput::make('title')
                             ->required()
@@ -333,19 +339,25 @@ class JobResource extends Resource
                             ])
                             ,
                             Forms\Components\FileUpload::make('jobDetail.image')
-                                ->label('Gambar')
-                                ->required()
-                                ->image()
-                                ->disk('public')
-                                ->imageEditor()
-                                ->imageCropAspectRatio('16:9')
-                                ->imageResizeMode('cover')
-                                ->imageResizeTargetWidth('1024')
-                                ->imageResizeTargetHeight('576')
-                                ->validationMessages([
-                                    'required' => 'Gambar Harus Diisi',
-                                ])
-                                ,
+                            ->label('Gambar')
+                            ->required()
+                            ->image()
+                            ->disk('public')
+                            ->imageEditor()
+                            ->imageCropAspectRatio('16:9')
+                            ->imageResizeMode('cover')
+                            ->imageResizeTargetWidth('1024')
+                            ->imageResizeTargetHeight('576')
+                            ->afterStateUpdated(function (callable $set, $state) {
+                                if ($state) {
+                                    $path = $state->store('images', 'public');
+                                    session()->put('temporary_image_path', $path);
+                                }
+                            })
+                            ->validationMessages([
+                                'required' => 'Gambar Harus Diisi',
+                            ])
+                            ,
                             Forms\Components\TextInput::make('jobDetail.description')
                                 ->label('Deskripsi')
                                 ->required()
@@ -377,12 +389,183 @@ class JobResource extends Resource
                                 ,
                         ]),
                     Wizard\Step::make('Tinjauan')
+                    ->icon('heroicon-s-eye')
+                    ->completedIcon('heroicon-s-eye')
                         ->schema([
-                            Forms\Components\Placeholder::make('titlePlaceHolder')
-                            ->content(fn(Get $get)=>$get('title'))
-                            ->label('Nama Pekerjaan')
-                            ->columnSpanFull()
-                        ]),
+                            Forms\Components\Section::make('Informasi Pekerjaan')
+                                ->icon('heroicon-m-document-text')
+                                ->schema([
+                                    Forms\Components\Grid::make(2)
+                                        ->schema([
+                                            Forms\Components\Placeholder::make('imagePlaceHolder')
+                                            ->content(function (Get $get) {
+                                                $imagePath = session('temporary_image_path');
+                                                
+                                                if ($imagePath) {
+                                                    $imageUrl = asset('storage/images/' . basename($imagePath));
+                                                    
+                                                    return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Pekerjaan" style="max-width: 100%; height: auto;">');
+                                                }
+                                                
+                                                return 'Tidak ada gambar yang diunggah';
+                                            })
+                                            ->label('Gambar Pekerjaan')
+                                            ->columnSpanFull(),
+
+                                            Forms\Components\Placeholder::make('typePlaceHolder')
+                                                ->content(fn(Get $get) => $get('type'))
+                                                ->label('Tipe Pekerjaan'),
+                    
+                                            Forms\Components\Placeholder::make('platformPlaceHolder')
+                                                ->content(fn(Get $get) => $get('platform'))
+                                                ->label('Social Media'),
+                    
+                                            Forms\Components\Placeholder::make('package_ratePlaceHolder')
+                                                ->content(fn(Get $get) => $get('package_rate'))
+                                                ->label('Paket'),
+                    
+                                            Forms\Components\Placeholder::make('rewardPlaceHolder')
+                                                ->content(fn(Get $get) => $get('reward'))
+                                                ->label('Hadiah'),
+                    
+                                            Forms\Components\Placeholder::make('start_datePlaceHolder')
+                                                ->content(fn(Get $get) => $get('start_date'))
+                                                ->label('Tanggal Mulai'),
+                    
+                                            Forms\Components\Placeholder::make('end_datePlaceHolder')
+                                                ->content(fn(Get $get) => $get('end_date'))
+                                                ->label('Tanggal Selesai'),
+                    
+                                            Forms\Components\Placeholder::make('is_multiplePlaceHolder')
+                                                ->content(fn(Get $get) => $get('is_multiple') ? 'Ya' : 'Tidak')
+                                                ->label('Dapat Diikuti Berulang'),
+                    
+                                            Forms\Components\Placeholder::make('statusPlaceHolder')
+                                                ->content(fn(Get $get) => $get('status'))
+                                                ->label('Status'),
+                                        ]),
+                                    Forms\Components\Placeholder::make('titlePlaceHolder')
+                                        ->content(fn(Get $get) => $get('title'))
+                                        ->label('Nama Pekerjaan')
+                                        ->columnSpanFull(),
+                    
+                                    Forms\Components\Placeholder::make('descriptionPlaceHolder')
+                                        ->content(fn(Get $get) => $get('jobDetail.description'))
+                                        ->label('Deskripsi')
+                                        ->columnSpanFull(),
+                    
+                                    Forms\Components\Placeholder::make('instructionsPlaceHolder')
+                                        ->content(fn(Get $get) => strip_tags($get('instructions')))
+                                        ->label('Instruksi')
+                                        ->columnSpanFull(),
+                    
+                                    Forms\Components\Placeholder::make('url_linkPlaceHolder')
+                                        ->content(fn(Get $get) => $get('jobDetail.url_link'))
+                                        ->label('Link')
+                                        ->columnSpanFull(),
+                                ])
+                                ->collapsible(),
+                    
+                            Forms\Components\Section::make('Target Pasukan')
+                                ->icon('heroicon-m-funnel')
+                                ->schema([
+                                    Forms\Components\Grid::make(2)
+                                        ->schema([
+                                            Forms\Components\Placeholder::make('genderPlaceHolder')
+                                                ->content(fn(Get $get) => $get('gender') ?? 'Tidak ada pilihan')
+                                                ->label('Gender'),
+                    
+                                            Forms\Components\Placeholder::make('generationPlaceHolder')
+                                                ->content(fn(Get $get) => $get('generation') ?? 'Tidak ada pilihan')
+                                                ->label('Generasi'),
+                    
+                                            Forms\Components\Placeholder::make('locationPlaceHolder')
+                                                ->content(fn(Get $get) => $get('province_kode') ? implode(', ', Province::whereIn('kode', $get('province_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
+                                                ->label('Provinsi'),
+                    
+                                            Forms\Components\Placeholder::make('regencyPlaceHolder')
+                                                ->content(fn(Get $get) => $get('regency_kode') ? implode(', ', Regency::whereIn('kode', $get('regency_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
+                                                ->label('Kabupaten/Kota'),
+                    
+                                            Forms\Components\Placeholder::make('districtPlaceHolder')
+                                                ->content(fn(Get $get) => $get('district_kode') ? implode(', ', District::whereIn('kode', $get('district_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
+                                                ->label('Kecamatan'),
+                    
+                                            Forms\Components\Placeholder::make('villagePlaceHolder')
+                                                ->content(fn(Get $get) => $get('village_kode') ? implode(', ', Village::whereIn('kode', $get('village_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
+                                                ->label('Kelurahan'),
+                    
+                                            Forms\Components\Placeholder::make('interestPlaceHolder')
+                                                ->content(fn(Get $get) => $get('interest') ? implode(', ', $get('interest')) : 'Tidak ada pilihan')
+                                                ->label('Interest'),
+                                        ])
+                                ])
+                                ->collapsible(),
+                    
+                            Forms\Components\Section::make('Rincian Harga')
+                                ->icon('heroicon-m-currency-dollar')
+                                ->schema([
+                                    Forms\Components\Grid::make(2)
+                                        ->schema([
+                                            Forms\Components\Placeholder::make('PricePlaceHolder')
+                                                ->content(function (Get $get) {
+                                                    $type = $get('type');
+                                                    $price = \App\Models\PackageRate::where('type', $type)->value('price') ?? 0;
+                                                    return 'Rp. ' . number_format($price, 0, ',', '.');
+                                                })
+                                                ->label('Harga Satuan'),
+                    
+                                            Forms\Components\Placeholder::make('totalPricePlaceHolder')
+                                                ->content(function (Get $get) {
+                                                    $type = $get('type');
+                                                    $packageRate = $get('package_rate');
+                                                    $price = \App\Models\PackageRate::where('type', $type)->value('price') ?? 0;
+                                                    $total = $price * $packageRate;
+                                                    return 'Rp. ' . number_format($total, 0, ',', '.');
+                                                })
+                                                ->label('Harga Total'),
+                                        ]),
+                    
+                                    Forms\Components\Placeholder::make('priceDetailsPlaceHolder')
+                                        ->content(function (Get $get) {
+                                            $details = [];
+                    
+                                            if ($get('gender')) $details[] = 'Gender +10%';
+                                            if ($get('generation')) $details[] = 'Generasi +10%';
+                                            $locations = ['province_kode', 'regency_kode', 'district_kode', 'village_kode'];
+                                            foreach ($locations as $location) {
+                                                if (!empty($get($location))) {
+                                                    $details[] = 'Lokasi +10%';
+                                                    break;
+                                                }
+                                            }
+                                            if (!empty($get('interest'))) $details[] = 'Interest +10%';
+                    
+                                            return $details ? 'Keterangan Tambahan Harga: ' . implode(', ', $details) : 'Tidak ada tambahan harga.';
+                                        })
+                                        ->label('Detail Tambahan Harga')
+                                        ->columnSpanFull(),
+                    
+                                    Forms\Components\Placeholder::make('finalPricePlaceHolder')
+                                        ->content(function (Get $get) {
+                                            $price = \App\Models\PackageRate::where('type', $get('type'))->value('price') ?? 0;
+                                            $total = $price * $get('package_rate');
+                                            $additional = 0;
+                    
+                                            if ($get('gender')) $additional += 10;
+                                            if ($get('generation')) $additional += 10;
+                                            if ($get('interest')) $additional += 10;
+                    
+                                            $finalPrice = $total + ($total * $additional / 100);
+                    
+                                            return 'Rp. ' . number_format($finalPrice, 0, ',', '.');
+                                        })
+                                        ->label('Total Harga Akhir')
+                                        ->columnSpanFull(),
+                                ])
+                                ->collapsible(),
+                        ])
+                    
                 ])->columnSpanFull()
                 ->submitAction(new HtmlString(Blade::render(<<<BLADE
                         <x-filament::button
