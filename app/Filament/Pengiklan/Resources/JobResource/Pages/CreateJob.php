@@ -39,6 +39,15 @@ class CreateJob extends CreateRecord
             $jobDetail->save();
         }
 
+        $imagePath = session('temporary_image_path');
+        if ($imagePath) {
+            $fullPath = public_path('storage/images/' . basename($imagePath));
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+            session()->forget('temporary_image_path');
+        }
+
         return $jobData;
     }
 
