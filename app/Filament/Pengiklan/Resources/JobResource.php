@@ -376,13 +376,13 @@ class JobResource extends Resource
                                 ])
                                 ,
                         ]),
-                    // Wizard\Step::make('Tinjauan')
-                    //     ->schema([
-                    //         Forms\Components\Placeholder::make('titlePlaceHolder')
-                    //         ->content(fn(Get $get)=>$get('title'))
-                    //         ->label('Nama Pekerjaan')
-                    //         ->columnSpanFull()
-                    //     ]),
+                    Wizard\Step::make('Tinjauan')
+                        ->schema([
+                            Forms\Components\Placeholder::make('titlePlaceHolder')
+                            ->content(fn(Get $get)=>$get('title'))
+                            ->label('Nama Pekerjaan')
+                            ->columnSpanFull()
+                        ]),
                 ])->columnSpanFull()
                 ->submitAction(new HtmlString(Blade::render(<<<BLADE
                         <x-filament::button

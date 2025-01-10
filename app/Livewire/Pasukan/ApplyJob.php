@@ -31,27 +31,64 @@ class ApplyJob extends Component
     ];
 
     public function render()
-    {
-        $jobCampaigns = JobCampaign::query()
-            ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%');
-            })
-            ->when($this->selectedPlatform, function ($query) {
-                $query->where('platform', $this->selectedPlatform);
-            })
-            ->when($this->selectedType, function ($query) {
-                $query->where('type', $this->selectedType);
-            })
-            ->withCount('participants as participantCount')
-            ->latest()
-            ->get();
+{
+    $user = Auth::user();
 
-        return view('livewire.pasukan.apply-job', [
-            'jobCampaigns' => $jobCampaigns,
-            'platforms' => PlatformEnum::cases(),
-            'types' => JobType::cases()
-        ])->layout('layouts.app');
-    }
+    $jobCampaigns = JobCampaign::query()
+        ->when($this->search, function ($query) {
+            $query->where('title', 'like', '%' . $this->search . '%');
+        })
+        ->when($this->selectedPlatform, function ($query) {
+            $query->where('platform', $this->selectedPlatform);
+        })
+        ->when($this->selectedType, function ($query) {
+            $query->where('type', $this->selectedType);
+        })
+        ->whereHas('jobDetail', function ($query) use ($user) {
+            $query->where(function ($q) use ($user) {
+                $q->whereNull('specific_gender')
+                  ->orWhere('specific_gender', $user->gender);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_generation')
+                  ->orWhere('specific_generation', $user->generation_category);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_province')
+                  ->orWhereJsonContains('specific_province', $user->province_kode);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_regency')
+                  ->orWhereJsonContains('specific_regency', $user->regency_kode);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_district')
+                  ->orWhereJsonContains('specific_district', $user->district_kode);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_village')
+                  ->orWhereJsonContains('specific_village', $user->village_kode);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_interest')
+                  ->orWhere(function ($q2) use ($user) {
+                      foreach ($user->interest as $interest) {
+                          $q2->orWhereJsonContains('specific_interest', $interest);
+                      }
+                  });
+            });
+        })
+        ->withCount('participants as participantCount')
+        ->latest()
+        ->get();
+
+    return view('livewire.pasukan.apply-job', [
+        'jobCampaigns' => $jobCampaigns,
+        'platforms' => PlatformEnum::cases(),
+        'types' => JobType::cases()
+    ])->layout('layouts.app');
+}
+
 
     public function showJobDetail($jobId)
     {
