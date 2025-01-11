@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class RegisterPengiklan extends Component
 {
@@ -76,18 +77,51 @@ class RegisterPengiklan extends Component
 
     public function register(): void
     {
-        $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'string', 'confirmed', Password::defaults()],
-            'gender' => ['required', 'in:L,P'],
-            'date_of_birth' => ['required', 'date'],
-            'phone' => ['required', 'string', 'max:15'],
-            'village_kode' => ['required'],
-            'district_kode' => ['required'],
-            'regency_kode' => ['required'],
-            'province_kode' => ['required']
-        ]);
+        try {
+            $validated = $this->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+                'password' => ['required', 'string', 'confirmed', Password::defaults()],
+                'gender' => ['required', 'in:L,P'],
+                'date_of_birth' => ['required', 'date'],
+                'phone' => ['required', 'string', 'max:15'],
+                'village_kode' => ['required'],
+                'district_kode' => ['required'],
+                'regency_kode' => ['required'],
+                'province_kode' => ['required']
+            ],[
+                'name.required' => 'Nama harus diisi',
+                'name.string' => 'Nama harus berupa string',
+                'name.max' => 'Nama tidak boleh lebih dari 255 karakter',
+                'email.required' => 'Email harus diisi',
+                'email.email' => 'Email tidak valid',
+                'email.unique' => 'Email sudah terdaftar',
+                'password.required' => 'Password harus diisi',
+                'password.min' => 'Password harus terdiri dari setidaknya 6 karakter',
+                'password.confirmed' => 'Konfirmasi password tidak cocok',
+                'gender.required' => 'Jenis kelamin harus diisi',
+                'gender.in' => 'Jenis kelamin harus L atau P',
+                'date_of_birth.required' => 'Tanggal lahir harus diisi',
+                'date_of_birth.date' => 'Tanggal lahir harus berupa tanggal',
+                'phone.required' => 'Nomor telepon harus diisi',
+                'phone.string' => 'Nomor telepon harus berupa string',
+                'phone.max' => 'Nomor telepon tidak boleh lebih dari 15 karakter',
+                'village_kode.required' => 'Kelurahan harus diisi',
+                'district_kode.required' => 'Kecamatan harus diisi',
+                'regency_kode.required' => 'Kabupaten harus diisi',
+                'province_kode.required' => 'Provinsi harus diisi',
+            ]);
+        } catch (ValidationException $e) {
+            $errorField = array_key_first($e->validator->errors()->toArray());
+            $this->js(<<<JS
+                const input = document.getElementById('$errorField');
+                if (input) {
+                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    input.focus();
+                }
+            JS);
+            throw $e;
+        }
 
         $validated['password'] = Hash::make($validated['password']);
 

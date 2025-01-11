@@ -404,7 +404,7 @@ class JobResource extends Resource
                                                 if ($imagePath) {
                                                     $imageUrl = asset('storage/images/' . basename($imagePath));
                                                     
-                                                    return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Pekerjaan" style="max-width: 100%; height: auto;">');
+                                                    return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Pekerjaan" style="max-width: 50%; height: auto; margin: 0 auto;">');
                                                 }
                                                 
                                                 return 'Tidak ada gambar yang diunggah';
@@ -507,6 +507,9 @@ class JobResource extends Resource
                                 ->schema([
                                     Forms\Components\Grid::make(2)
                                         ->schema([
+                                            Forms\Components\Placeholder::make('package_ratePlaceHolder')
+                                                ->content(fn(Get $get) => $get('package_rate'))
+                                                ->label('Paket'),
                                             Forms\Components\Placeholder::make('PricePlaceHolder')
                                                 ->content(function (Get $get) {
                                                     $type = $get('type');
@@ -524,6 +527,21 @@ class JobResource extends Resource
                                                     return 'Rp. ' . number_format($total, 0, ',', '.');
                                                 })
                                                 ->label('Harga Total'),
+                                            Forms\Components\Placeholder::make('finalPricePlaceHolder')
+                                                ->content(function (Get $get) {
+                                                    $price = \App\Models\PackageRate::where('type', $get('type'))->value('price') ?? 0;
+                                                    $total = $price * $get('package_rate');
+                                                    $additional = 0;
+                            
+                                                    if ($get('gender')) $additional += 10;
+                                                    if ($get('generation')) $additional += 10;
+                                                    if ($get('interest')) $additional += 10;
+                            
+                                                    $finalPrice = $total + ($total * $additional / 100);
+                            
+                                                    return 'Rp. ' . number_format($finalPrice, 0, ',', '.');
+                                                })
+                                                ->label('Total Harga Akhir'),
                                         ]),
                     
                                     Forms\Components\Placeholder::make('priceDetailsPlaceHolder')
@@ -544,23 +562,6 @@ class JobResource extends Resource
                                             return $details ? 'Keterangan Tambahan Harga: ' . implode(', ', $details) : 'Tidak ada tambahan harga.';
                                         })
                                         ->label('Detail Tambahan Harga')
-                                        ->columnSpanFull(),
-                    
-                                    Forms\Components\Placeholder::make('finalPricePlaceHolder')
-                                        ->content(function (Get $get) {
-                                            $price = \App\Models\PackageRate::where('type', $get('type'))->value('price') ?? 0;
-                                            $total = $price * $get('package_rate');
-                                            $additional = 0;
-                    
-                                            if ($get('gender')) $additional += 10;
-                                            if ($get('generation')) $additional += 10;
-                                            if ($get('interest')) $additional += 10;
-                    
-                                            $finalPrice = $total + ($total * $additional / 100);
-                    
-                                            return 'Rp. ' . number_format($finalPrice, 0, ',', '.');
-                                        })
-                                        ->label('Total Harga Akhir')
                                         ->columnSpanFull(),
                                 ])
                                 ->collapsible(),
