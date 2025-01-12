@@ -3,6 +3,7 @@
 namespace App\Livewire\Pasukan;
 
 use Livewire\Component;
+use App\Enums\JobStatusEnum;
 use Livewire\WithFileUploads;
 use App\Models\JobParticipant;
 use Illuminate\Support\Facades\Auth;
@@ -70,6 +71,7 @@ class RiwayatPekerjaan extends Component
 
         $jobParticipant->update([
             'attachment' => $path,
+            'status' => JobStatusEnum::REPORTED->value,
         ]);
 
         $this->showModal = false;

@@ -10,6 +10,7 @@ enum JobStatusEnum: string
     case REJECTED = 'Rejected';
     case APPROVED = 'Approved';
     case CANCELLED = 'Cancelled';
+    case REPORTED = 'Reported'; 
 
     public static function options()
     {
