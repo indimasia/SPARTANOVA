@@ -52,10 +52,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
-                DataJobWidget::class,
-                PengiklanWidget::class,
-                PasukanWidget::class,
-                KlasifikasiPasukanWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -29,12 +29,15 @@ class RegisterPasukan extends Component
     public $district_kode;
     public $regency_kode;
     public $province_kode;
+    public $latitude;
+    public $longitude;
     public $social_media = [];
 
     public $villages = [];
     public $districts = [];
     public $regencies = [];
     public $provinces = [];
+    protected $listeners = ['setLocation'];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -47,7 +50,9 @@ class RegisterPasukan extends Component
         'district_kode' => 'required',
         'regency_kode' => 'required',
         'province_kode' => 'required',
-        'social_media.*' => ['nullable', 'string']
+        'social_media.*' => ['nullable', 'string'],
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
     ];
 
     public function mount()
@@ -96,7 +101,9 @@ class RegisterPasukan extends Component
                 'district_kode' => ['required'],
                 'regency_kode' => ['required'],
                 'province_kode' => ['required'],
-                'social_media.*' => ['nullable', 'string']
+                'social_media.*' => ['nullable', 'string'],
+                'latitude' => ['nullable', 'numeric'],
+                'longitude' => ['nullable', 'numeric'],
             ], [
                 'name.required' => 'Nama harus diisi.',
                 'name.regex' => 'Nama hanya boleh mengandung huruf dan spasi.',
@@ -116,6 +123,10 @@ class RegisterPasukan extends Component
                 'district_kode.required' => 'Kode kecamatan harus diisi.',
                 'regency_kode.required' => 'Kode kabupaten harus diisi.',
                 'province_kode.required' => 'Kode provinsi harus diisi.',
+                'latitude.nullable' => 'Latitude harus diisi.',
+                'longitude.nullable' => 'Longitude harus diisi.',
+                'latitude.numeric' => 'Latitude harus berupa angka.',
+                'longitude.numeric' => 'Longitude harus berupa angka.',
             ]);
         } catch (ValidationException $e) {
             $errorField = array_key_first($e->validator->errors()->toArray());
@@ -128,7 +139,6 @@ class RegisterPasukan extends Component
             JS);
             throw $e;
         }
-        
 
         $birthYear = (int) date('Y', strtotime($validated['date_of_birth']));
 
@@ -146,6 +156,8 @@ class RegisterPasukan extends Component
             'regency_kode' => $validated['regency_kode'],
             'province_kode' => $validated['province_kode'],
             'generation_category' => $generationCategory,
+            'latitude' => $validated['latitude'],
+            'longitude' => $validated['longitude'],
         ];
 
         $user = User::create($userData);
@@ -176,6 +188,12 @@ class RegisterPasukan extends Component
             'districts' => $this->districts,
             'villages' => $this->villages
         ])->layout('layouts.app');
+    }
+
+    public function setLocation($lat, $lng)
+    {
+        $this->latitude = $lat;
+        $this->longitude = $lng;
     }
 
     private function determineGeneration(int $birthYear): string

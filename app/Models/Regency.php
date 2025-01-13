@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Regency extends Model
 {
@@ -37,5 +38,10 @@ class Regency extends Model
     public static function getRegencyName($specific_regency)
     {
         return self::whereIn('kode', $specific_regency)->pluck('nama')->toArray();
+    }
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'regency_kode', 'kode');
     }
 }

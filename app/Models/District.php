@@ -3,14 +3,20 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class District extends Model
 {
     use HasFactory;
     protected $table = 'wil_districts';
     protected $primaryKey = 'kode';
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'district_kode', 'kode');
+    }
 
     function regency()
     {
