@@ -63,6 +63,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        return ($this->hasAnyRole(['admin', 'pengiklan']));
+    }
+
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'province_kode', 'kode');
