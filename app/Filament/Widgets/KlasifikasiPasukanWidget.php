@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class KlasifikasiPasukanWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Distribusi Generasi Pasukan';
 
     public function getData(): array
     {
