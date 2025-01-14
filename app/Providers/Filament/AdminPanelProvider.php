@@ -44,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Spartav')
             ->registration()
             ->passwordReset()
+            ->darkMode(false)
             ->profile(isSimple: false)
             ->login()
             ->colors([
