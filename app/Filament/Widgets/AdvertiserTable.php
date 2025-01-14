@@ -39,11 +39,6 @@ class AdvertiserTable extends BaseWidget
                     ->label('Jenis Kelamin')
                     ->searchable()
                     ->sortable(),
-
-                Tables\Columns\TextColumn::make('generation_category')
-                    ->label('Generasi')
-                    ->searchable()
-                    ->sortable(),
             ])
             ->defaultSort('created_at', 'desc'); // Urutkan berdasarkan tanggal terbaru
     }

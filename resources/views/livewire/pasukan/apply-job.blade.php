@@ -262,7 +262,7 @@
                                                     <i class="fas fa-lightbulb text-yellow-500 mr-1"></i> Petunjuk:
                                                 </h5>
                                                 <p class="text-sm text-gray-600 leading-relaxed">
-                                                    {!! nl2br(e($selectedJob->instructions)) !!}
+                                                    {!! $selectedJob->instructions !!}
                                                 </p>
                                             </div>
                                         @endif

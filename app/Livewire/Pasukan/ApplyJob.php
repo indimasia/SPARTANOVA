@@ -2,15 +2,17 @@
 
 namespace App\Livewire\Pasukan;
 
-use Livewire\Component;
-use App\Models\JobCampaign;
-use App\Models\JobDetail;
-use App\Models\JobParticipant;
-use App\Enums\PlatformEnum;
 use App\Enums\JobType;
+use Livewire\Component;
+use App\Models\JobDetail;
+use App\Enums\PlatformEnum;
+use App\Models\JobCampaign;
 use App\Enums\JobStatusEnum;
-use Illuminate\Support\Facades\Auth;
+use App\Models\JobParticipant;
+use App\Models\UserPerformance;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Auth;
+use Mews\Purifier\Facades\Purifier;
 
 #[Layout('layouts.app')]
 class ApplyJob extends Component
@@ -80,7 +82,10 @@ class ApplyJob extends Component
         })
         ->withCount('participants as participantCount')
         ->latest()
-        ->get();
+        ->get()->map(function ($job) {
+            $job->instructions = Purifier::clean($job->instructions);
+            return $job;
+        });
 
     return view('livewire.pasukan.apply-job', [
         'jobCampaigns' => $jobCampaigns,
@@ -119,6 +124,13 @@ class ApplyJob extends Component
             'status' => JobStatusEnum::APPLIED->value,
             'reward' => $job->reward
         ]);
+
+        // Create or update user performance
+        $userPerformance = UserPerformance::firstOrNew(['user_id' => Auth::id()]);
+        $userPerformance->user_id = Auth::id();
+        $userPerformance->job_completed = 1;
+        $userPerformance->total_reward = $job->reward;
+        $userPerformance->save();
 
         $this->dispatch('success', 'Berhasil melamar pekerjaan.');
         $this->closeModal();

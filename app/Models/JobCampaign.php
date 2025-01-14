@@ -21,10 +21,10 @@ class JobCampaign extends Model
     {
         return $this->participants()->count();
     }
-    public function setInstructionsAttribute($value)
-    {
-        $this->attributes['instructions'] = str($value)->sanitizeHtml();
-    }
+    // public function setInstructionsAttribute($value)
+    // {
+    //     $this->attributes['instructions'] = str($value)->sanitizeHtml();
+    // }
     protected $casts = [
         'type' => JobType::class,
         'platform' => PlatformEnum::class,

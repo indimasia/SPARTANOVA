@@ -15,10 +15,12 @@ class DataJobWidget extends BaseWidget
 
         $activeJobsCount = JobCampaign::where('status', 'publish')
             ->where('end_date', '>', Carbon::now())
+            ->where('created_by', auth()->user()->id)
             ->count();
         $newActiveJobsToday = JobCampaign::where('status', 'publish')
             ->where('end_date', '>', now())
             ->whereDate('created_at', $today)
+            ->where('created_by', auth()->user()->id)
             ->count();
 
         return [

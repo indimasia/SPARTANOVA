@@ -3,14 +3,15 @@
 namespace App\Filament\Pengiklan\Resources\JobResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Enums\JobStatusEnum;
+use App\Models\UserPerformance;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Notifications\Notification;
-use App\Enums\JobStatusEnum;
+use Filament\Resources\RelationManagers\RelationManager;
 
 
 class ParticipantsRelationManager extends RelationManager
@@ -103,6 +104,13 @@ class ParticipantsRelationManager extends RelationManager
                         ->action(function ( $record) {
                             try {
                                 $record->update(['status' => JobStatusEnum::APPROVED->value]);
+
+                                $userPerformance = UserPerformance::firstOrNew(['user_id' => $record->user_id]);
+                                $userPerformance->user_id = $record->user_id;
+                                $userPerformance->job_completed = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->count();
+                                $userPerformance->total_reward = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->sum('reward');
+                                $userPerformance->save();
+
                                 Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
@@ -123,6 +131,7 @@ class ParticipantsRelationManager extends RelationManager
                         ->action(function ( $record) {
                             try {
                                 $record->update(['status' => JobStatusEnum::REJECTED->value]);
+                                // TODO: update data user performance if rejected
                                 Notification::make()
                                     ->title('Successfully rejected')
                                     ->success()
@@ -134,7 +143,7 @@ class ParticipantsRelationManager extends RelationManager
                                     ->send();
                             }
                         })
-                        ->visible(fn ( $record) => $record->status === 'pending' || $record->status === JobStatusEnum::APPROVED->value),
+                        ->visible(fn ( $record) => $record->status === 'pending' || $record->status === JobStatusEnum::REPORTED->value || $record->status === JobStatusEnum::APPROVED->value),
                 ])->label('Action'),
             ])
             ->bulkActions([
@@ -148,6 +157,13 @@ class ParticipantsRelationManager extends RelationManager
                         ->action(function ( $records) {
                             try {
                                 $records->each->update(['status' => JobStatusEnum::APPROVED->value]);
+                                $records->each(function ($record) {
+                                    $userPerformance = UserPerformance::firstOrNew(['user_id' => $record->user_id]);
+                                    $userPerformance->user_id = $record->user_id;
+                                    $userPerformance->job_completed = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->count();
+                                    $userPerformance->total_reward = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->sum('reward');
+                                    $userPerformance->save();
+                                });
                                 Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
@@ -155,6 +171,25 @@ class ParticipantsRelationManager extends RelationManager
                             } catch (\Exception $e) {
                                 Notification::make()
                                     ->title('Failed to approve')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+                    Tables\Actions\BulkAction::make('reject_all')
+                        ->label('Reject All')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function ( $records) {
+                            try {
+                                $records->each->update(['status' => JobStatusEnum::REJECTED->value]);
+                                Notification::make()
+                                    ->title('Successfully rejected')
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Failed to reject')
                                     ->danger()
                                     ->send();
                             }

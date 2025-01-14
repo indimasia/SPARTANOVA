@@ -7,9 +7,7 @@
                 Dashboard
             </h2>
 
-            <!-- Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <!-- Total Pekerjaan -->
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
@@ -22,7 +20,6 @@
                     </div>
                 </div>
 
-                <!-- Pekerjaan Pending -->
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
@@ -35,7 +32,6 @@
                     </div>
                 </div>
 
-                <!-- Pekerjaan Disetujui -->
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
@@ -48,7 +44,6 @@
                     </div>
                 </div>
 
-                <!-- Total Penghasilan -->
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
@@ -63,38 +58,37 @@
                 </div>
             </div>
 
-            <!-- Recent Activity -->
             <div class="bg-white border border-gray-100 rounded-lg">
                 <div class="p-4 border-b border-gray-100">
                     <h3 class="text-lg font-semibold text-gray-800">Aktivitas Terbaru</h3>
                 </div>
                 <div class="p-4">
-                    @if (isset($recentActivities) && count($recentActivities) > 0)
+                    @if (!empty($recentActivities) && count($recentActivities) > 0)
                         <div class="space-y-4">
                             @foreach ($recentActivities as $activity)
                                 <div class="flex items-center gap-4">
                                     <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center">
-                                        @switch($activity->type ?? '')
+                                        @switch($activity['type'] ?? '')
                                             @case('apply')
                                                 <i class="fas fa-paper-plane text-blue-500"></i>
                                             @break
-
+            
                                             @case('approved')
                                                 <i class="fas fa-check text-green-500"></i>
                                             @break
-
+            
                                             @case('completed')
                                                 <i class="fas fa-check-double text-purple-500"></i>
                                             @break
-
+            
                                             @default
                                                 <i class="fas fa-circle text-gray-400"></i>
                                         @endswitch
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-sm text-gray-600">{{ $activity->description ?? 'Aktivitas' }}</p>
+                                        <p class="text-sm text-gray-600">{{ $activity['description'] ?? 'Aktivitas' }}</p>
                                         <p class="text-xs text-gray-400 mt-1">
-                                            {{ isset($activity->created_at) ? $activity->created_at->diffForHumans() : '' }}
+                                            {{ \Carbon\Carbon::parse($activity['created_at'])->diffForHumans() }}
                                         </p>
                                     </div>
                                 </div>
@@ -111,6 +105,7 @@
                     @endif
                 </div>
             </div>
+            
         </div>
     </div>
 </div>

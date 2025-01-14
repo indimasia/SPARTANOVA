@@ -16,6 +16,7 @@ use App\Filament\Widgets\AgePasukanChart;
 use App\Filament\Widgets\AdvertiserWidget;
 use App\Filament\Widgets\UserGrowthWidget;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Widgets\JobTypeStatsWidget;
 use App\Filament\Widgets\StatsOverviewWidget;
 use App\Filament\Widgets\InterestPasukanChart;
 use Illuminate\Session\Middleware\StartSession;
@@ -60,6 +61,7 @@ class AdminPanelProvider extends PanelProvider
                 UserGrowthWidget::class,
                 KlasifikasiPasukanWidget::class,
                 AdvertiserTable::class,
+                JobTypeStatsWidget::class,
                 AgePasukanChart::class,
                 GenderOverview::class,
                 InterestPasukanChart::class,
