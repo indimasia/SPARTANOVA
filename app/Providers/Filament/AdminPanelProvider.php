@@ -9,11 +9,15 @@ use Filament\PanelProvider;
 use Filament\Pages\Auth\Login;
 use App\Filament\Pages\Dashboard;
 use Filament\Support\Colors\Color;
-use App\Filament\Widgets\DataJobWidget;
-use App\Filament\Widgets\PasukanWidget;
+use App\Filament\Widgets\GenderOverview;
 use App\Http\Middleware\AdminMiddleware;
-use App\Filament\Widgets\PengiklanWidget;
+use App\Filament\Widgets\AdvertiserTable;
+use App\Filament\Widgets\AgePasukanChart;
+use App\Filament\Widgets\AdvertiserWidget;
+use App\Filament\Widgets\UserGrowthWidget;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Widgets\StatsOverviewWidget;
+use App\Filament\Widgets\InterestPasukanChart;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -49,10 +53,17 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                StatsOverviewWidget::class,
+                UserGrowthWidget::class,
+                KlasifikasiPasukanWidget::class,
+                AdvertiserTable::class,
+                AgePasukanChart::class,
+                GenderOverview::class,
+                InterestPasukanChart::class,
+                AdvertiserWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
