@@ -124,6 +124,7 @@ class RegisterPengiklan extends Component
         }
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['is_active'] = true; // default is_active true
 
         event(new Registered($user = User::create($validated)));
 
@@ -131,7 +132,7 @@ class RegisterPengiklan extends Component
 
         Auth::login($user);
 
-        $this->redirect(route('home', absolute: false), navigate: true);
+        $this->redirect(route('dashboard', absolute: false), navigate: true);
     }
 
     public function render()

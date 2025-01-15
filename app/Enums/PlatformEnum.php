@@ -7,7 +7,7 @@ enum PlatformEnum: string
     case FACEBOOK = 'Facebook';
     case INSTAGRAM = 'Instagram';
     case TWITTER = 'Twitter';
-    case LINKEDIN = 'LinkedIn';
+    case GOOGLE = 'Google';
     case TIKTOK = 'TikTok';
     case YOUTUBE = 'Youtube';
     // Add other platforms as needed

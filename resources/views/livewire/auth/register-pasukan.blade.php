@@ -124,8 +124,17 @@
 
                             <!-- Date of Birth -->
                             <div class="group">
-                                <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal
-                                    Lahir</label>
+                                <div class="flex justify-between items-center">
+                                    <!-- Label di kiri -->
+                                    <label for="date_of_birth" class="block text-sm font-medium text-gray-700">
+                                        Tanggal Lahir
+                                    </label>
+                            
+                                    <!-- Informasi di kanan -->
+                                    <p class="text-xs text-red-500">
+                                        Untuk validasi pencairan.
+                                    </p>
+                                </div>
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i
@@ -285,30 +294,37 @@
                                 <div class="group">
                                     <label for="{{ strtolower($platform->value) }}"
                                         class="block text-sm font-medium text-gray-700">{{ $platform->value }}</label>
-                                    <div
-                                        class="mt-1 relative rounded-md shadow-sm group-hover:shadow-md transition-shadow duration-200">
-                                        <div
-                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i
-                                                class="fab fa-{{ strtolower($platform->value) }} {{ match ($platform->value) {
-                                                    'Facebook' => 'text-blue-600',
-                                                    'Instagram' => 'text-pink-500',
-                                                    'Twitter' => 'text-blue-400',
-                                                    'LinkedIn' => 'text-blue-700',
-                                                    'TikTok' => 'text-black',
-                                                    'Youtube' => 'text-red-600',
-                                                    default => 'text-gray-400',
-                                                } }}"></i>
+                                    <div class="mt-1 relative rounded-md shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fab fa-{{ strtolower($platform->value) }} {{ match ($platform->value) {
+                                                'Facebook' => 'text-blue-600',
+                                                'Instagram' => 'text-pink-500',
+                                                'Twitter' => 'text-blue-400',
+                                                'Google' => 'text-blue-600',
+                                                'TikTok' => 'text-black',
+                                                'Youtube' => 'text-red-600',
+                                                default => 'text-gray-400',
+                                            } }}"></i>
                                         </div>
                                         <input type="text" id="{{ strtolower($platform->value) }}"
                                             wire:model="social_media.{{ $platform->value }}"
                                             class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm group-hover:border-blue-300 transition-colors duration-200"
-                                            placeholder="Username {{ $platform->value }}">
+                                            placeholder="{{ $platform->value == 'Youtube' ? 'URL ' . $platform->value : 'Username ' . $platform->value }}"
+                                            @if($social_media[$platform->value] == 'Tidak punya akun') @disabled(true) @endif>
                                     </div>
+                                    <!-- Toggle Button -->
+                                    <label class="inline-flex items-center mt-2">
+                                        <input type="checkbox" wire:model="social_media_{{ $platform->value }}_no_account"
+                                            class="form-checkbox text-blue-500"
+                                            wire:change="$set('social_media.{{ $platform->value }}', $event.target.checked ? 'Tidak punya akun' : '')"
+                                            @if($social_media[$platform->value] == 'Tidak punya akun') checked @endif>
+                                        <span class="ml-2 text-sm text-gray-600">Tidak punya akun</span>
+                                    </label>
                                 </div>
                             @endforeach
                         </div>
                     </div>
+                                        
 
                     <!-- Submit Button -->
                     <div class="flex justify-end">

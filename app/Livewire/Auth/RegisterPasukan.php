@@ -104,6 +104,7 @@ class RegisterPasukan extends Component
                 'social_media.*' => ['nullable', 'string'],
                 'latitude' => ['nullable', 'numeric'],
                 'longitude' => ['nullable', 'numeric'],
+                'social_media.*' => ['required', 'string'],
             ], [
                 'name.required' => 'Nama harus diisi.',
                 'name.regex' => 'Nama hanya boleh mengandung huruf dan spasi.',
@@ -127,6 +128,8 @@ class RegisterPasukan extends Component
                 'longitude.nullable' => 'Longitude harus diisi.',
                 'latitude.numeric' => 'Latitude harus berupa angka.',
                 'longitude.numeric' => 'Longitude harus berupa angka.',
+                'social_media.*.required' => 'Akun sosial media harus diisi.',
+                'social_media.*.string' => 'Akun sosial media harus berupa string.',
             ]);
         } catch (ValidationException $e) {
             $errorField = array_key_first($e->validator->errors()->toArray());
@@ -177,7 +180,7 @@ class RegisterPasukan extends Component
 
         Auth::login($user);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        $this->redirect(route('home', absolute: false), navigate: true);
     }
 
     public function render()

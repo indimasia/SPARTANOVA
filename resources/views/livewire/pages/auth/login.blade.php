@@ -14,9 +14,19 @@ new #[Layout('layouts.app')] class extends Component {
 
         $this->form->authenticate();
 
+        $user = Auth::user();
+
+        if ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
+            if (!$user->suspended || !$user->is_active) {
+                Auth::logout();
+
+            session()->flash('status', 'Akun Anda belum diaktivasi. Silakan hubungi admin untuk aktivasi.');
+
+                return;
+            }
+        }
         Session::regenerate();
 
-        $user = Auth::user();
         if ($user->hasRole(App\Enums\UserRole::ADMIN->value)) {
             $this->redirect(route('filament.admin.pages.dashboard'), navigate: false);
         } elseif ($user->hasRole(App\Enums\UserRole::PENGIKLAN->value)) {
