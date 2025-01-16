@@ -11,8 +11,9 @@ use App\Enums\JobStatusEnum;
 use App\Models\JobParticipant;
 use App\Models\UserPerformance;
 use Livewire\Attributes\Layout;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SosialMediaAccount;
 use Mews\Purifier\Facades\Purifier;
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.app')]
 class ApplyJob extends Component
@@ -36,6 +37,11 @@ class ApplyJob extends Component
 {
     $user = Auth::user();
 
+    $userSocialMediaPlatforms = SosialMediaAccount::where('user_id', $user->id)
+        ->where('account', '!=', 'Tidak punya akun')
+        ->pluck('sosial_media')
+        ->toArray();
+
     $jobCampaigns = JobCampaign::query()
         ->when($this->search, function ($query) {
             $query->where('title', 'like', '%' . $this->search . '%');
@@ -46,43 +52,45 @@ class ApplyJob extends Component
         ->when($this->selectedType, function ($query) {
             $query->where('type', $this->selectedType);
         })
+        ->whereIn('platform', $userSocialMediaPlatforms)
         ->whereHas('jobDetail', function ($query) use ($user) {
             $query->where(function ($q) use ($user) {
                 $q->whereNull('specific_gender')
-                  ->orWhere('specific_gender', $user->gender);
+                    ->orWhere('specific_gender', $user->gender);
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_generation')
-                  ->orWhere('specific_generation', $user->generation_category);
+                    ->orWhere('specific_generation', $user->generation_category);
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_province')
-                  ->orWhereJsonContains('specific_province', $user->province_kode);
+                    ->orWhereJsonContains('specific_province', $user->province_kode);
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_regency')
-                  ->orWhereJsonContains('specific_regency', $user->regency_kode);
+                    ->orWhereJsonContains('specific_regency', $user->regency_kode);
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_district')
-                  ->orWhereJsonContains('specific_district', $user->district_kode);
+                    ->orWhereJsonContains('specific_district', $user->district_kode);
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_village')
-                  ->orWhereJsonContains('specific_village', $user->village_kode);
+                    ->orWhereJsonContains('specific_village', $user->village_kode);
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_interest')
-                  ->orWhere(function ($q2) use ($user) {
-                      foreach ($user->interest as $interest) {
-                          $q2->orWhereJsonContains('specific_interest', $interest);
-                      }
-                  });
+                    ->orWhere(function ($q2) use ($user) {
+                        foreach ($user->interest as $interest) {
+                            $q2->orWhereJsonContains('specific_interest', $interest);
+                        }
+                    });
             });
         })
         ->withCount('participants as participantCount')
         ->latest()
-        ->get()->map(function ($job) {
+        ->get()
+        ->map(function ($job) {
             $job->instructions = Purifier::clean($job->instructions);
             return $job;
         });

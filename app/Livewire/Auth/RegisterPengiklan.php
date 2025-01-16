@@ -8,6 +8,7 @@ use App\Models\Village;
 use Livewire\Component;
 use App\Models\District;
 use App\Models\Province;
+use App\Enums\UserStatusEnum;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -124,7 +125,7 @@ class RegisterPengiklan extends Component
         }
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = true; // default is_active true
+        $validated['status'] = UserStatusEnum::ACTIVE->value;
 
         event(new Registered($user = User::create($validated)));
 

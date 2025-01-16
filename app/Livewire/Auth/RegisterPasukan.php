@@ -9,6 +9,7 @@ use Livewire\Component;
 use App\Models\District;
 use App\Models\Province;
 use App\Enums\PlatformEnum;
+use App\Enums\UserStatusEnum;
 use App\Models\SosialMediaAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -144,6 +145,7 @@ class RegisterPasukan extends Component
         }
 
         $birthYear = (int) date('Y', strtotime($validated['date_of_birth']));
+        $validated['status'] = UserStatusEnum::PENDING->value;
 
         $generationCategory = $this->determineGeneration($birthYear);
 
@@ -177,8 +179,6 @@ class RegisterPasukan extends Component
         }
 
         $user->assignRole('pasukan');
-
-        Auth::login($user);
 
         $this->redirect(route('home', absolute: false), navigate: true);
     }

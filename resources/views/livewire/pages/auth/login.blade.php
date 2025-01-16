@@ -4,6 +4,7 @@ use App\Livewire\Forms\LoginForm;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use App\Enums\UserStatusEnum;
 
 new #[Layout('layouts.app')] class extends Component {
     public LoginForm $form;
@@ -17,10 +18,10 @@ new #[Layout('layouts.app')] class extends Component {
         $user = Auth::user();
 
         if ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
-            if (!$user->suspended || !$user->is_active) {
+            if ($user->status != UserStatusEnum::ACTIVE->value) {
                 Auth::logout();
 
-            session()->flash('status', 'Akun Anda belum diaktivasi. Silakan hubungi admin untuk aktivasi.');
+                session()->flash('status', 'Akun Anda belum diaktivasi. Silakan hubungi admin untuk aktivasi.');
 
                 return;
             }

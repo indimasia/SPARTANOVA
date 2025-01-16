@@ -5,7 +5,7 @@
             <h1 class="text-4xl md:text-6xl font-bold mb-6">Selamat datang di Spartav</h1>
             <p class="text-xl md:text-2xl mb-8 text-white/90">Gerbang Anda menuju Keunggulan Pemasaran Digital</p>
             <div class="flex justify-center gap-4">
-                @if (!auth()->check() || (auth()->user()->hasRole('pasukan') && !auth()->user()->is_active))
+                @if (!auth()->check())
                     <a href="{{ route('register') }}"
                         class="bg-white text-yellow-600 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                         Mulai Sekarang

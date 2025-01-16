@@ -2,20 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\District;
-use App\Models\Regency;
-use App\Models\User;
-use App\Models\Village;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Regency;
+use App\Models\Village;
+use Filament\Forms\Get;
+use App\Models\District;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Enums\UserStatusEnum;
+use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
@@ -116,23 +119,178 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('district.nama'),
                 Tables\Columns\TextColumn::make('village.nama'),
                 Tables\Columns\TextColumn::make('roles.name')
-                ->badge(),
+                ->badge()
+                ->color(fn($record) => $record->roles->contains('name', 'admin') ? 'warning' : ($record->roles->contains('name', 'pengiklan') ? 'success' : 'info')),
                 Tables\Columns\TextColumn::make('gender')
                 ->state(fn($record) => $record->gender == 'L' ? 'Laki-Laki' : 'Perempuan')
                 ->color(fn($record) => $record->gender == 'L' ? 'warning' : 'danger'),
 
                 Tables\Columns\TextColumn::make('date_of_birth')->date(),
+                Tables\Columns\TextColumn::make('status')
+                ->getStateUsing(fn($record) => match($record?->status) {
+                    UserStatusEnum::ACTIVE->value => 'aktif',
+                    UserStatusEnum::SUSPENDED->value => 'suspended',
+                    UserStatusEnum::PENDING->value => 'pending',
+                    UserStatusEnum::REJECTED->value => 'rejected',
+                    default => 'lainnya'
+                })
+                ->badge()
+                ->color(fn($record) => match($record?->status) {
+                    UserStatusEnum::ACTIVE->value => 'success',
+                    UserStatusEnum::SUSPENDED->value => 'danger',
+                    UserStatusEnum::PENDING->value => 'info',
+                    UserStatusEnum::REJECTED->value => 'warning',
+                    default => 'secondary'
+                }),
             ])
             ->filters([
                 //
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('approve')
+                        ->label('Approve')
+                        ->icon('heroicon-o-check-circle')
+                        ->visible(fn ($record) => $record->status == UserStatusEnum::PENDING->value)
+                        ->color('success')
+                        ->action(function ($record) {
+                            $record->update(['status' => UserStatusEnum::ACTIVE->value]);
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body('User berhasil di-approve.')
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\Action::make('reject')
+                        ->label('Reject')
+                        ->icon('heroicon-o-x-circle')
+                        ->visible(fn ($record) => $record->status == UserStatusEnum::PENDING->value)
+                        ->color('danger')
+                        ->action(function ($record) {
+                            $record->update(['status' => UserStatusEnum::REJECTED->value]);
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body('User berhasil di-reject.')
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\Action::make('suspend')
+                        ->label('Suspend')
+                        ->icon('heroicon-o-pause-circle')
+                        ->visible(fn ($record) => $record->status == UserStatusEnum::ACTIVE->value)
+                        ->color('danger')
+                        ->action(function ($record) {
+                            $record->update(['status' => UserStatusEnum::SUSPENDED->value]);
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body('User berhasil di-suspend.')
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\Action::make('unsuspend')
+                        ->label('Unsuspend')
+                        ->icon('heroicon-o-play-circle')
+                        ->visible(fn ($record) => $record->status == UserStatusEnum::SUSPENDED->value)
+                        ->color('success')
+                        ->action(function ($record) {
+                            $record->update(['status' => UserStatusEnum::ACTIVE->value]);
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body('User berhasil di-unsuspend.')
+                                ->success()
+                                ->send();
+                        }),
+                ])->icon('heroicon-s-ellipsis-vertical'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+            
+                    Tables\Actions\BulkAction::make('approve_all')
+                        ->label('Approve All')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->action(function (Collection $records) {
+                            $updatedCount = 0;
+                            $records->each(function ($record) use (&$updatedCount) {
+                                if ($record->status != UserStatusEnum::ACTIVE->value) {
+                                    $record->update(['status' => UserStatusEnum::ACTIVE->value]);
+                                    $updatedCount++;
+                                }
+                            });
+
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body($updatedCount . ' user berhasil di-approve.')
+                                ->success()
+                                ->send();
+                        }),
+            
+                    // Bulk Reject
+                    Tables\Actions\BulkAction::make('reject_all')
+                        ->label('Reject All')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('warning')
+                        ->action(function (Collection $records) {
+                            $updatedCount = 0;
+                            $records->each(function ($record) use (&$updatedCount) {
+                                if ($record->status != UserStatusEnum::REJECTED->value) {
+                                    $record->update(['status' => UserStatusEnum::REJECTED->value]);
+                                    $updatedCount++;
+                                }
+                            });
+
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body($updatedCount . ' user berhasil di-reject.')
+                                ->success()
+                                ->send();
+                            }),
+            
+                    // Bulk Suspend
+                    Tables\Actions\BulkAction::make('suspend_all')
+                        ->label('Suspend All')
+                        ->icon('heroicon-o-pause-circle')
+                        ->color('secondary')
+                        ->action(function (Collection $records) {
+                            $updatedCount = 0;
+                            $records->each(function ($record) use (&$updatedCount) {
+                                if ($record->status != UserStatusEnum::SUSPENDED->value) {
+                                    $record->update(['status' => UserStatusEnum::SUSPENDED->value]);
+                                    $updatedCount++;
+                                }
+                            });
+    
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body($updatedCount . ' user berhasil di-suspend.')
+                                ->success()
+                                ->send();
+                            }),
+            
+                    // Bulk Unsuspend
+                    Tables\Actions\BulkAction::make('unsuspend_all')
+                        ->label('Unsuspend All')
+                        ->icon('heroicon-o-play-circle')
+                        ->color('info')
+                        ->action(function (Collection $records) {
+                            $updatedCount = 0;
+                            $records->each(function ($record) use (&$updatedCount) {
+                                if ($record->status != UserStatusEnum::SUSPENDED->value) {
+                                    $record->update(['status' => UserStatusEnum::SUSPENDED->value]);
+                                    $updatedCount++;
+                                }
+                            });
+    
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->body($updatedCount . ' user berhasil di-unsuspend.')
+                                ->success()
+                                ->send();
+                            }),
+
                 ]),
             ]);
     }
