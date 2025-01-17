@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Support\Colors\Color;
 
 class UserResource extends Resource
 {
@@ -114,10 +115,14 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('phone'),
-                Tables\Columns\TextColumn::make('province.nama'),
-                Tables\Columns\TextColumn::make('regency.nama'),
-                Tables\Columns\TextColumn::make('district.nama'),
-                Tables\Columns\TextColumn::make('village.nama'),
+                Tables\Columns\TextColumn::make('province.nama')
+                ->toggleable(),
+                Tables\Columns\TextColumn::make('regency.nama')
+                ->toggleable(),
+                Tables\Columns\TextColumn::make('district.nama')
+                ->toggleable(),
+                Tables\Columns\TextColumn::make('village.nama')
+                ->toggleable(),
                 Tables\Columns\TextColumn::make('roles.name')
                 ->badge()
                 ->color(fn($record) => $record->roles->contains('name', 'admin') ? 'warning' : ($record->roles->contains('name', 'pengiklan') ? 'success' : 'info')),
@@ -155,6 +160,7 @@ class UserResource extends Resource
                         ->icon('heroicon-o-check-circle')
                         ->visible(fn ($record) => $record->status == UserStatusEnum::PENDING->value)
                         ->color('success')
+                        ->requiresConfirmation()
                         ->action(function ($record) {
                             $record->update(['status' => UserStatusEnum::ACTIVE->value]);
                             Notification::make()
@@ -162,12 +168,14 @@ class UserResource extends Resource
                                 ->body('User berhasil di-approve.')
                                 ->success()
                                 ->send();
+
                         }),
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
                         ->icon('heroicon-o-x-circle')
                         ->visible(fn ($record) => $record->status == UserStatusEnum::PENDING->value)
                         ->color('danger')
+                        ->requiresConfirmation()
                         ->action(function ($record) {
                             $record->update(['status' => UserStatusEnum::REJECTED->value]);
                             Notification::make()
@@ -181,6 +189,7 @@ class UserResource extends Resource
                         ->icon('heroicon-o-pause-circle')
                         ->visible(fn ($record) => $record->status == UserStatusEnum::ACTIVE->value)
                         ->color('danger')
+                        ->requiresConfirmation()
                         ->action(function ($record) {
                             $record->update(['status' => UserStatusEnum::SUSPENDED->value]);
                             Notification::make()
@@ -194,6 +203,7 @@ class UserResource extends Resource
                         ->icon('heroicon-o-play-circle')
                         ->visible(fn ($record) => $record->status == UserStatusEnum::SUSPENDED->value)
                         ->color('success')
+                        ->requiresConfirmation()
                         ->action(function ($record) {
                             $record->update(['status' => UserStatusEnum::ACTIVE->value]);
                             Notification::make()
@@ -206,12 +216,13 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
             
                     Tables\Actions\BulkAction::make('approve_all')
                         ->label('Approve All')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
+                        ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $updatedCount = 0;
                             $records->each(function ($record) use (&$updatedCount) {
@@ -233,6 +244,7 @@ class UserResource extends Resource
                         ->label('Reject All')
                         ->icon('heroicon-o-x-circle')
                         ->color('warning')
+                        ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $updatedCount = 0;
                             $records->each(function ($record) use (&$updatedCount) {
@@ -253,7 +265,8 @@ class UserResource extends Resource
                     Tables\Actions\BulkAction::make('suspend_all')
                         ->label('Suspend All')
                         ->icon('heroicon-o-pause-circle')
-                        ->color('secondary')
+                        ->color(Color::Slate)
+                        ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $updatedCount = 0;
                             $records->each(function ($record) use (&$updatedCount) {
@@ -275,6 +288,7 @@ class UserResource extends Resource
                         ->label('Unsuspend All')
                         ->icon('heroicon-o-play-circle')
                         ->color('info')
+                        ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $updatedCount = 0;
                             $records->each(function ($record) use (&$updatedCount) {
