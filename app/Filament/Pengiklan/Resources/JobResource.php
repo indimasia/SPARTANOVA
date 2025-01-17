@@ -103,6 +103,7 @@ class JobResource extends Resource
                                     ->label('Generasi Pasukan')
                                     ->required()
                                     ->inline()
+                                    ->multiple()
                                     ->visible(fn(Get $get)=>$get('specific_generation'))
                                     ->validationMessages([
                                         'required' => 'Generasi Pasukan Harus Diisi',
@@ -367,20 +368,20 @@ class JobResource extends Resource
                                 ])
                                 ,
                             Forms\Components\RichEditor::make('instructions')
+                                ->required()
                                 ->toolbarButtons([
                                     'bulletList',
                                     'orderedList',
                                     'redo',
                                     'undo',
                                 ])
-                                ->required()
                                 ->validationMessages([
                                     'required' => 'Instruksi Harus Diisi',
                                 ])
                                 ,
                             Forms\Components\TextInput::make('jobDetail.url_link')
                                 ->label('Link')
-                                ->required()
+                                ->required(fn (Get $get) => $get('type') !== JobType::POSTING->value)
                                 ->url()
                                 ->maxLength(255)
                                 ->validationMessages([
@@ -476,7 +477,7 @@ class JobResource extends Resource
                                                 ->label('Gender'),
                     
                                             Forms\Components\Placeholder::make('generationPlaceHolder')
-                                                ->content(fn(Get $get) => $get('generation') ?? 'Tidak ada pilihan')
+                                                ->content(fn(Get $get) => $get('generation') ? implode(', ', $get('generation')) : 'Tidak ada pilihan')
                                                 ->label('Generasi'),
                     
                                             Forms\Components\Placeholder::make('locationPlaceHolder')

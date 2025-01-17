@@ -19,7 +19,8 @@ class JobDetail extends Model
         'specific_province'=>'array',
         'specific_regency'=>'array',
         'specific_district'=>'array',
-        'specific_village'=>'array'
+        'specific_village'=>'array',
+        'specific_generation'=>'array'
     ];
 
     public function job(): BelongsTo

@@ -60,7 +60,7 @@ class ApplyJob extends Component
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_generation')
-                    ->orWhere('specific_generation', $user->generation_category);
+                    ->orWhereJsonContains('specific_generation', $user->generation_category);
             })
             ->where(function ($q) use ($user) {
                 $q->whereNull('specific_province')
