@@ -11,11 +11,11 @@ class Village extends Model
 {
     use HasFactory;
     protected $table = 'wil_villages';
-    protected $primaryKey = 'kel_id';
+    protected $primaryKey = 'kode';
 
     public function users(): HasMany
     {
-        return $this->hasMany(User::class, 'village_kode', 'kel_id');
+        return $this->hasMany(User::class, 'village_kode', 'kode');
     }
 
     public function district()

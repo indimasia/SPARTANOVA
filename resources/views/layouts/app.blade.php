@@ -92,6 +92,13 @@
                                 <span>Riwayat Pekerjaan</span>
                             </a>
 
+                            <a href="{{ route('pasukan.profile') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-user text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Profile</span>
+                                </a>
+
                             <div class="px-4 py-2.5 border-t border-gray-100 mt-auto">
                                 <livewire:auth.logout />
                             </div>
@@ -110,24 +117,31 @@
                         <div class="hidden md:block w-64 bg-white shadow-sm border-r border-gray-100 min-h-screen">
                             <nav class="py-4 sticky top-16">
                                 <a href="{{ route('dashboard') }}"
-                                    class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
-                                    <i
-                                        class="fas fa-chart-line text-sm mr-3 {{ request()->routeIs('dashboard') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i class="fas fa-chart-line text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Dashboard</span>
                                 </a>
 
+
                                 <a href="{{ route('pasukan.apply-job') }}"
-                                    class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-briefcase text-sm mr-3 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                        class="fas fa-briefcase text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Pekerjaan</span>
                                 </a>
 
                                 <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
-                                    class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                        class="fas fa-history text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Riwayat Pekerjaan</span>
+                                </a>
+
+                                <a href="{{ route('pasukan.profile') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-user text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Profile</span>
                                 </a>
 
                                 <div class="px-4 py-2.5 border-t border-gray-100 mt-4">

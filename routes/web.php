@@ -2,8 +2,10 @@
 
 use App\Livewire\Home;
 use App\Livewire\Auth\Register;
+use App\Livewire\Pasukan\Profile;
 use App\Livewire\Pasukan\ApplyJob;
 use App\Livewire\Pasukan\Dashboard;
+use App\Livewire\Pasukan\ViewProfile;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\PasukanMiddleware;
 use App\Livewire\Pasukan\RiwayatPekerjaan;
@@ -16,6 +18,8 @@ Route::middleware([PasukanMiddleware::class])->group(
         Route::get('/dashboard', Dashboard::class)->name('dashboard');
         Route::get('/pasukan/apply-job', ApplyJob::class)->name('pasukan.apply-job');
         Route::get('/pasukan/riwayat-pekerjaan', RiwayatPekerjaan::class)->name('pasukan.riwayat-pekerjaan');
+        Route::get('/pasukan/profile', ViewProfile::class)->name('pasukan.profile');
+        Route::get('/pasukan/profile/edit', Profile::class)->name('pasukan.profile.edit');
     }
 );
 
