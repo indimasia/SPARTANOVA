@@ -309,7 +309,7 @@
                                         <input type="text" id="{{ strtolower($platform->value) }}"
                                             wire:model="social_media.{{ $platform->value }}"
                                             class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm group-hover:border-blue-300 transition-colors duration-200"
-                                            placeholder="{{ $platform->value == 'Youtube' ? 'URL ' . $platform->value : 'Username ' . $platform->value }}"
+                                            placeholder="{{ 'URL Profile ' . $platform->value }}"
                                             @if($social_media[$platform->value] == 'Tidak punya akun') @disabled(true) @endif>
                                     </div>
                                     <!-- Toggle Button -->
