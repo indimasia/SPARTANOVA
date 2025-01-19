@@ -19,11 +19,10 @@ class JobTypeStatsWidget extends BaseWidget
         return $table
             ->query(
                 JobCampaign::query()
-                ->select('type')
-                ->selectRaw('COUNT(*) as total')
-                ->selectRaw("MD5(type) as id")
-                ->groupBy('type')
-                ->orderByDesc('total')
+                    ->select('type')
+                    ->selectRaw('COUNT(*) as total')
+                    ->groupBy('type')
+                    ->orderByDesc('total')
             )->columns([
                 TextColumn::make('type')
                     ->label('Jenis Pekerjaan')
