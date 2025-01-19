@@ -58,10 +58,10 @@ class ViewProfile extends Component
         $this->contact_wa = $this->user->contact_wa;
         $this->interest = $this->user->interest;
         $this->generation_category = $this->user->generation_category;
-        $this->province_nama = $this->user->province->nama;
-        $this->regency_nama = $this->user->regency->nama;
-        $this->district_nama = $this->user->district->nama;
-        $this->village_nama = $this->user->village->nama;
+        $this->province_nama = $this->user->province->nama ?? 'Provinsi tidak ditemukan';
+        $this->regency_nama = $this->user->regency->nama ?? 'Kabupaten tidak ditemukan';
+        $this->district_nama = $this->user->district->nama ?? 'Kecamatan tidak ditemukan';
+        $this->village_nama = $this->user->village->nama ?? 'Desa tidak ditemukan';
         $this->facebookAccounts = $this->user->sosialMediaAccounts->where('user_id', $this->user->id)->where('sosial_media', 'Facebook')->pluck('account')->first();
         $this->instagramAccounts = $this->user->sosialMediaAccounts->where('user_id', $this->user->id)->where('sosial_media', 'Instagram')->pluck('account')->first();
         $this->youtubeAccounts = $this->user->sosialMediaAccounts->where('user_id', $this->user->id)->where('sosial_media', 'Youtube')->pluck('account')->first();
