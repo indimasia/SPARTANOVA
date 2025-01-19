@@ -2,9 +2,11 @@
 
     <div class="mx-auto px-10 py-10">
       <article class="bg-white shadow-lg rounded-lg overflow-hidden">
+        @if($article->image)
         <div class="relative h-64 sm:h-80 md:h-96">
           <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
         </div>
+        @endif
   
         <div class="p-6 sm:p-8">
           <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">{{ $article->title }}</h1>
