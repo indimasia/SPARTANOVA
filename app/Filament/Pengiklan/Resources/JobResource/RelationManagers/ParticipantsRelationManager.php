@@ -3,9 +3,11 @@
 namespace App\Filament\Pengiklan\Resources\JobResource\RelationManagers;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
 use App\Models\UserPerformance;
 use Filament\Notifications\Notification;
@@ -103,15 +105,27 @@ class ParticipantsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->action(function ( $record) {
                             try {
-                                $record->update(['status' => JobStatusEnum::APPROVED->value]);
-
+                                
                                 $userPerformance = UserPerformance::firstOrNew(['user_id' => $record->user_id]);
                                 $userPerformance->user_id = $record->user_id;
                                 $userPerformance->job_completed = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->count();
                                 $userPerformance->total_reward = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->sum('reward');
                                 $userPerformance->save();
-
-                                Notification::make()
+                                
+                                \App\Models\Notification::create([
+                                    'id' => (string) Str::uuid(),
+                                    'type' => 'Job Approved',
+                                    'notifiable_id' => $record->user_id,
+                                    'notifiable_type' => User::class,
+                                    'data' => json_encode([
+                                        'message' => 'Your job has been approved!',
+                                        'job_id' => $record->id,
+                                    ]),
+                                    'read_at' => null,
+                                ]);
+                                    
+                                    $record->update(['status' => JobStatusEnum::APPROVED->value]);
+                                    Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
                                     ->send();
