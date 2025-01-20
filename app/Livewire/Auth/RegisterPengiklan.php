@@ -24,6 +24,7 @@ class RegisterPengiklan extends Component
     public $gender;
     public $date_of_birth;
     public $phone;
+    public $company;
     public $village_kode;
     public $district_kode;
     public $regency_kode;
@@ -45,6 +46,7 @@ class RegisterPengiklan extends Component
         'district_kode' => 'required',
         'regency_kode' => 'required',
         'province_kode' => 'required',
+        'company' => 'required|string|max:255',
     ];
 
     public function mount()
@@ -89,7 +91,8 @@ class RegisterPengiklan extends Component
                 'village_kode' => ['required'],
                 'district_kode' => ['required'],
                 'regency_kode' => ['required'],
-                'province_kode' => ['required']
+                'province_kode' => ['required'],
+                'company' => ['required', 'string', 'max:255'],
             ],[
                 'name.required' => 'Nama harus diisi',
                 'name.string' => 'Nama harus berupa string',
@@ -111,6 +114,9 @@ class RegisterPengiklan extends Component
                 'district_kode.required' => 'Kecamatan harus diisi',
                 'regency_kode.required' => 'Kabupaten harus diisi',
                 'province_kode.required' => 'Provinsi harus diisi',
+                'company.required' => 'Nama perusahaan harus diisi',
+                'company.string' => 'Nama perusahaan harus berupa string',
+                'company.max' => 'Nama perusahaan tidak boleh lebih dari 255 karakter',
             ]);
         } catch (ValidationException $e) {
             $errorField = array_key_first($e->validator->errors()->toArray());

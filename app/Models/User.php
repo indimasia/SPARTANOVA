@@ -37,6 +37,7 @@ class User extends Authenticatable implements FilamentUser
         'province_kode',
         'interest',
         'contact_wa',
+        'company',
     ];
 
     /**

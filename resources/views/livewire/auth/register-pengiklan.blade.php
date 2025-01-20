@@ -57,6 +57,26 @@
                                 @enderror
                             </div>
 
+                            <!-- company -->
+                            <div class="group">
+                                <label for="company" class="block text-sm font-medium text-gray-700">Nama Perusahaan</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i
+                                            class="fas fa-building text-gray-400 group-hover:text-blue-500 transition-colors duration-200"></i>
+                                    </div>
+                                    <input type="text" id="company" wire:model="company"
+                                        class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm group-hover:border-blue-300 transition-colors duration-200"
+                                        placeholder="Nama Perusahaan">
+                                </div>
+                                @error('company')
+                                    <p class="mt-1 text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
                             <!-- Password -->
                             <div class="group">
                                 <label for="password" class="block text-sm font-medium text-gray-700">Kata Sandi</label>
