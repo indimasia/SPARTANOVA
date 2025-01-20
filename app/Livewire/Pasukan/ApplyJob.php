@@ -3,7 +3,11 @@
 namespace App\Livewire\Pasukan;
 
 use App\Enums\JobType;
+use App\Models\Regency;
+use App\Models\Village;
 use Livewire\Component;
+use App\Models\District;
+use App\Models\Province;
 use App\Models\JobDetail;
 use App\Enums\PlatformEnum;
 use App\Models\JobCampaign;
@@ -21,6 +25,10 @@ class ApplyJob extends Component
     public $showModal = false;
     public $selectedJob;
     public $jobDetail;
+    public $province;
+    public $regency;
+    public $district;
+    public $village;
 
     // Search and filter properties
     public $search = '';
@@ -107,6 +115,11 @@ class ApplyJob extends Component
     {
         $this->selectedJob = JobCampaign::withCount('participants as participantCount')->find($jobId);
         $this->jobDetail = JobDetail::where('job_id', $jobId)->first();
+        $this->province = Province::where('kode', $this->jobDetail->specific_province)->first();
+        $this->regency = Regency::where('kode', $this->jobDetail->specific_regency)->first();
+        $this->district = District::where('kode', $this->jobDetail->specific_district)->first();
+        $this->village = Village::where('kode', $this->jobDetail->specific_village)->first();
+
         $this->showModal = true;
     }
 

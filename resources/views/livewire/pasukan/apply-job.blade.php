@@ -38,107 +38,233 @@
         </div>
 
         <!-- Job Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @forelse($jobCampaigns as $campaign)
-                <div
-                    class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <div class="p-4">
-                        <!-- Platform & Date -->
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="inline-flex items-center gap-1 text-sm font-medium text-gray-600">
-                                @switch(strtolower($campaign->platform->value))
-                                    @case('facebook')
-                                        <i class="fab fa-facebook text-blue-600 text-lg"></i>
-                                    @break
-
-                                    @case('instagram')
-                                        <i class="fab fa-instagram text-pink-600 text-lg"></i>
-                                    @break
-
-                                    @case('twitter')
-                                        <i class="fab fa-twitter text-blue-400 text-lg"></i>
-                                    @break
-
-                                    @case('tiktok')
-                                        <i class="fab fa-tiktok text-black text-lg"></i>
-                                    @break
-
-                                    @case('youtube')
-                                        <i class="fab fa-youtube text-red-600 text-lg"></i>
-                                    @break
-
-                                    @default
-                                        <i class="fas fa-globe text-gray-600 text-lg"></i>
-                                @endswitch
-                                {{ $campaign->platform->value }}
-                            </span>
-                            <span class="text-xs text-gray-500">
-                                {{ $campaign->created_at->format('d M Y') }}
-                            </span>
-                        </div>
-
-                        <!-- Title -->
-                        <h3 class="text-base font-medium text-gray-900 mb-2">
-                            {{ $campaign->title }}
-                        </h3>
-
-                        <!-- Type & Reward -->
-                        <div class="flex items-center justify-between mb-3">
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                <i class="fas fa-tag mr-1"></i>
-                                {{ $campaign->type->value }}
-                            </span>
-                            <span class="text-sm font-semibold text-gray-900">
-                                Rp {{ number_format($campaign->reward, 0, ',', '.') }}
-                            </span>
-                        </div>
-
-                        <!-- Quota -->
-                        <div class="mb-3">
-                            <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
-                                <span>Kuota Tersisa</span>
-                                <span>{{ $campaign->participantCount }} / {{ $campaign->quota }}</span>
+        <div class="space-y-6">
+            <!-- Applied Jobs Section -->
+            @php
+                $appliedJobs = $jobCampaigns->filter(function($campaign) {
+                    return Auth::user()->jobParticipants()->where('job_id', $campaign->id)->exists();
+                });
+                
+                $availableJobs = $jobCampaigns->filter(function($campaign) {
+                    return !Auth::user()->jobParticipants()->where('job_id', $campaign->id)->exists();
+                });
+            @endphp
+        
+            @if($appliedJobs->count() > 0)
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-lg font-semibold text-gray-900">Misi Yang Sedang Dikerjakan</h2>
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ $appliedJobs->count() }}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($appliedJobs as $campaign)
+                            <div class="bg-white border-2 border-blue-100 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                                <div class="p-4">
+                                    <!-- Platform & Date -->
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="inline-flex items-center gap-1 text-sm font-medium text-gray-600">
+                                            @switch(strtolower($campaign->platform->value))
+                                                @case('facebook')
+                                                    <i class="fab fa-facebook text-blue-600 text-lg"></i>
+                                                @break
+                                                @case('instagram')
+                                                    <i class="fab fa-instagram text-pink-600 text-lg"></i>
+                                                @break
+                                                @case('twitter')
+                                                    <i class="fab fa-twitter text-blue-400 text-lg"></i>
+                                                @break
+                                                @case('tiktok')
+                                                    <i class="fab fa-tiktok text-black text-lg"></i>
+                                                @break
+                                                @case('youtube')
+                                                    <i class="fab fa-youtube text-red-600 text-lg"></i>
+                                                @break
+                                                @case('whatsapp')
+                                                    <i class="fab fa-whatsapp text-green-600 text-lg"></i>
+                                                @break
+                                                @case('google')
+                                                    <i class="fab fa-google text-blue-600 text-lg"></i>
+                                                @break
+                                                @default
+                                                    <i class="fas fa-globe text-gray-600 text-lg"></i>
+                                            @endswitch
+                                            {{ $campaign->platform->value }}
+                                        </span>
+                                        <span class="text-xs text-gray-500">
+                                            {{ $campaign->created_at->format('d M Y') }}
+                                        </span>
+                                    </div>
+        
+                                    <!-- Title -->
+                                    <h3 class="text-base font-medium text-gray-900 mb-2">
+                                        {{ $campaign->title }}
+                                    </h3>
+        
+                                    <!-- Type & Reward -->
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-tag mr-1"></i>
+                                            {{ $campaign->type->value }}
+                                        </span>
+                                        <span class="text-sm font-semibold text-gray-900">
+                                            Rp {{ number_format($campaign->reward, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+        
+                                    <!-- Quota -->
+                                    <div class="mb-3">
+                                        <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                            <span>Kuota Tersisa</span>
+                                            <span>{{ $campaign->participantCount }} / {{ $campaign->quota }}</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                            <div class="bg-blue-500 h-1.5 rounded-full"
+                                                style="width: {{ $campaign->quota > 0 ? ($campaign->participantCount / $campaign->quota) * 100 : 0 }}%">
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <!-- Actions -->
+                                    <div class="flex flex-col gap-3">
+                                        <div class="flex items-center justify-between">
+                                            <button wire:click="showJobDetail({{ $campaign->id }})"
+                                                class="text-sm font-medium text-blue-500 hover:text-blue-600">
+                                                <i class="fas fa-info-circle mr-1"></i>
+                                                Detail
+                                            </button>
+                                            <span class="inline-flex items-center px-3 py-1.5 border border-blue-200 text-sm font-medium rounded text-blue-600 bg-blue-50">
+                                                <i class="fas fa-check mr-1"></i>
+                                                Sedang Dikerjakan
+                                            </span>
+                                        </div>
+                                        @php
+                                            $redirectUrl = $campaign->platform_url;
+                                            if ($campaign->type->value === 'Posting') {
+                                                $socialMediaAccount = auth()->user()->sosialMediaAccounts()
+                                                    ->where('sosial_media', $campaign->platform->value)
+                                                    ->first();
+                                                if ($socialMediaAccount) {
+                                                    $redirectUrl = $socialMediaAccount->account;
+                                                }
+                                            }
+                                        @endphp
+                                        <a href="{{ $redirectUrl }}" 
+                                           target="_blank"
+                                           class="inline-flex items-center justify-center w-full px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                                            <i class="fas fa-external-link-alt mr-2"></i>
+                                            Kerjakan Misi Sekarang
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                <div class="bg-yellow-500 h-1.5 rounded-full"
-                                    style="width: {{ $campaign->quota > 0 ? ($campaign->participantCount / $campaign->quota) * 100 : 0 }}%">
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        
+            <!-- Available Jobs Section -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-lg font-semibold text-gray-900">Misi Yang Tersedia</h2>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        {{ $availableJobs->count() }}
+                    </span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @forelse($availableJobs as $campaign)
+                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                            <div class="p-4">
+                                <!-- Platform & Date -->
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="inline-flex items-center gap-1 text-sm font-medium text-gray-600">
+                                        @switch(strtolower($campaign->platform->value))
+                                            @case('facebook')
+                                                <i class="fab fa-facebook text-blue-600 text-lg"></i>
+                                            @break
+                                            @case('instagram')
+                                                <i class="fab fa-instagram text-pink-600 text-lg"></i>
+                                            @break
+                                            @case('twitter')
+                                                <i class="fab fa-twitter text-blue-400 text-lg"></i>
+                                            @break
+                                            @case('tiktok')
+                                                <i class="fab fa-tiktok text-black text-lg"></i>
+                                            @break
+                                            @case('youtube')
+                                                <i class="fab fa-youtube text-red-600 text-lg"></i>
+                                            @break
+                                            @case('whatsapp')
+                                                <i class="fab fa-whatsapp text-green-600 text-lg"></i>
+                                            @break
+                                            @case('google')
+                                                <i class="fab fa-google text-blue-600 text-lg"></i>
+                                            @break
+                                            @default
+                                                <i class="fas fa-globe text-gray-600 text-lg"></i>
+                                        @endswitch
+                                        {{ $campaign->platform->value }}
+                                    </span>
+                                    <span class="text-xs text-gray-500">
+                                        {{ $campaign->created_at->format('d M Y') }}
+                                    </span>
+                                </div>
+        
+                                <!-- Title -->
+                                <h3 class="text-base font-medium text-gray-900 mb-2">
+                                    {{ $campaign->title }}
+                                </h3>
+        
+                                <!-- Type & Reward -->
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        <i class="fas fa-tag mr-1"></i>
+                                        {{ $campaign->type->value }}
+                                    </span>
+                                    <span class="text-sm font-semibold text-gray-900">
+                                        Rp {{ number_format($campaign->reward, 0, ',', '.') }}
+                                    </span>
+                                </div>
+        
+                                <!-- Quota -->
+                                <div class="mb-3">
+                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                        <span>Kuota Tersisa</span>
+                                        <span>{{ $campaign->participantCount }} / {{ $campaign->quota }}</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                        <div class="bg-yellow-500 h-1.5 rounded-full"
+                                            style="width: {{ $campaign->quota > 0 ? ($campaign->participantCount / $campaign->quota) * 100 : 0 }}%">
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- Actions -->
+                                <div class="flex items-center justify-between">
+                                    <button wire:click="showJobDetail({{ $campaign->id }})"
+                                        class="text-sm font-medium text-yellow-500 hover:text-yellow-600">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Detail
+                                    </button>
+                                    <button onclick="confirmApplyJob({{ $campaign->id }})"
+                                        class="inline-flex items-center px-3 py-1.5 border border-yellow-500 text-sm font-medium rounded text-yellow-500 bg-white hover:bg-yellow-500 hover:text-white transition-colors duration-200">
+                                        <i class="fas fa-paper-plane mr-1"></i>
+                                        Ambil Misi
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Actions -->
-                        <div class="flex items-center justify-between mt-4">
-                            <button wire:click="showJobDetail({{ $campaign->id }})"
-                                class="text-sm font-medium text-yellow-500 hover:text-yellow-600">
-                                <i class="fas fa-info-circle mr-1"></i>
-                                Detail
-                            </button>
-                            @if (Auth::user()->jobParticipants()->where('job_id', $campaign->id)->exists())
-                                <span
-                                    class="inline-flex items-center px-3 py-1.5 border border-gray-200 text-sm font-medium rounded text-gray-400 bg-gray-50 cursor-not-allowed">
-                                    <i class="fas fa-check mr-1"></i>
-                                    Sudah Dilamar
-                                </span>
-                            @else
-                                <button onclick="confirmApplyJob({{ $campaign->id }})"
-                                    class="inline-flex items-center px-3 py-1.5 border border-yellow-500 text-sm font-medium rounded text-yellow-500 bg-white hover:bg-yellow-500 hover:text-white transition-colors duration-200">
-                                    <i class="fas fa-paper-plane mr-1"></i>
-                                    Lamar
-                                </button>
-                            @endif
+                    @empty
+                        <div class="col-span-full text-center py-8">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                                <i class="fas fa-briefcase text-2xl text-gray-400"></i>
+                            </div>
+                            <h3 class="text-sm font-medium text-gray-900 mb-1">Belum Ada Pekerjaan</h3>
+                            <p class="text-sm text-gray-500">Belum ada pekerjaan yang tersedia saat ini</p>
                         </div>
-                    </div>
+                    @endforelse
                 </div>
-                @empty
-                    <div class="col-span-full text-center py-8">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-                            <i class="fas fa-briefcase text-2xl text-gray-400"></i>
-                        </div>
-                        <h3 class="text-sm font-medium text-gray-900 mb-1">Belum Ada Pekerjaan</h3>
-                        <p class="text-sm text-gray-500">Belum ada pekerjaan yang tersedia saat ini</p>
-                    </div>
-                @endforelse
             </div>
         </div>
 
@@ -274,10 +400,6 @@
                                             'specific_gender' => 'Jenis Kelamin',
                                             'specific_generation' => 'Generasi',
                                             'specific_interest' => 'Minat Khusus',
-                                            'specific_province' => 'Provinsi',
-                                            'specific_regency' => 'Kabupaten',
-                                            'specific_district' => 'Kecamatan',
-                                            'specific_village' => 'Desa',
                                         ])->filter(fn($label, $key) => $jobDetail->$key);
                                     @endphp
 
@@ -303,6 +425,27 @@
                                                         </div>
                                                     </div>
                                                 @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if ($province || $regency || $district || $village)
+                                        <div class="mt-6">
+                                            <h5 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <i class="fas fa-map-marker-alt text-yellow-500 mr-1"></i> Lokasi:
+                                            </h5>
+                                            <div class="space-y-2 text-sm text-gray-600">
+                                                @if ($province)
+                                                    <p><strong>Provinsi:</strong> {{ $province->nama }}</p>
+                                                @endif
+                                                @if ($regency)
+                                                    <p><strong>Kabupaten/Kota:</strong> {{ $regency->nama }}</p>
+                                                @endif
+                                                @if ($district)
+                                                    <p><strong>Kecamatan:</strong> {{ $district->nama }}</p>
+                                                @endif
+                                                @if ($village)
+                                                    <p><strong>Desa/Kelurahan:</strong> {{ $village->nama }}</p>
+                                                @endif
                                             </div>
                                         </div>
                                     @endif
@@ -351,13 +494,13 @@
                         <span
                             class="inline-flex items-center px-4 py-2 border border-gray-200 text-sm font-medium rounded text-gray-400 bg-gray-50 cursor-not-allowed">
                             <i class="fas fa-check mr-1"></i>
-                            Sudah Dilamar
+                            Sudah Diambil
                         </span>
                     @else
                         <button wire:click="applyJob({{ $selectedJob->id }})"
                             class="px-4 py-2 bg-yellow-500 text-white text-sm font-medium rounded hover:bg-yellow-600 transition-colors duration-200">
                             <i class="fas fa-paper-plane mr-1"></i>
-                            Lamar Sekarang
+                            Ambil Misi
                         </button>
                     @endif
                 </div>
@@ -369,8 +512,8 @@
 <script>
     function confirmApplyJob(ok) {
         showConfirmation(
-                'Konfirmasi Lamar Pekerjaan',
-                'Apakah Anda yakin ingin melamar pekerjaan ini? Pastikan Anda memenuhi persyaratan yang diminta.',
+                'Konfirmasi Pengambilan Misi',
+                'Apakah Anda yakin ingin mengambil misi ini? Pastikan Anda memenuhi persyaratan yang diminta.',
                 () => {
                     @this.applyJob(ok);
                 }

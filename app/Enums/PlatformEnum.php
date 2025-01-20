@@ -10,6 +10,7 @@ enum PlatformEnum: string
     case GOOGLE = 'Google';
     case TIKTOK = 'TikTok';
     case YOUTUBE = 'Youtube';
+    case WHATSAPP = 'WhatsApp';
     // Add other platforms as needed
     public static function options()
     {

@@ -303,6 +303,7 @@
                                                 'Google' => 'text-blue-600',
                                                 'TikTok' => 'text-black',
                                                 'Youtube' => 'text-red-600',
+                                                'WhatsApp' => 'text-green-600',
                                                 default => 'text-gray-400',
                                             } }}"></i>
                                         </div>
