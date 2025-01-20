@@ -18,9 +18,9 @@ class JobTypeStatsWidget extends BaseWidget
     {
         return $table
             ->query(
-                JobCampaign::query()
+                    JobCampaign::query()
                     ->select('type')
-                    ->selectRaw('COUNT(*) as total')
+                    ->selectRaw('MIN(id) as id, type, COUNT(*) as total')
                     ->groupBy('type')
                     ->orderByDesc('total')
             )->columns([
