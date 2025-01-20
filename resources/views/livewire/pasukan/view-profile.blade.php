@@ -17,6 +17,7 @@
 
             <!-- Profile Info -->
             <div class="pt-16 pb-8 px-8">
+                @livewire('update-user-data')
                 <div class="flex justify-between items-start">
                     <div>
                         <h1 class="text-2xl font-bold">Pasukan User</h1>
@@ -100,11 +101,13 @@
                                             <i class="fas fa-heart w-5"></i>
                                             <span>Interests:</span>
                                         </div>
-                                        <ul class="list-disc list-inside ml-8">
-                                            @foreach ($interest as $item)
-                                                <li>{{ $item }}</li>
-                                            @endforeach
-                                        </ul>
+                                        @if (!empty($interest))
+                                            <ul class="list-disc list-inside ml-8">
+                                                @foreach ($interest as $item)
+                                                    <li>{{ $item }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="space-y-4">

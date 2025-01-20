@@ -30,8 +30,8 @@
                     @error('interestValue') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div class="flex justify-end gap-2">
-                    <button type="button" wire:click="$set('showModal', false)"
-                        class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md">Batal</button>
+                    {{-- <button type="button" wire:click="$set('showModal', false)"
+                        class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md">Batal</button> --}}
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Simpan</button>
                 </div>
             </form>

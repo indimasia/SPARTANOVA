@@ -87,12 +87,14 @@ class ApplyJob extends Component
                     ->orWhereJsonContains('specific_village', $user->village_kode);
             })
             ->where(function ($q) use ($user) {
-                $q->whereNull('specific_interest')
-                    ->orWhere(function ($q2) use ($user) {
-                        foreach ($user->interest as $interest) {
-                            $q2->orWhereJsonContains('specific_interest', $interest);
-                        }
-                    });
+                if (!empty($user->interest)) {
+                    $q->whereNull('specific_interest')
+                        ->orWhere(function ($q2) use ($user) {
+                            foreach ($user->interest as $interest) {
+                                $q2->orWhereJsonContains('specific_interest', $interest);
+                            }
+                        });
+                }
             });
         })
         ->withCount('participants as participantCount')

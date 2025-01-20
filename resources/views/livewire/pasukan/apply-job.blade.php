@@ -1,4 +1,5 @@
 <div class="p-4 sm:p-6 lg:p-8">
+    @livewire('update-user-data')
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <i class="fas fa-briefcase text-yellow-500"></i>
