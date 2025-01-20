@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 UserGrowthWidget::class,
                 KlasifikasiPasukanWidget::class,
                 AdvertiserTable::class,
-                JobTypeStatsWidget::class,
+                // JobTypeStatsWidget::class,
                 AgePasukanChart::class,
                 GenderOverview::class,
                 InterestPasukanChart::class,
