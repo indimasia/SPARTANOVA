@@ -162,6 +162,12 @@
                                         class="fas fa-briefcase text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Pekerjaan</span>
                                 </a>
+                                <a href="{{ route('misi.progres') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Progres Misi</span>
+                                </a>
 
                                 <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">

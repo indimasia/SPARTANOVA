@@ -345,10 +345,10 @@ class JobResource extends Resource
                             ->image()
                             ->disk('public')
                             ->imageEditor()
-                            ->imageCropAspectRatio('16:9')
+                            // ->imageCropAspectRatio('16:9')
                             ->imageResizeMode('cover')
-                            ->imageResizeTargetWidth('1024')
-                            ->imageResizeTargetHeight('576')
+                            // ->imageResizeTargetWidth('1024')
+                            // ->imageResizeTargetHeight('576')
                             ->afterStateUpdated(function (callable $set, $state) {
                                 if ($state) {
                                     $path = $state->store('images', 'public');

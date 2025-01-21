@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pasukan;
+namespace App\Livewire;
 
 use App\Enums\JobType;
 use App\Models\Regency;
@@ -20,7 +20,7 @@ use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.app')]
-class ApplyJob extends Component
+class MisiProgres extends Component
 {
     public $showModal = false;
     public $selectedJob;
@@ -105,12 +105,25 @@ class ApplyJob extends Component
             return $job;
         });
 
-    return view('livewire.pasukan.apply-job', [
+    return view('livewire.misi-progres', [
         'jobCampaigns' => $jobCampaigns,
         'platforms' => PlatformEnum::cases(),
         'types' => JobType::cases()
     ])->layout('layouts.app');
 }
+
+
+    public function showJobDetail($jobId)
+    {
+        $this->selectedJob = JobCampaign::withCount('participants as participantCount')->find($jobId);
+        $this->jobDetail = JobDetail::where('job_id', $jobId)->first();
+        $this->province = Province::where('kode', $this->jobDetail->specific_province)->first();
+        $this->regency = Regency::where('kode', $this->jobDetail->specific_regency)->first();
+        $this->district = District::where('kode', $this->jobDetail->specific_district)->first();
+        $this->village = Village::where('kode', $this->jobDetail->specific_village)->first();
+
+        $this->showModal = true;
+    }
 
     public function closeModal()
     {
@@ -144,7 +157,5 @@ class ApplyJob extends Component
 
         $this->dispatch('success', 'Berhasil melamar pekerjaan.');
         $this->closeModal();
-        return redirect()->route('misi.progres');
-
     }
 }
