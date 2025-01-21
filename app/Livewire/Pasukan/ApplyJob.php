@@ -144,7 +144,7 @@ class ApplyJob extends Component
 
         $this->dispatch('success', 'Berhasil melamar pekerjaan.');
         $this->closeModal();
-        return redirect()->route('misi.progres');
+        return redirect()->route('job.detail', $jobId);
 
     }
 }
