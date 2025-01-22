@@ -45,6 +45,7 @@ class RiwayatPekerjaan extends Component
 
     public function showUploadModal($historyId)
     {
+        $this->attachment = null;
         $this->selectedJobHistory = $historyId;
         $this->showModal = true;
     }
@@ -56,6 +57,7 @@ class RiwayatPekerjaan extends Component
 
     public function uploadBukti()
     {
+        // dd($this->attachment);
         $this->validate([
             'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ], [
@@ -65,10 +67,10 @@ class RiwayatPekerjaan extends Component
             'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
+
         $jobParticipant = JobParticipant::find($this->selectedJobHistory);
 
         $path = $this->attachment->store('attachments', 'public');
-
         $jobParticipant->update([
             'attachment' => $path,
             'status' => JobStatusEnum::REPORTED->value,
@@ -85,11 +87,46 @@ class RiwayatPekerjaan extends Component
 
         if ($jobParticipant && $jobParticipant->attachment) {
             $this->viewAttachmentPath = asset('storage/' . $jobParticipant->attachment);
+            $this->selectedJobHistory = $historyId;
             $this->viewAttachmentModal = true;
         } else {
             session()->flash('message', 'Bukti tidak ditemukan!');
         }
     }
+
+    public function updateAttachment()
+{
+    $this->validate([
+        'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ], [
+        'attachment.required' => 'File bukti harus diunggah.',
+        'attachment.file' => 'Harap unggah file yang valid.',
+        'attachment.mimes' => 'File harus berupa: jpg, jpeg, png, pdf.',
+        'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
+    ]);
+
+    $jobParticipant = JobParticipant::find($this->selectedJobHistory);
+
+    if (!$jobParticipant) {
+        session()->flash('message', 'Data tidak ditemukan!');
+        return;
+    }
+
+    // Hapus file lama jika ada
+    if ($jobParticipant->attachment) {
+        \Storage::disk('public')->delete($jobParticipant->attachment);
+    }
+
+    // Simpan file baru
+    $path = $this->attachment->store('attachments', 'public');
+    $jobParticipant->update([
+        'attachment' => $path,
+    ]);
+
+    $this->viewAttachmentPath = asset('storage/' . $path);
+    session()->flash('message', 'Bukti berhasil diperbarui!');
+}
+
 
     public function closeAttachmentModal()
     {
