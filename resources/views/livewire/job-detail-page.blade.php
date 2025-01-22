@@ -3,7 +3,7 @@
         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl">
             <!-- Page Header -->
             <div class="bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 p-6 sm:p-10">
-                <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Detail Pekerjaan</h1>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Detail Misi</h1>
                 <p class="text-yellow-100">Informasi lengkap tentang misi yang tersedia</p>
             </div>
             
@@ -53,7 +53,7 @@
                                 </svg>
                                 {{ $selectedJob->type->value }}
                             </span>
-                            @if ($jobDetail && $jobDetail->url_link)
+                            @if ($jobDetail && $jobDetail->url_link && $selectedJob->type->value !== 'View')
                                 <a href="{{ $jobDetail->url_link }}" target="_blank" class="text-yellow-500 hover:text-yellow-600 text-sm font-medium flex items-center transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -86,7 +86,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
-                                    Detail Pekerjaan
+                                    Detail Misi
                                 </h4>
 
                                 <div class="space-y-8">
@@ -96,7 +96,7 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                Deskripsi Pekerjaan:
+                                                Deskripsi Misi:
                                             </h5>
                                             <p class="text-gray-600 leading-relaxed whitespace-pre-line">
                                                 {!! nl2br(e($jobDetail->description)) !!}
@@ -245,12 +245,11 @@
                     Kerjakan Misi Sekarang
                 </a>
                 @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'View')
-                <a href="" 
+                <a href="{{ $jobDetail->url_link }}" target="_blank"
                     class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                     <i class="fas fa-external-link-alt mr-2"></i>
                     Menuju Link
                 </a>
-                    
                 @endif
             </div>
         </div>
