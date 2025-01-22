@@ -13,7 +13,7 @@ class JobDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['job_id', 'image', 'description', 'url_link', 'specific_gender', 'specific_generation', 'specific_interest', 'specific_province', 'specific_regency', 'specific_district', 'specific_village'];
+    protected $fillable = ['job_id', 'image', 'description', 'url_link', 'caption', 'specific_gender', 'specific_generation', 'specific_interest', 'specific_province', 'specific_regency', 'specific_district', 'specific_village'];
     protected $casts = [
         'specific_interest'=>'array',
         'specific_province'=>'array',

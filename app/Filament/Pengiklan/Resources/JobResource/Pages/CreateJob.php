@@ -36,6 +36,7 @@ class CreateJob extends CreateRecord
             $jobDetail->specific_district = $data['district_kode'] ?? null;
             $jobDetail->specific_village = $data['village_kode'] ?? null;
             $jobDetail->url_link = $data['jobDetail']['url_link'] ?? null;
+            $jobDetail->caption = $data['jobDetail']['caption'] ?? null;
             $jobDetail->save();
         }
 

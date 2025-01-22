@@ -388,6 +388,14 @@ class JobResource extends Resource
                                     'required' => 'Link Harus Diisi',
                                 ])
                                 ,
+                            Forms\Components\TextInput::make('jobDetail.caption')
+                                ->label('Caption')
+                                ->required(fn (Get $get) => $get('type') == JobType::POSTING->value)
+                                ->maxLength(255)
+                                ->validationMessages([
+                                    'required' => 'Caption Harus Diisi',
+                                ])
+                                ,
                         ]),
                     Wizard\Step::make('Tinjauan')
                     ->icon('heroicon-s-eye')
@@ -460,6 +468,11 @@ class JobResource extends Resource
                                         ->label('Instruksi')
                                         ->columnSpanFull(),
                     
+                                    Forms\Components\Placeholder::make('captionPlaceHolder')
+                                        ->content(fn(Get $get) => $get('jobDetail.caption'))
+                                        ->label('Caption')
+                                        ->columnSpanFull(),
+
                                     Forms\Components\Placeholder::make('url_linkPlaceHolder')
                                         ->content(fn(Get $get) => $get('jobDetail.url_link'))
                                         ->label('Link')
@@ -759,6 +772,10 @@ class JobResource extends Resource
                             ->markdown(),
                             Infolists\Components\TextEntry::make('instructions')
                             ->label('Instruksi')
+                            ->prose()
+                            ->markdown(),
+                            Infolists\Components\TextEntry::make('jobDetail.caption')
+                            ->label('Caption')
                             ->prose()
                             ->markdown(),
                     ])
