@@ -3,14 +3,14 @@
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <i class="fas fa-briefcase text-yellow-500"></i>
-            Pekerjaan Tersedia
+            Misi Tersedia
         </h2>
 
         <!-- Search and Filter -->
         <div class="flex flex-col md:flex-row gap-6 mb-8">
             <div class="flex-1">
                 <div class="relative group">
-                    <input type="text" wire:model.live="search" placeholder="Cari pekerjaan..."
+                    <input type="text" wire:model.live="search" placeholder="Cari misi..."
                         class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 transition-all duration-300 focus:bg-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent hover:border-yellow-300">
                     <i
                         class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-yellow-500 transition-colors duration-300"></i>

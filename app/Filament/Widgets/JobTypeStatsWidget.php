@@ -10,7 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 
 class JobTypeStatsWidget extends BaseWidget
 {
-    protected static ?string $heading = 'Statistik Jenis Pekerjaan';
+    protected static ?string $heading = 'Statistik Jenis Misi';
 
     protected int | string | array $columnSpan = '1';
 

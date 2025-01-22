@@ -2,7 +2,7 @@
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <i class="fas fa-history text-yellow-500"></i>
-            Riwayat Pekerjaan
+            Riwayat Misi
         </h2>
 
         <!-- Desktop View - Table -->
@@ -128,7 +128,7 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                    Belum ada riwayat pekerjaan
+                                    Belum ada riwayat misi
                                 </td>
                             </tr>
                         @endforelse
@@ -308,7 +308,7 @@
                                 <i class="fas fa-history text-2xl text-gray-400"></i>
                             </div>
                             <h3 class="text-sm font-medium text-gray-900 mb-1">Belum Ada Riwayat</h3>
-                            <p class="text-sm text-gray-500">Anda belum memiliki riwayat pekerjaan</p>
+                            <p class="text-sm text-gray-500">Anda belum memiliki riwayat misi</p>
                         </div>
                     @endforelse
                 </div>

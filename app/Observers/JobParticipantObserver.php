@@ -11,7 +11,7 @@ class JobParticipantObserver
     {
         if ($jobParticipant->isDirty('status')) {
             $activity = [
-                'description' => "Status pekerjaan '{$jobParticipant->job->title}' diubah menjadi '{$jobParticipant->status}'.",
+                'description' => "Status misi '{$jobParticipant->job->title}' diubah menjadi '{$jobParticipant->status}'.",
                 'type' => $jobParticipant->status,
                 'created_at' => now(),
                 'user_id' => $jobParticipant->user_id,

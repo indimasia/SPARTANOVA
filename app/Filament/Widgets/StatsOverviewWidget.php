@@ -33,7 +33,7 @@ class StatsOverviewWidget extends BaseWidget
             ->count();
 
         return [
-            Stat::make('Pekerjaan Aktif', $activeJobsCount)
+            Stat::make('Misi Aktif', $activeJobsCount)
                 ->description("+" . $newActiveJobsToday . " hari ini")
                 ->descriptionIcon('heroicon-o-clock')
                 ->color('success'),
