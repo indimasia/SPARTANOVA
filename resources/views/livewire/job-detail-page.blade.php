@@ -133,6 +133,20 @@
                                             </p>
                                         </div>
                                     @endif
+
+                                    @if ($jobDetail->caption)
+                                        <div>
+                                            <h5 class="text-lg font-semibold text-gray-700 mb-3 flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                                </svg>
+                                                Caption:
+                                            </h5>
+                                            <p class="text-gray-600 leading-relaxed whitespace-pre-line">
+                                                {!! nl2br(e($jobDetail->caption)) !!}
+                                            </p>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endif
@@ -234,7 +248,7 @@
                 <a href="" 
                     class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                     <i class="fas fa-external-link-alt mr-2"></i>
-                    Kerjakan Misi Sekarang
+                    Menuju Link
                 </a>
                     
                 @endif
@@ -246,22 +260,22 @@
 <script>
     function confirmApplyJob(ok) {
         showConfirmation(
-                'Konfirmasi Pengambilan Misi',
-                'Apakah Anda yakin ingin mengambil misi ini? Pastikan Anda memenuhi persyaratan yang diminta.',
-                () => {
-                    @this.applyJob(ok);
-                }
-            );
+            'Konfirmasi Pengambilan Misi',
+            'Apakah Anda yakin ingin mengambil misi ini? Pastikan Anda memenuhi persyaratan yang diminta.',
+            () => {
+                @this.applyJob(ok);
+            }
+        );
     }
     document.querySelectorAll('[id^="shareButton-"]').forEach(button => {
-    button.addEventListener('click', async () => {
-        const imageUrl = button.dataset.imageUrl;
-        await shareImageAndContent(imageUrl);
+        button.addEventListener('click', async () => {
+            const imageUrl = button.dataset.imageUrl;
+            await shareImageAndContent(imageUrl);
+        });
     });
-});
 
-// Fungsi untuk berbagi konten
-async function shareImageAndContent(imageUrl) {
+    // Fungsi untuk berbagi konten
+    async function shareImageAndContent(imageUrl) {
     try {
         console.log(imageUrl);
         // Ambil gambar dari server
