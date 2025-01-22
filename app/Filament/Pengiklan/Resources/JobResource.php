@@ -43,14 +43,14 @@ class JobResource extends Resource
 {
     protected static ?string $model = JobCampaign::class;
 
-    protected static ?string $navigationGroup = 'Atur Pekerjaan';
-    protected static ?string $navigationLabel = 'Pekerjaan';
+    protected static ?string $navigationGroup = 'Atur Misi';
+    protected static ?string $navigationLabel = 'Misi';
     protected static ?int $navigationSort = 1;
     // protected static ?string $recordTitleAttribute = 'Job Campaign';
-    protected static ?string $pluralModelLabel = 'Pekerjaan';
-    protected static ?string $pluralLabel = 'Pekerjaan';
-    protected static ?string $modelLabel = 'Pekerjaan';
-    protected static ?string $label = 'Pekerjaan';
+    protected static ?string $pluralModelLabel = 'Misi';
+    protected static ?string $pluralLabel = 'Misi';
+    protected static ?string $modelLabel = 'Misi';
+    protected static ?string $label = 'Misi';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -212,13 +212,13 @@ class JobResource extends Resource
 
                                 ]),
                     ]),
-                    Wizard\Step::make('Pekerjaan')
+                    Wizard\Step::make('Misi')
                     ->icon('heroicon-s-briefcase')
                     ->completedIcon('heroicon-s-briefcase')
                         ->schema([
                             Forms\Components\Select::make('type')
                                 ->options(JobType::options())
-                                ->label('Tipe Pekerjaan')
+                                ->label('Tipe Misi')
                                 ->searchable()
                                 ->live()
                                 ->afterStateUpdated(function (callable $set, $state) {
@@ -227,7 +227,7 @@ class JobResource extends Resource
                                 // ->inline()
                                 ->required()
                                 ->validationMessages([
-                                    'required' => 'Tipe Pekerjaan Harus Diisi',
+                                    'required' => 'Tipe Misi Harus Diisi',
                                 ]),
                             Forms\Components\ToggleButtons::make('platform')
                                 ->options(PlatformEnum::options())
@@ -327,16 +327,16 @@ class JobResource extends Resource
 
                         ]),
 
-                    Wizard\Step::make('Detail Pekerjaan')
+                    Wizard\Step::make('Detail Misi')
                     ->icon('heroicon-s-document-text')
                     ->completedIcon('heroicon-s-document-text')
                         ->schema([
                             Forms\Components\TextInput::make('title')
                             ->required()
                             ->maxLength(255)
-                            ->label('Nama Pekerjaan')
+                            ->label('Nama Misi')
                             ->validationMessages([
-                                'required' => 'Nama Pekerjaan Harus Diisi',
+                                'required' => 'Nama Misi Harus Diisi',
                             ])
                             ,
                             Forms\Components\FileUpload::make('jobDetail.image')
@@ -401,7 +401,7 @@ class JobResource extends Resource
                     ->icon('heroicon-s-eye')
                     ->completedIcon('heroicon-s-eye')
                         ->schema([
-                            Forms\Components\Section::make('Informasi Pekerjaan')
+                            Forms\Components\Section::make('Informasi Misi')
                                 ->icon('heroicon-m-document-text')
                                 ->schema([
                                     Forms\Components\Grid::make(2)
@@ -413,17 +413,17 @@ class JobResource extends Resource
                                                 if ($imagePath) {
                                                     $imageUrl = asset('storage/images/' . basename($imagePath));
                                                     
-                                                    return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Pekerjaan" style="max-width: 50%; height: auto; margin: 0 auto;">');
+                                                    return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Misi" style="max-width: 50%; height: auto; margin: 0 auto;">');
                                                 }
                                                 
                                                 return 'Tidak ada gambar yang diunggah';
                                             })
-                                            ->label('Gambar Pekerjaan')
+                                            ->label('Gambar Misi')
                                             ->columnSpanFull(),
 
                                             Forms\Components\Placeholder::make('typePlaceHolder')
                                                 ->content(fn(Get $get) => $get('type'))
-                                                ->label('Tipe Pekerjaan'),
+                                                ->label('Tipe Misi'),
                     
                                             Forms\Components\Placeholder::make('platformPlaceHolder')
                                                 ->content(fn(Get $get) => $get('platform'))
@@ -455,7 +455,7 @@ class JobResource extends Resource
                                         ]),
                                     Forms\Components\Placeholder::make('titlePlaceHolder')
                                         ->content(fn(Get $get) => $get('title'))
-                                        ->label('Nama Pekerjaan')
+                                        ->label('Nama Misi')
                                         ->columnSpanFull(),
                     
                                     Forms\Components\Placeholder::make('descriptionPlaceHolder')
@@ -599,7 +599,7 @@ class JobResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('participant_count')->label('Jumlah Peserta'),
-                Tables\Columns\TextColumn::make('type')->label('Tipe Pekerjaan'),
+                Tables\Columns\TextColumn::make('type')->label('Tipe Misi'),
                 Tables\Columns\TextColumn::make('platform')
                     ->label('Social Media')
                     ->toggleable(),
@@ -717,16 +717,16 @@ class JobResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Pekerjaan')
+                Infolists\Components\Section::make('Misi')
                     ->schema([
                         Infolists\Components\Split::make([
                             Infolists\Components\Grid::make(2)
                                 ->schema([
                                     Infolists\Components\Group::make([
                                         Infolists\Components\TextEntry::make('title')
-                                        ->label('Nama Pekerjaan'),
+                                        ->label('Nama Misi'),
                                         Infolists\Components\TextEntry::make('type')
-                                        ->label('Tipe Pekerjaan'),
+                                        ->label('Tipe Misi'),
                                         Infolists\Components\TextEntry::make('platform')
                                         ->label('Social Media'),
                                         Infolists\Components\IconEntry::make('is_multiple')
@@ -764,7 +764,7 @@ class JobResource extends Resource
                             ])->grow(false),
                         ])->from('lg'),
                     ]),
-                Infolists\Components\Section::make('Detail Pekerjaan')
+                Infolists\Components\Section::make('Detail Misi')
                     ->schema([
                         Infolists\Components\TextEntry::make('jobDetail.description')
                             ->label('Deskripsi')
