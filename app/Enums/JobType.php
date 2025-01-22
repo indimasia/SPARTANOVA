@@ -16,6 +16,7 @@ enum JobType: string
     case SURVEI = 'Survei';
     case SUBSCRIBE_FOLLOW = 'Subscribe/Follow';
     case FOLLOW_MARKETPLACE = 'Follow Marketplace';
+    case SELLING = 'Selling';
 
     public static function options()
     {
