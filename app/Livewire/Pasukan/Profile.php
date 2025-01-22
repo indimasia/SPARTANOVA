@@ -31,6 +31,7 @@ class Profile extends Component
     public $status;
     public $villages = [];
     public $districts = [];
+    public $sosialMediaAccounts = [];
     public $regencies = [];
     public $provinces = [];
 
@@ -81,6 +82,11 @@ public function updateVillageKode($value)
     $this->regency_kode = $this->user->regency_kode;
     $this->district_kode = $this->user->district_kode;
     $this->village_kode = $this->user->village_kode;
+    $this->sosialMediaAccounts = collect($this->user->sosialMediaAccounts)
+        ->keyBy('sosial_media')
+        ->map(fn($account) => $account['account'])
+        ->toArray();
+    // dd($this->sosialMediaAccounts);
 
     $this->provinces = Province::all();
 
@@ -89,6 +95,18 @@ public function updateVillageKode($value)
     $this->districts = District::where('regency_kode', $this->regency_kode)->get();
     $this->villages = Village::where('district_kode', $this->district_kode)->get();
 }
+
+public function addSocialMedia()
+{
+    $this->sosialMediaAccounts[] = ['sosial_media' => '', 'account' => ''];
+}
+
+public function removeSocialMedia($index)
+{
+    unset($this->sosialMediaAccounts[$index]);
+    $this->sosialMediaAccounts = array_values($this->sosialMediaAccounts); // Reset index array
+}
+
 
 
     public function updateProfile()
@@ -108,6 +126,8 @@ public function updateVillageKode($value)
                 'province_kode' => 'required|string|max:255',
                 'interest' => 'required|array|min:10|max:15',
                 'interest.*' => 'string',
+                'sosialMediaAccounts' => 'required|array',
+                'sosialMediaAccounts.*' => 'nullable|string|max:255',
             ],
             [
                 'interest.required' => 'Minat wajib diisi.',
@@ -147,6 +167,10 @@ public function updateVillageKode($value)
                 'province_kode.required' => 'Kode provinsi wajib diisi.',
                 'province_kode.string' => 'Kode provinsi harus berupa string.',
                 'province_kode.max' => 'Kode provinsi harus memiliki paling banyak 255 karakter.',
+                'sosialMediaAccounts.required' => 'Sosial media wajib diisi.',
+                'sosialMediaAccounts.array' => 'Sosial media harus berupa array.',
+                'sosialMediaAccounts.*.string' => 'URL sosial media harus berupa string.',
+                'sosialMediaAccounts.*.max' => 'URL sosial media harus memiliki paling banyak 255 karakter.',
             ]);
             } catch (ValidationException $e) {
                 $errorField = array_key_first($e->validator->errors()->toArray());
@@ -177,7 +201,15 @@ public function updateVillageKode($value)
             'province_kode' => $this->province_kode,
         ]);
 
-        session()->flash('success', 'Profile updated successfully.');
+        foreach ($this->sosialMediaAccounts as $platform => $account) {
+            $this->user->sosialMediaAccounts()
+                ->updateOrCreate(
+                    ['sosial_media' => $platform],
+                    ['account' => $account]
+                );
+        }
+        $this->dispatch('notification','Profile updated successfully.');
+        return;
     }
 
     public function render()

@@ -208,6 +208,8 @@
             @endauth
         </main>
 
+        <x-toast />
+
         <!-- Footer -->
         <footer class="bg-gray-800 text-white mt-auto">
             <div class="container mx-auto px-4 py-6">
