@@ -19,6 +19,7 @@ class RiwayatPekerjaan extends Component
     protected $listeners = ['closeDropdown' => 'closeDropdown'];
     public $viewAttachmentModal = false;
     public $viewAttachmentPath;
+    public $status;
 
     public function toggleDropdown()
     {
@@ -87,6 +88,7 @@ class RiwayatPekerjaan extends Component
 
         if ($jobParticipant && $jobParticipant->attachment) {
             $this->viewAttachmentPath = asset('storage/' . $jobParticipant->attachment);
+            $this->status = $jobParticipant->status;
             $this->selectedJobHistory = $historyId;
             $this->viewAttachmentModal = true;
         } else {

@@ -156,15 +156,17 @@
             </div>
 
             <!-- Modal Lihat Bukti -->
-            <div x-data="{ open: @entangle('viewAttachmentModal'), editing: false }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+            <div x-data="{ open: @entangle('viewAttachmentModal'), editing: false, status: @entangle('status') }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Lihat Bukti</h3>
                     <div class="mb-4">
-                        <img :src="$wire.viewAttachmentPath" alt="Bukti Bayar" class="w-full h-auto rounded-lg shadow-md">
+                        <img :src="$wire.viewAttachmentPath" alt="Bukti Bayar" class="mx-auto rounded-lg shadow-md" style="max-width: auto; max-height: 400px;">
                     </div>
                     <template x-if="!editing">
                         <div class="flex justify-between">
-                            <button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-md" @click="editing = true">Edit Bukti</button>
+                            <button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-md" 
+                            x-show="status === '{{ \App\Enums\JobStatusEnum::REPORTED->value }}'" 
+                            @click="editing = true">Edit Bukti</button>
                             <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Tutup</button>
                         </div>
                     </template>
