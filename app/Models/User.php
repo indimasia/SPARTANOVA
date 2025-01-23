@@ -38,6 +38,10 @@ class User extends Authenticatable implements FilamentUser
         'interest',
         'contact_wa',
         'company',
+        'latitude',
+        'longitude',
+        'current_latitude',
+        'current_longitude',
     ];
 
     /**

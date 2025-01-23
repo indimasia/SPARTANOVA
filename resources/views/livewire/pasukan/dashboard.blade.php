@@ -108,4 +108,61 @@
             
         </div>
     </div>
+    <div id="location-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Minta Izin Lokasi</h3>
+            <p class="text-gray-600 mb-6">
+                Kami memerlukan izin lokasi Anda untuk menyediakan pengalaman yang lebih baik. 
+                Apakah Anda bersedia mengaktifkan lokasi?
+            </p>
+            <div class="flex justify-end">
+                <button id="deny-location" class="px-4 py-2 bg-gray-600 text-white rounded-md mr-2">
+                    Tolak
+                </button>
+                <button id="accept-location" class="px-4 py-2 bg-blue-600 text-white rounded-md">
+                    Izinkan
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+@if (session('userLoggedIn'))
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('location-modal');
+        const acceptButton = document.getElementById('accept-location');
+        const denyButton = document.getElementById('deny-location');
+
+        // Tampilkan modal setelah login berhasil
+        // Livewire.on('userLoggedIn', () => {
+        // });
+            modal.classList.remove('hidden');
+
+        acceptButton.addEventListener('click', () => {
+            modal.style.display = 'none'; // Tutup modal
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        // Kirim data lokasi ke server menggunakan Livewire
+                        Livewire.dispatch('updateLocation', {latitude, longitude});
+                        // console.log(Livewire.dispatch('updateLocation', latitude, longitude););
+                    },
+                    (error) => {
+                        console.error('Gagal mendapatkan lokasi:', error.message);
+                        alert('Tidak dapat mengambil lokasi. Pastikan izin lokasi diaktifkan.');
+                    }
+                );
+            } else {
+                alert('Browser Anda tidak mendukung Geolocation.');
+            }
+        });
+
+        denyButton.addEventListener('click', () => {
+            modal.style.display = 'none'; // Tutup modal
+            alert('Anda menolak memberikan izin lokasi. Beberapa fitur mungkin tidak tersedia.');
+        });
+    });
+</script>
+@endif

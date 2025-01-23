@@ -33,12 +33,15 @@ new #[Layout('layouts.app')] class extends Component {
         } elseif ($user->hasRole(App\Enums\UserRole::PENGIKLAN->value)) {
             $this->redirect(route('filament.pengiklan.pages.dashboard'), navigate: false);
         } elseif ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
+            session()->flash('userLoggedIn', true);
             $this->redirect(route('dashboard'), navigate: false);
         }
+        
     }
 }; ?>
 
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8 -mb-24">
+    
     <div class="max-w-2xl mx-auto">
         <div class="bg-gray rounded-xl overflow-hidden">
             <div class="p-8">

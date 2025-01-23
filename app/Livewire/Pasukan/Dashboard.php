@@ -2,12 +2,30 @@
 
 namespace App\Livewire\Pasukan;
 
-use App\Models\JobParticipant;
 use Livewire\Component;
+use App\Models\JobParticipant;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\On;
 
 class Dashboard extends Component
 {
+    #[On('updateLocation')]
+    public function updateLocation($latitude, $longitude)
+    {
+        $user = Auth::user();
+
+        // Update data lokasi pengguna
+        $user->update([
+            'current_latitude' => $latitude,
+            'current_longitude' => $longitude,
+        ]);
+
+        // Set flash message
+        session()->flash('status', 'Lokasi berhasil diperbarui.');
+    }
+
+
     public function render()
     {
         $user = auth()->user();

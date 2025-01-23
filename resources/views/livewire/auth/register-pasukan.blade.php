@@ -1,4 +1,25 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div id="location-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Minta Izin Lokasi</h3>
+            <p class="text-gray-600 mb-6">Kami memerlukan izin lokasi Anda untuk menyediakan layanan terbaik. Apakah Anda setuju?</p>
+            <div class="flex justify-end">
+                <button id="deny-location" class="px-4 py-2 bg-gray-600 text-white rounded-md mr-2">Tolak</button>
+                <button id="accept-location" class="px-4 py-2 bg-blue-600 text-white rounded-md">Izinkan</button>
+            </div>
+        </div>
+    </div>
+    <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Panduan Mengaktifkan GPS</h3>
+            <ol class="list-decimal list-inside text-gray-600 mb-4">
+                <li>Buka pengaturan perangkat Anda.</li>
+                <li>Aktifkan GPS atau layanan lokasi.</li>
+                <li>Muat ulang halaman ini untuk mencoba kembali.</li>
+            </ol>
+            <button id="close-help-modal" class="px-4 py-2 bg-blue-600 text-white rounded-md w-full text-center">Tutup</button>
+        </div>
+    </div>    
     <div class="max-w-4xl mx-auto">
         <div class="bg-gray rounded-xl overflow-hidden">
             <div class="p-8">
@@ -281,6 +302,8 @@
                                 @enderror
                             </div>
                         </div>
+                        <input type="hidden" id="latitude" wire:model="latitude">
+                        <input type="hidden" id="longitude" wire:model="longitude">
                     </div>
 
                     <!-- Social Media Section -->
@@ -325,7 +348,10 @@
                             @endforeach
                         </div>
                     </div>
-                                        
+                    <p class="text-gray-600 mt-4 text-center">
+                        Jika lokasi tidak tersedia, pastikan GPS diaktifkan pada perangkat Anda. 
+                        <a href="#" class="text-blue-500 underline" onclick="openHelp()">Lihat panduan</a>.
+                    </p>                
 
                     <!-- Submit Button -->
                     <div class="flex justify-end">
@@ -341,3 +367,58 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('location-modal');
+        const acceptButton = document.getElementById('accept-location');
+        const denyButton = document.getElementById('deny-location');
+
+        // Tampilkan modal saat halaman dimuat
+        modal.style.display = 'flex';
+
+        acceptButton.addEventListener('click', () => {
+            modal.style.display = 'none'; // Tutup modal
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitudeInput = document.getElementById('latitude');
+                        const longitudeInput = document.getElementById('longitude');
+                        
+                        latitudeInput.value = position.coords.latitude;
+                        longitudeInput.value = position.coords.longitude;
+
+                        console.log(latitudeInput.value, longitudeInput.value);
+
+                        // Trigger Livewire update
+                        latitudeInput.dispatchEvent(new Event('input'));
+                        longitudeInput.dispatchEvent(new Event('input'));
+                    },
+                    (error) => {
+                        console.error('Gagal mendapatkan lokasi:', error.message);
+                        alert('Tidak dapat mengambil lokasi. Pastikan izin lokasi diaktifkan.');
+                    }
+                );
+            } else {
+                alert('Browser Anda tidak mendukung Geolocation.');
+            }
+        });
+
+        denyButton.addEventListener('click', () => {
+            modal.style.display = 'none'; // Tutup modal
+            alert("Anda menolak memberikan izin lokasi. Beberapa fitur mungkin tidak tersedia.");
+        });
+    });
+</script>
+<script>
+    function openHelp() {
+    const helpModal = document.getElementById('help-modal');
+    helpModal.style.display = 'flex';
+}
+
+document.getElementById('close-help-modal').addEventListener('click', () => {
+    const helpModal = document.getElementById('help-modal');
+    helpModal.style.display = 'none';
+});
+
+</script>
