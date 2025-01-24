@@ -129,7 +129,7 @@
                                                 Petunjuk:
                                             </h5>
                                             <p class="text-gray-600 leading-relaxed whitespace-pre-line">
-                                                {!! nl2br(e($selectedJob->instructions)) !!}
+                                                {!! ($selectedJob->instructions) !!}
                                             </p>
                                         </div>
                                     @endif
