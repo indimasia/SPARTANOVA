@@ -53,6 +53,14 @@
                                             <i class="fab fa-youtube text-red-600"></i>
                                         @break
 
+                                        @case('whatsapp')
+                                            <i class="fab fa-whatsapp text-green-600"></i>
+                                        @break
+
+                                        @case('google')
+                                            <i class="fab fa-google text-blue-600"></i>
+                                        @break
+
                                         @default
                                             <i class="fas fa-globe text-gray-600"></i>
                                     @endswitch
@@ -217,6 +225,14 @@
 
                                         @case('youtube')
                                             <i class="fab fa-youtube text-red-600 text-lg"></i>
+                                        @break
+
+                                        @case('google')
+                                            <i class="fab fa-google text-green-600 text-lg"></i>
+                                        @break
+
+                                        @case('whatsapp')
+                                            <i class="fab fa-whatsapp text-green-600 text-lg"></i>
                                         @break
 
                                         @default

@@ -51,6 +51,13 @@
                             Daftar
                         </a>
                     </div>
+                    @else
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ Auth::user()->hasRole('admin') ? '/admin' : (Auth::user()->hasRole('pengiklan') ? '/pengiklan' : '/dashboard') }}"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-300">
+                            Kembali ke halaman utama
+                        </a>
+                    </div>
                     @endif
 
                     {{-- @endauth --}}
@@ -154,39 +161,41 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white mt-auto">
-            <div class="container mx-auto px-4 py-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div>
-                        <img src="{{ asset('images/spartav_logo.png') }}" alt="Logo Spartav" class="h-10 mb-4">
-                        <p class="text-sm text-gray-400">Spartav adalah mitra terpercaya Anda dalam keunggulan pemasaran
-                            digital.</p>
+        <footer class="bg-black text-white">
+            <div class="container mx-auto px-12 md:px-20 py-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <!-- Left Column -->
+                    <div class="lg:col-span-2">
+                        <img src="{{ asset('images/spartavlogofooter.png') }}" alt="SPARTAV Logo" class="h-24 object-contain" />
+                        <p class="text-white/90 max-w-4xl text-lg leading-relaxed">
+                            SPARTAV adalah platform manajemen periklanan dan pemasaran digital yang memfasilitasi advertiser untuk
+                            memperluas target market dengan memberdayakan pasukan netizen sebagai 'adsman' untuk melakukan kegiatan
+                            branding, marketing, dan selling secara online.
+                        </p>
                     </div>
-                    <div>
-                        <h4 class="text-sm font-bold mb-4">Kontak</h4>
-                        <ul class="space-y-2 text-sm text-gray-400">
-                            <li><i class="fas fa-envelope mr-2"></i>info@spartav.com</li>
-                            <li><i class="fas fa-phone mr-2"></i>(123) 456-7890</li>
-                            <li><i class="fas fa-map-marker-alt mr-2"></i>Jakarta, Indonesia</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold mb-4">Ikuti Kami</h4>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
-                                <i class="fab fa-twitter"></i>
-                            </a>
+        
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <h2 class="text-2xl font-bold">PT Sinergi Mitra Mediatama</h2>
+                        <div class="space-y-4 font-bold">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-regular fa-envelope text-2xl"></i>
+                                <a href="mailto:eov.eventrue@gmail.com" class="hover:text-white/80 text-2xl">
+                                    eov.eventrue@gmail.com
+                                </a>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                                <a href="tel:08999950006" class="hover:text-white/80 text-2xl">
+                                    08999950006
+                                </a>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-location-dot text-2xl"></i>
+                                <span class="text-2xl">Semarang, Indonesia</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="border-t border-gray-700 mt-6 pt-6 text-center">
-                    <p class="text-xs text-gray-400">&copy; 2024 Spartav. Semua hak dilindungi.</p>
                 </div>
             </div>
         </footer>
