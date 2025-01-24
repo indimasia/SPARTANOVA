@@ -173,7 +173,6 @@ public function updateVillageKode($value)
                 throw $e;
             }
 
-        try {
         $this->user->update([
             'name' => $this->name,
             'email' => $this->email,
@@ -190,28 +189,15 @@ public function updateVillageKode($value)
             'regency_kode' => $this->regency_kode,
             'province_kode' => $this->province_kode,
         ]);
-        } catch (\Exception $e) {
-            \Log::error('Failed to update profile', ['error' => $e->getMessage()]);
-            throw $e;
-        }
 
-        try {
-            foreach ($this->sosialMediaAccounts as $platform => $account) {
-                $this->user->sosialMediaAccounts()->updateOrCreate(
+        foreach ($this->sosialMediaAccounts as $platform => $account) {
+            $this->user->sosialMediaAccounts()
+                ->updateOrCreate(
                     ['sosial_media' => $platform],
                     ['account' => $account]
                 );
-            }
-        } catch (\Exception $e) {
-            \Log::error('Failed to update social media accounts', ['error' => $e->getMessage()]);
-            throw $e;
         }
-        try {
-            $this->dispatch('notification','Profile updated successfully.');
-        } catch (\Exception $e) {
-            \Log::error('Failed to dispatch notification', ['error' => $e->getMessage()]);
-            throw $e;
-        }
+        $this->dispatch('notification','Profile updated successfully.');
         return;
     }
 
