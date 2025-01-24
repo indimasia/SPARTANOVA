@@ -238,12 +238,10 @@
                     Ambil Misi
                 </button>
                 @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'Posting')
-                <a href="javascript:void(0);" 
-                    id="shareButton-{{ $jobDetail->id }}" data-image-url="{{ asset('storage/' . $jobDetail->image) }}"
-                    class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                <button id="openModalBtn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
                     <i class="fas fa-external-link-alt mr-2"></i>
                     Kerjakan Misi Sekarang
-                </a>
+                </button>
                 @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'View')
                 <a href="{{ $jobDetail->url_link }}" target="_blank"
                     class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
@@ -251,12 +249,72 @@
                     Menuju Link
                 </a>
                 @endif
+
+                <div id="missionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+                    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Kerjakan Misi</h2>
+                            <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <img id="missionImage" src="{{ asset('storage/' . $jobDetail->image) }}"  alt="Mission Image" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <p class="text-sm text-gray-500 mb-2">Caption:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="missionCaption" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                            <button id="copyBtn" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <p id="copiedMessage" class="text-sm text-green-500 mb-4 hidden">Caption copied to clipboard!</p>
+                        <a href="javascript:void(0);" 
+                            id="shareButton-{{ $jobDetail->id }}" data-image-url="{{ asset('storage/' . $jobDetail->image) }}"
+                            class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                            <i class="fas fa-external-link-alt mr-2"></i>
+                            Posting Sekarang
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    const modal = document.getElementById('missionModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const missionImage = document.getElementById('missionImage');
+        const missionCaption = document.getElementById('missionCaption');
+        const copiedMessage = document.getElementById('copiedMessage');
+    
+        let currentMission = { caption: '', imageUrl: '' };
+
+        function openModal(caption, imageUrl) {
+            currentMission = { caption, imageUrl };
+            missionImage.src = imageUrl;
+            missionCaption.textContent = caption;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        openModalBtn.addEventListener('click', () => openModal('{{ $jobDetail->caption }}', '{{ asset('storage/' . $jobDetail->image) }}'));
+        closeModalBtn.addEventListener('click', closeModal);
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(currentMission.caption).then(() => {
+                copiedMessage.classList.remove('hidden');
+                setTimeout(() => copiedMessage.classList.add('hidden'), 2000);
+            });
+        });
+
     function confirmApplyJob(ok) {
         showConfirmation(
             'Konfirmasi Pengambilan Misi',
