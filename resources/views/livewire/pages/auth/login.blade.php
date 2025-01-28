@@ -36,8 +36,12 @@ new #[Layout('layouts.app')] class extends Component {
         if ($user->hasRole(App\Enums\UserRole::ADMIN->value)) {
             $this->redirect(route('filament.admin.pages.dashboard'), navigate: false);
         } elseif ($user->hasRole(App\Enums\UserRole::PENGIKLAN->value)) {
+            $user->is_active = true;
+            $user->save();
             $this->redirect(route('filament.pengiklan.pages.dashboard-pengiklan'), navigate: false);
         } elseif ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
+            $user->is_active = true;
+            $user->save();
             $this->redirect(route('dashboard'), navigate: false);
         }
         

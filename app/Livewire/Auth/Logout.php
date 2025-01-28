@@ -9,6 +9,12 @@ class Logout extends Component
 {
     public function logout()
     {
+        $user = Auth::user();
+        if ($user) {
+            $user->is_active = false;
+            $user->save();
+        }
+
         Auth::logout();
 
         return redirect()->route('home');
