@@ -409,13 +409,13 @@ class JobResource extends Resource
                                             Forms\Components\Placeholder::make('imagePlaceHolder')
                                             ->content(function (Get $get) {
                                                 $imagePath = session('temporary_image_path');
-                                                
+
                                                 if ($imagePath) {
                                                     $imageUrl = asset('storage/images/' . basename($imagePath));
-                                                    
+
                                                     return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Misi" style="max-width: 50%; height: auto; margin: 0 auto;">');
                                                 }
-                                                
+
                                                 return 'Tidak ada gambar yang diunggah';
                                             })
                                             ->label('Gambar Misi')
@@ -424,31 +424,31 @@ class JobResource extends Resource
                                             Forms\Components\Placeholder::make('typePlaceHolder')
                                                 ->content(fn(Get $get) => $get('type'))
                                                 ->label('Tipe Misi'),
-                    
+
                                             Forms\Components\Placeholder::make('platformPlaceHolder')
                                                 ->content(fn(Get $get) => $get('platform'))
                                                 ->label('Social Media'),
-                    
+
                                             Forms\Components\Placeholder::make('package_ratePlaceHolder')
                                                 ->content(fn(Get $get) => $get('package_rate'))
                                                 ->label('Paket'),
-                    
+
                                             Forms\Components\Placeholder::make('rewardPlaceHolder')
                                                 ->content(fn(Get $get) => $get('reward'))
                                                 ->label('Hadiah'),
-                    
+
                                             Forms\Components\Placeholder::make('start_datePlaceHolder')
                                                 ->content(fn(Get $get) => $get('start_date'))
                                                 ->label('Tanggal Mulai'),
-                    
+
                                             Forms\Components\Placeholder::make('end_datePlaceHolder')
                                                 ->content(fn(Get $get) => $get('end_date'))
                                                 ->label('Tanggal Selesai'),
-                    
+
                                             Forms\Components\Placeholder::make('is_multiplePlaceHolder')
                                                 ->content(fn(Get $get) => $get('is_multiple') ? 'Ya' : 'Tidak')
                                                 ->label('Dapat Diikuti Berulang'),
-                    
+
                                             Forms\Components\Placeholder::make('statusPlaceHolder')
                                                 ->content(fn(Get $get) => $get('status'))
                                                 ->label('Status'),
@@ -457,17 +457,17 @@ class JobResource extends Resource
                                         ->content(fn(Get $get) => $get('title'))
                                         ->label('Nama Misi')
                                         ->columnSpanFull(),
-                    
+
                                     Forms\Components\Placeholder::make('descriptionPlaceHolder')
                                         ->content(fn(Get $get) => $get('jobDetail.description'))
                                         ->label('Deskripsi')
                                         ->columnSpanFull(),
-                    
+
                                     Forms\Components\Placeholder::make('instructionsPlaceHolder')
                                         ->content(fn(Get $get) => strip_tags($get('instructions')))
                                         ->label('Instruksi')
                                         ->columnSpanFull(),
-                    
+
                                     Forms\Components\Placeholder::make('captionPlaceHolder')
                                         ->content(fn(Get $get) => $get('jobDetail.caption'))
                                         ->label('Caption')
@@ -479,7 +479,7 @@ class JobResource extends Resource
                                         ->columnSpanFull(),
                                 ])
                                 ->collapsible(),
-                    
+
                             Forms\Components\Section::make('Target Pasukan')
                                 ->icon('heroicon-m-funnel')
                                 ->schema([
@@ -488,34 +488,34 @@ class JobResource extends Resource
                                             Forms\Components\Placeholder::make('genderPlaceHolder')
                                                 ->content(fn(Get $get) => $get('gender') ?? 'Tidak ada pilihan')
                                                 ->label('Gender'),
-                    
+
                                             Forms\Components\Placeholder::make('generationPlaceHolder')
                                                 ->content(fn(Get $get) => $get('generation') ? implode(', ', $get('generation')) : 'Tidak ada pilihan')
                                                 ->label('Generasi'),
-                    
+
                                             Forms\Components\Placeholder::make('locationPlaceHolder')
                                                 ->content(fn(Get $get) => $get('province_kode') ? implode(', ', Province::whereIn('kode', $get('province_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
                                                 ->label('Provinsi'),
-                    
+
                                             Forms\Components\Placeholder::make('regencyPlaceHolder')
                                                 ->content(fn(Get $get) => $get('regency_kode') ? implode(', ', Regency::whereIn('kode', $get('regency_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
                                                 ->label('Kabupaten/Kota'),
-                    
+
                                             Forms\Components\Placeholder::make('districtPlaceHolder')
                                                 ->content(fn(Get $get) => $get('district_kode') ? implode(', ', District::whereIn('kode', $get('district_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
                                                 ->label('Kecamatan'),
-                    
+
                                             Forms\Components\Placeholder::make('villagePlaceHolder')
                                                 ->content(fn(Get $get) => $get('village_kode') ? implode(', ', Village::whereIn('kode', $get('village_kode'))->pluck('nama')->toArray()) : 'Tidak ada pilihan')
                                                 ->label('Kelurahan'),
-                    
+
                                             Forms\Components\Placeholder::make('interestPlaceHolder')
                                                 ->content(fn(Get $get) => $get('interest') ? implode(', ', $get('interest')) : 'Tidak ada pilihan')
                                                 ->label('Interest'),
                                         ])
                                 ])
                                 ->collapsible(),
-                    
+
                             Forms\Components\Section::make('Rincian Harga')
                                 ->icon('heroicon-m-currency-dollar')
                                 ->schema([
@@ -531,7 +531,7 @@ class JobResource extends Resource
                                                     return 'Rp. ' . number_format($price, 0, ',', '.');
                                                 })
                                                 ->label('Harga Satuan'),
-                    
+
                                             Forms\Components\Placeholder::make('totalPricePlaceHolder')
                                                 ->content(function (Get $get) {
                                                     $type = $get('type');
@@ -546,22 +546,22 @@ class JobResource extends Resource
                                                     $price = \App\Models\PackageRate::where('type', $get('type'))->value('price') ?? 0;
                                                     $total = $price * $get('package_rate');
                                                     $additional = 0;
-                            
+
                                                     if ($get('gender')) $additional += 10;
                                                     if ($get('generation')) $additional += 10;
                                                     if ($get('interest')) $additional += 10;
-                            
+
                                                     $finalPrice = $total + ($total * $additional / 100);
-                            
+
                                                     return 'Rp. ' . number_format($finalPrice, 0, ',', '.');
                                                 })
                                                 ->label('Total Harga Akhir'),
                                         ]),
-                    
+
                                     Forms\Components\Placeholder::make('priceDetailsPlaceHolder')
                                         ->content(function (Get $get) {
                                             $details = [];
-                    
+
                                             if ($get('gender')) $details[] = 'Gender +10%';
                                             if ($get('generation')) $details[] = 'Generasi +10%';
                                             $locations = ['province_kode', 'regency_kode', 'district_kode', 'village_kode'];
@@ -572,7 +572,7 @@ class JobResource extends Resource
                                                 }
                                             }
                                             if (!empty($get('interest'))) $details[] = 'Interest +10%';
-                    
+
                                             return $details ? 'Keterangan Tambahan Harga: ' . implode(', ', $details) : 'Tidak ada tambahan harga.';
                                         })
                                         ->label('Detail Tambahan Harga')
@@ -580,7 +580,7 @@ class JobResource extends Resource
                                 ])
                                 ->collapsible(),
                         ])
-                    
+
                 ])->columnSpanFull()
                 ->submitAction(new HtmlString(Blade::render(<<<BLADE
                         <x-filament::button

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Http;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -108,5 +109,14 @@ class User extends Authenticatable implements FilamentUser
     public function createdJobs(): HasMany
     {
         return $this->hasMany(JobCampaign::class, 'created_by');
+    }
+
+    public static function getUserLocation($latitude, $longitude)
+    {
+        $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$latitude}&lon={$longitude}&zoom=18&addressdetails=1";
+        $response = Http::withHeaders([
+            'User-Agent' => config('app.name'),
+        ])->get($url);
+        return $response->json();
     }
 }

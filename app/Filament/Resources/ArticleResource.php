@@ -62,7 +62,7 @@ class ArticleResource extends Resource {
     public static function table(Table $table): Table {
         return $table
             ->columns([
-                ImageColumn::make('image')->disk('public')->size(50),
+                ImageColumn::make('image')->disk('public')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50),
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('status')->badge(),
                 TextColumn::make('published_at')->dateTime(),
