@@ -17,12 +17,17 @@ new #[Layout('layouts.app')] class extends Component {
 
         $user = Auth::user();
 
-        if ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
+        if ($user->hasRole(App\Enums\UserRole::PASUKAN->value) || $user->hasRole(App\Enums\UserRole::PENGIKLAN->value)) {
             if ($user->status != UserStatusEnum::ACTIVE->value) {
+                
+                if ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
+                    session()->flash('status', 'Akun Anda belum diaktivasi.');
+                } elseif ($user->hasRole(App\Enums\UserRole::PENGIKLAN->value)) {
+                    $whatsappUrl = 'https://wa.me/628112624444?text=' . urlencode('Halo admin, saya mohon aktivasi akun saya.');
+                    session()->flash('status', 'Akun And    a belum diaktivasi. Silakan <a href="' . $whatsappUrl . '" target="_blank" style="color: blue; text-decoration: underline;">klik di sini</a> untuk menghubungi admin melalui WhatsApp.');
+                }
+                
                 Auth::logout();
-
-                session()->flash('status', 'Akun Anda belum diaktivasi. Silakan hubungi admin untuk aktivasi.');
-
                 return;
             }
         }
@@ -52,10 +57,11 @@ new #[Layout('layouts.app')] class extends Component {
 
                 <!-- Session Status -->
                 @if (session('status'))
-                    <div class="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-700">
-                        {{ session('status') }}
+                    <div class="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-700">                    
+                        {!! session('status') !!}
                     </div>
                 @endif
+
 
                 <form wire:submit="login" class="space-y-6">
                     <!-- Email Address -->
