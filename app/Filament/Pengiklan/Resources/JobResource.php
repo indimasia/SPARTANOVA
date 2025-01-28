@@ -669,7 +669,15 @@ class JobResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->action(function (Collection $records) {
+                        foreach ($records as $record) {
+                            $record->delete(); // Ini akan memicu event deleted pada model
+                        }
+                        Notification::make()
+                            ->title('Berhasil menghapus data')
+                            ->success()
+                            ->send();
+                    }),
                     Tables\Actions\BulkAction::make('publish')
                         ->label('Publikasi')
                         ->icon('heroicon-o-check-circle')

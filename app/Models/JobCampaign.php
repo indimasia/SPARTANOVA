@@ -40,6 +40,15 @@ class JobCampaign extends Model
         return $this->hasMany(JobParticipant::class,'job_id');
     }
 
+    protected static function booted()
+    {
+        static::deleted(function ($jobCampaign) {
+            $jobCampaign->jobDetail()->delete();
+
+            $jobCampaign->participants()->delete();
+        });
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
