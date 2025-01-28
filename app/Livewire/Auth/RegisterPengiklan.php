@@ -140,13 +140,11 @@ class RegisterPengiklan extends Component
         }
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['status'] = UserStatusEnum::ACTIVE->value;
+        $validated['status'] = UserStatusEnum::PENDING->value;
 
         event(new Registered($user = User::create($validated)));
 
         $user->assignRole('pengiklan');
-
-        Auth::login($user);
 
         $this->redirect(route('home', absolute: false), navigate: true);
     }
