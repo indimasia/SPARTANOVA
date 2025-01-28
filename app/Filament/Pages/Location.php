@@ -65,10 +65,8 @@ class Location extends Page
             $response = Http::withHeaders([
                 'User-Agent' => config('app.name'), // atau gunakan nama aplikasi Anda
             ])->get($url);
-            // dd($response->json());
         } catch (\Exception $e) {
-            // Handle exception
-            dd('Exception: ' . $e->getMessage());
+            return null;
         }
 
         if ($response->successful()) {
@@ -89,10 +87,8 @@ class Location extends Page
             $response = Http::withHeaders([
                 'User-Agent' => config('app.name'), // atau gunakan nama aplikasi Anda
             ])->get($url);
-            // dd($response->json());
         } catch (\Exception $e) {
-            // Handle exception
-            dd('Exception: ' . $e->getMessage());
+            return null;
         }
 
         if ($response->successful()) {
