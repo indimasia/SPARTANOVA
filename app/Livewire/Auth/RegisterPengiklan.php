@@ -29,11 +29,14 @@ class RegisterPengiklan extends Component
     public $district_kode;
     public $regency_kode;
     public $province_kode;
+    public $latitude;
+    public $longitude;
 
     public $villages = [];
     public $districts = [];
     public $regencies = [];
     public $provinces = [];
+    protected $listeners = ['setLocation'];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -47,6 +50,8 @@ class RegisterPengiklan extends Component
         'regency_kode' => 'required',
         'province_kode' => 'required',
         'company' => 'required|string|max:255',
+        'latitude' => 'required',
+        'longitude' => 'required',
     ];
 
     public function mount()
@@ -93,6 +98,8 @@ class RegisterPengiklan extends Component
                 'regency_kode' => ['required'],
                 'province_kode' => ['required'],
                 'company' => ['required', 'string', 'max:255'],
+                'latitude' => ['required'],
+                'longitude' => ['required'],
             ],[
                 'name.required' => 'Nama harus diisi',
                 'name.string' => 'Nama harus berupa string',
@@ -117,6 +124,8 @@ class RegisterPengiklan extends Component
                 'company.required' => 'Nama perusahaan harus diisi',
                 'company.string' => 'Nama perusahaan harus berupa string',
                 'company.max' => 'Nama perusahaan tidak boleh lebih dari 255 karakter',
+                'latitude.required' => 'Latitude harus diisi',
+                'longitude.required' => 'Longitude harus diisi',
             ]);
         } catch (ValidationException $e) {
             $errorField = array_key_first($e->validator->errors()->toArray());
@@ -139,7 +148,13 @@ class RegisterPengiklan extends Component
 
         Auth::login($user);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        $this->redirect(route('home', absolute: false), navigate: true);
+    }
+
+    public function setLocation($lat, $lng)
+    {
+        $this->latitude = $lat;
+        $this->longitude = $lng;
     }
 
     public function render()

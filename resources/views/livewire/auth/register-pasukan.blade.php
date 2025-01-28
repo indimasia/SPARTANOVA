@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div id="location-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
+    {{-- <div id="location-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Minta Izin Lokasi</h3>
             <p class="text-gray-600 mb-6">Kami memerlukan izin lokasi Anda untuk menyediakan layanan terbaik. Apakah Anda setuju?</p>
@@ -8,7 +8,7 @@
                 <button id="accept-location" class="px-4 py-2 bg-blue-600 text-white rounded-md">Izinkan</button>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50 hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Panduan Mengaktifkan GPS</h3>
@@ -355,7 +355,7 @@
 
                     <!-- Submit Button -->
                     <div class="flex justify-end">
-                        <button type="submit"
+                        <button id="find-me" type="submit"
                             class="group relative inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:-translate-y-0.5 transition-all duration-200">
                             <i
                                 class="fas fa-user-plus mr-2 group-hover:scale-110 transition-transform duration-200"></i>
@@ -369,46 +369,35 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const modal = document.getElementById('location-modal');
-        const acceptButton = document.getElementById('accept-location');
-        const denyButton = document.getElementById('deny-location');
+    function geoFindMe() {
 
-        // Tampilkan modal saat halaman dimuat
-        modal.style.display = 'flex';
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
 
-        acceptButton.addEventListener('click', () => {
-            modal.style.display = 'none'; // Tutup modal
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const latitudeInput = document.getElementById('latitude');
-                        const longitudeInput = document.getElementById('longitude');
-                        
-                        latitudeInput.value = position.coords.latitude;
-                        longitudeInput.value = position.coords.longitude;
+        function success(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
 
-                        console.log(latitudeInput.value, longitudeInput.value);
+            latitudeInput.value = latitude;
+            longitudeInput.value = longitude;
+            latitudeInput.dispatchEvent(new Event("input"));
+            longitudeInput.dispatchEvent(new Event("input"));
+        }
 
-                        // Trigger Livewire update
-                        latitudeInput.dispatchEvent(new Event('input'));
-                        longitudeInput.dispatchEvent(new Event('input'));
-                    },
-                    (error) => {
-                        console.error('Gagal mendapatkan lokasi:', error.message);
-                        alert('Tidak dapat mengambil lokasi. Pastikan izin lokasi diaktifkan.');
-                    }
-                );
-            } else {
-                alert('Browser Anda tidak mendukung Geolocation.');
-            }
-        });
+        function error() {
+            status.textContent = "Unable to retrieve your location";
+        }
 
-        denyButton.addEventListener('click', () => {
-            modal.style.display = 'none'; // Tutup modal
-            alert("Anda menolak memberikan izin lokasi. Beberapa fitur mungkin tidak tersedia.");
-        });
-    });
+        if (!navigator.geolocation) {
+            status.textContent = "Geolocation is not supported by your browser";
+        } else {
+            status.textContent = "Locating…";
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+        }
+
+        document.querySelector("#find-me").addEventListener("click", geoFindMe);
+
 </script>
 <script>
     function openHelp() {

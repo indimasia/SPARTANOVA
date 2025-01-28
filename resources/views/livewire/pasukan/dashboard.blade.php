@@ -126,43 +126,28 @@
         </div>
     </div>
 </div>
-@if (session('userLoggedIn'))
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const modal = document.getElementById('location-modal');
-        const acceptButton = document.getElementById('accept-location');
-        const denyButton = document.getElementById('deny-location');
 
-        // Tampilkan modal setelah login berhasil
-        // Livewire.on('userLoggedIn', () => {
-        // });
-            modal.classList.remove('hidden');
+        // Coba untuk mendapatkan lokasi secara otomatis
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    
+                    // Kirim data lokasi ke server menggunakan Livewire
+                    Livewire.dispatch('updateLocation', { latitude, longitude });
 
-        acceptButton.addEventListener('click', () => {
-            modal.style.display = 'none'; // Tutup modal
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const latitude = position.coords.latitude;
-                        const longitude = position.coords.longitude;
-                        // Kirim data lokasi ke server menggunakan Livewire
-                        Livewire.dispatch('updateLocation', {latitude, longitude});
-                        // console.log(Livewire.dispatch('updateLocation', latitude, longitude););
-                    },
-                    (error) => {
-                        console.error('Gagal mendapatkan lokasi:', error.message);
-                        alert('Tidak dapat mengambil lokasi. Pastikan izin lokasi diaktifkan.');
-                    }
-                );
-            } else {
-                alert('Browser Anda tidak mendukung Geolocation.');
-            }
-        });
+                    
+                },
+                (error) => {
+                    alert('Tidak dapat mengambil lokasi. Pastikan izin lokasi diaktifkan.');
+                }
+            );
+        } else {
+            alert('Browser Anda tidak mendukung Geolocation.');
+        }
 
-        denyButton.addEventListener('click', () => {
-            modal.style.display = 'none'; // Tutup modal
-            alert('Anda menolak memberikan izin lokasi. Beberapa fitur mungkin tidak tersedia.');
-        });
     });
 </script>
-@endif

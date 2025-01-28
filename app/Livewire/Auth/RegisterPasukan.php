@@ -103,8 +103,8 @@ class RegisterPasukan extends Component
                 'regency_kode' => ['required'],
                 'province_kode' => ['required'],
                 'social_media.*' => ['nullable', 'string'],
-                'latitude' => ['required', 'numeric'],
-                'longitude' => ['required', 'numeric'],
+                'latitude' => ['required'],
+                'longitude' => ['required'],
                 'social_media.*' => ['required', 'string'],
             ], [
                 'name.required' => 'Nama harus diisi.',
@@ -127,8 +127,6 @@ class RegisterPasukan extends Component
                 'province_kode.required' => 'Kode provinsi harus diisi.',
                 'latitude.required' => 'Latitude harus diisi.',
                 'longitude.required' => 'Longitude harus diisi.',
-                'latitude.numeric' => 'Latitude harus berupa angka.',
-                'longitude.numeric' => 'Longitude harus berupa angka.',
                 'social_media.*.required' => 'Akun sosial media harus diisi.',
                 'social_media.*.string' => 'Akun sosial media harus berupa string.',
             ]);

@@ -7,6 +7,7 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Pages\Auth\Login;
+use App\Filament\Pages\Location;
 use App\Filament\Pages\Dashboard;
 use Filament\Support\Colors\Color;
 use App\Filament\Widgets\GenderOverview;
@@ -54,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
+                Location::class,
             ])
             ->databaseNotifications()
             ->widgets([

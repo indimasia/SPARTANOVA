@@ -8,6 +8,7 @@ use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use App\Filament\Widgets\DataJobWidget;
+use App\Filament\Pengiklan\Pages\DashboardPengiklan;
 use Filament\Http\Middleware\Authenticate;
 use App\Http\Middleware\PengiklanMiddleware;
 use Illuminate\Session\Middleware\StartSession;
@@ -36,7 +37,7 @@ class PengiklanPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Pengiklan/Resources'), for: 'App\\Filament\\Pengiklan\\Resources')
             ->discoverPages(in: app_path('Filament/Pengiklan/Pages'), for: 'App\\Filament\\Pengiklan\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                DashboardPengiklan::class,
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Pengiklan/Widgets'), for: 'App\\Filament\\Pengiklan\\Widgets')
