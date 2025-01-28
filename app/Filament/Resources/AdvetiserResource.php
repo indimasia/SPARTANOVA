@@ -2,36 +2,45 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
-use App\Models\Regency;
-use App\Models\Village;
-use Filament\Forms\Get;
-use App\Models\District;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
 use App\Enums\UserStatusEnum;
-use Filament\Resources\Resource;
-use Illuminate\Support\Collection;
+use App\Filament\Resources\AdvetiserResource\Pages;
+use App\Filament\Resources\AdvetiserResource\RelationManagers;
+use App\Models\Advetiser;
+use App\Models\District;
+use App\Models\Regency;
+use App\Models\User;
+use App\Models\Village;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
+use Illuminate\Support\Collection;
 use Filament\Support\Colors\Color;
 
-class UserResource extends Resource
+class AdvetiserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Bagian Pengguna';
-    protected static ?string $navigationLabel = 'Semua Pengguna';
-    protected static ?string $pluralModelLabel = 'Semua Pengguna';
-    protected static ?string $modelLabel = 'Semua Pengguna';
-    protected static ?string $slug = 'pengguna';
-    protected static ?int $navigationSort = 0;
+    protected static ?string $navigationLabel = 'Pengiklan';
+    protected static ?string $pluralModelLabel = 'Pengiklan';
+    protected static ?string $modelLabel = 'Pengiklan';
+    protected static ?string $slug = 'pengiklan';
+    protected static ?int $navigationSort = 1;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereHas('roles', function($query) {
+            $query->where('name', 'pengiklan');
+        });
+    }
+
 
 
     public static function form(Form $form): Form
@@ -61,11 +70,6 @@ class UserResource extends Resource
                         }
                     })
                     ->maxLength(255),
-                Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name')
-                    ->preload()
-                    ->searchable()
-                    ->required(),
                 Forms\Components\Select::make('gender')
                     ->options([
                         'L' => 'Laki-Laki',
@@ -326,9 +330,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListAdvetisers::route('/'),
+            'create' => Pages\CreateAdvetiser::route('/create'),
+            'edit' => Pages\EditAdvetiser::route('/{record}/edit'),
         ];
     }
 }
