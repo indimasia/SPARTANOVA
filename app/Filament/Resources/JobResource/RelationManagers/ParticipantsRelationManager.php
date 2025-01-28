@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Filament\Pengiklan\Resources\JobResource\RelationManagers;
+namespace App\Filament\Resources\JobResource\RelationManagers;
 
 use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
+use App\Models\User;
 use App\Models\UserPerformance;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -16,43 +17,12 @@ use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Resources\RelationManagers\RelationManager;
-
 
 class ParticipantsRelationManager extends RelationManager
 {
     protected static string $relationship = 'participants';
     protected static ?string $title = 'Pasukan';
 
-
-    // public function form(Form $form): Form
-    // {
-    //     return $form
-    //         ->schema([
-    //             Forms\Components\Select::make('user_id')
-    //                 ->relationship('user', 'name')
-    //                 ->required()
-    //                 ->label('Nama Peserta'),
-    //             Forms\Components\Select::make('status')
-    //                 ->options(JobStatusEnum::options())
-    //                 ->default('pending')
-    //                 ->required()
-    //                 ->label('Status'),
-    //             Forms\Components\TextInput::make('reward')
-    //                 ->required()
-    //                 ->numeric()
-    //                 ->default(fn ($record) => $this->getOwnerRecord()->reward)
-    //                 ->readOnly()
-    //                 ->label('Reward'),
-    //             Forms\Components\FileUpload::make('attachment')
-    //                 ->label('Attachment')
-    //                 ->image()
-    //                 ->imageEditor()
-    //                 ->required()
-    //                 ->label('Bukti Pengerjaan'),
-    //         ]);
-
-    //     }
 
     public function table(Table $table): Table
     {
@@ -139,7 +109,7 @@ class ParticipantsRelationManager extends RelationManager
                                     ->send();
                             }
                         })
-                        ->visible(fn ($record) => $record->status === 'pending' || JobStatusEnum::REJECTED->value),
+                        ->visible(fn ($record) => $record->status===JobStatusEnum::REJECTED->value ||$record->status === JobStatusEnum::REPORTED->value ),
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
                         ->icon('heroicon-o-x-circle')
@@ -236,5 +206,5 @@ class ParticipantsRelationManager extends RelationManager
                     ->columnSpanFull(),
             ]);
     }
-
 }
+
