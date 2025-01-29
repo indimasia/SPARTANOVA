@@ -11,6 +11,7 @@ use App\Models\Province;
 use App\Models\JobDetail;
 use App\Enums\PlatformEnum;
 use App\Models\JobCampaign;
+use App\Models\PackageRate;
 use App\Enums\JobStatusEnum;
 use App\Models\JobParticipant;
 use App\Models\UserPerformance;
@@ -104,11 +105,15 @@ class ApplyJob extends Component
             $job->instructions = Purifier::clean($job->instructions);
             return $job;
         });
+        $jobTypes = $jobCampaigns->pluck('type')->toArray();
+
+        $packageRate = PackageRate::whereIn('type', $jobTypes)->pluck('reward')->first();
 
     return view('livewire.pasukan.apply-job', [
         'jobCampaigns' => $jobCampaigns,
         'platforms' => PlatformEnum::cases(),
-        'types' => JobType::cases()
+        'types' => JobType::cases(),
+        'packageRate' => $packageRate
     ])->layout('layouts.app');
 }
 

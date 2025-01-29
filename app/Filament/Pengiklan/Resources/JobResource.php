@@ -270,13 +270,13 @@ class JobResource extends Resource
                                             'required' => 'Kuota Harus Diisi',
                                             'min' => 'Kuota Harus Lebih Besar Dari 10000',
                                         ]),
-                                    Forms\Components\TextInput::make('reward')
-                                        ->required()
-                                        ->numeric()
-                                        ->label('Hadiah')
-                                        ->validationMessages([
-                                            'required' => 'Hadiah Harus Diisi',
-                                        ]),
+                                    // Forms\Components\TextInput::make('reward')
+                                    //     ->required()
+                                    //     ->numeric()
+                                    //     ->label('Hadiah')
+                                    //     ->validationMessages([
+                                    //         'required' => 'Hadiah Harus Diisi',
+                                    //     ]),
                                     ]),
                             Grid::make(2)
                                 ->schema([
@@ -433,9 +433,9 @@ class JobResource extends Resource
                                                 ->content(fn(Get $get) => $get('package_rate'))
                                                 ->label('Paket'),
 
-                                            Forms\Components\Placeholder::make('rewardPlaceHolder')
-                                                ->content(fn(Get $get) => $get('reward'))
-                                                ->label('Hadiah'),
+                                            // Forms\Components\Placeholder::make('rewardPlaceHolder')
+                                            //     ->content(fn(Get $get) => $get('reward'))
+                                            //     ->label('Hadiah'),
 
                                             Forms\Components\Placeholder::make('start_datePlaceHolder')
                                                 ->content(fn(Get $get) => $get('start_date'))
@@ -604,7 +604,7 @@ class JobResource extends Resource
                     ->label('Social Media')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('quota')->label('Kuota'),
-                Tables\Columns\TextColumn::make('reward')->label('Hadiah'),
+                // Tables\Columns\TextColumn::make('reward')->label('Hadiah'),
                 Tables\Columns\TextColumn::make('status')->badge()->icon(fn ($state) => match ($state) {
                     'publish' => 'heroicon-o-check-circle',
                     'draft' => 'heroicon-o-exclamation-circle',

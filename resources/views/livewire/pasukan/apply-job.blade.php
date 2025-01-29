@@ -106,7 +106,7 @@
                                         {{ $campaign->type->value }}
                                     </span>
                                     <span class="text-sm font-semibold text-gray-900">
-                                        Rp {{ number_format($campaign->reward, 0, ',', '.') }}
+                                        Rp {{ number_format($packageRate, 0, ',', '.') }}
                                     </span>
                                 </div>
         

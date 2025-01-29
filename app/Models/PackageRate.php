@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class PackageRate extends Model
 {
     use HasFactory;
-    protected $fillable = ['type', 'price'];
+    protected $fillable = ['type', 'price', 'reward'];
     // protected $casts = [
     //     'type' => JobType::class,
     // ];

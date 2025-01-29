@@ -89,6 +89,7 @@ class JobInAdminResource extends Resource
                 }),
                 Tables\Columns\TextColumn::make('start_date')->date()->label('Tanggal Mulai')->toggleable(),
                 Tables\Columns\TextColumn::make('end_date')->date()->label('Tanggal Selesai')->toggleable(),
+                Tables\Columns\TextColumn::make('createdBy.name')->label('Dibuat Oleh')->toggleable(),
             ])
             ->filters([
                 //
@@ -224,6 +225,7 @@ class JobInAdminResource extends Resource
                                             'publish' => 'success',
                                             'draft' => 'warning',
                                         }),
+                                        Infolists\Components\TextEntry::make('createdBy.name')->label('Dibuat Oleh'),
 
                                         ]),
                                 ]),

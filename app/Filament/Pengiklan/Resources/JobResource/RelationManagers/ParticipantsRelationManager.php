@@ -7,14 +7,15 @@ use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\PackageRate;
 use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
 use App\Models\UserPerformance;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -109,10 +110,11 @@ class ParticipantsRelationManager extends RelationManager
                         ->action(function ( $record) {
                             try {
 
+                                $packageRate = PackageRate::where('type', $record->job->type)->pluck('reward')->first();
                                 $userPerformance = UserPerformance::firstOrNew(['user_id' => $record->user_id]);
                                 $userPerformance->user_id = $record->user_id;
-                                $userPerformance->job_completed = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->count();
-                                $userPerformance->total_reward = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->sum('reward');
+                                $userPerformance->job_completed += 1;
+                                $userPerformance->total_reward += $packageRate;
                                 $userPerformance->save();
 
                                 \App\Models\Notification::create([
@@ -175,10 +177,12 @@ class ParticipantsRelationManager extends RelationManager
                             try {
                                 $records->each->update(['status' => JobStatusEnum::APPROVED->value]);
                                 $records->each(function ($record) {
+                                    $packageRate = PackageRate::where('type', $record->job->type)->pluck('reward')->first();
+
                                     $userPerformance = UserPerformance::firstOrNew(['user_id' => $record->user_id]);
                                     $userPerformance->user_id = $record->user_id;
-                                    $userPerformance->job_completed = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->count();
-                                    $userPerformance->total_reward = $record->where('user_id', $record->user_id)->where('status', JobStatusEnum::APPROVED->value)->sum('reward');
+                                    $userPerformance->job_completed += 1;
+                                    $userPerformance->total_reward += $packageRate;
                                     $userPerformance->save();
                                 });
                                 Notification::make()
