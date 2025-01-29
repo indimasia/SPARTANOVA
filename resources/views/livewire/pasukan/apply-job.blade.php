@@ -45,8 +45,9 @@
                 $availableJobs = $jobCampaigns->filter(function($campaign) {
                     return !Auth::user()->jobParticipants()->where('job_id', $campaign->id)->exists();
                 });
+                // dd($availableJobs);
             @endphp
-        
+
             <!-- Available Jobs Section -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
@@ -93,12 +94,12 @@
                                         {{ $campaign->created_at->format('d M Y') }}
                                     </span>
                                 </div>
-        
+
                                 <!-- Title -->
                                 <h3 class="text-base font-medium text-gray-900 mb-2">
                                     {{ $campaign->title }}
                                 </h3>
-        
+
                                 <!-- Type & Reward -->
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
@@ -109,28 +110,28 @@
                                         Rp {{ number_format($campaign->reward, 0, ',', '.') }}
                                     </span>
                                 </div>
-        
+
                                 <!-- Quota -->
                                 <div class="mb-3">
                                     <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
                                         <span>Kuota Tersisa</span>
-                                        <span>{{ $campaign->participantCount }} / {{ $campaign->quota }}</span>
+                                        <span>{{ $campaign->activeParticipant }} / {{ $campaign->quota }}</span>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-1.5">
                                         <div class="bg-yellow-500 h-1.5 rounded-full"
-                                            style="width: {{ $campaign->quota > 0 ? ($campaign->participantCount / $campaign->quota) * 100 : 0 }}%">
+                                            style="width: {{ $campaign->quota > 0 ? ($campaign->activeParticipant / $campaign->quota) * 100 : 0 }}%">
                                         </div>
                                     </div>
                                 </div>
-        
+
                                 <!-- Actions -->
                                 <div class="flex items-center justify-between">
-                                    <a href="{{ route('job.detail', ['jobId' => $campaign->id]) }}" 
+                                    <a href="{{ route('job.detail', ['jobId' => $campaign->id]) }}"
                                         class="text-sm font-medium text-blue-500 hover:text-blue-600">
                                         <i class="fas fa-info-circle mr-1"></i>
                                         Detail
                                      </a>
-                                     
+
                                     <button onclick="confirmApplyJob({{ $campaign->id }})"
                                         class="inline-flex items-center px-3 py-1.5 border border-yellow-500 text-sm font-medium rounded text-yellow-500 bg-white hover:bg-yellow-500 hover:text-white transition-colors duration-200">
                                         <i class="fas fa-paper-plane mr-1"></i>
@@ -173,23 +174,23 @@
                                     @case('facebook')
                                         <i class="fab fa-facebook text-blue-600 text-lg"></i>
                                     @break
-        
+
                                     @case('instagram')
                                         <i class="fab fa-instagram text-pink-600 text-lg"></i>
                                     @break
-        
+
                                     @case('twitter')
                                         <i class="fab fa-twitter text-blue-400 text-lg"></i>
                                     @break
-        
+
                                     @case('tiktok')
                                         <i class="fab fa-tiktok text-black text-lg"></i>
                                     @break
-        
+
                                     @case('youtube')
                                         <i class="fab fa-youtube text-red-600 text-lg"></i>
                                     @break
-        
+
                                     @default
                                         <i class="fas fa-globe text-gray-600 text-lg"></i>
                                 @endswitch
@@ -199,12 +200,12 @@
                                 {{ $selectedJob->created_at->format('d M Y') }}
                             </span>
                         </div>
-        
+
                         <!-- Title -->
                         <h2 class="text-xl font-semibold text-gray-800 mb-4">
                             {{ $selectedJob->title }}
                         </h2>
-        
+
                         <!-- Type & Reward -->
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center justify-between mb-4">
@@ -219,12 +220,12 @@
                                     </a>
                                 @endif
                             </div>
-                            
+
                             <span class="text-lg font-semibold text-gray-900">
                                 Rp {{ number_format($selectedJob->reward, 0, ',', '.') }}
                             </span>
                         </div>
-        
+
                         <!-- Description -->
                         @if ($jobDetail)
                             @if ($jobDetail->image)
@@ -252,7 +253,7 @@
                                                 </p>
                                             </div>
                                         @endif
-                        
+
                                         <!-- Persyaratan -->
                                         @if ($jobDetail->requirements)
                                             <div>
@@ -266,7 +267,7 @@
                                                 </ul>
                                             </div>
                                         @endif
-                        
+
                                         <!-- Petunjuk -->
                                         @if ($selectedJob->instructions)
                                             <div>
@@ -338,7 +339,7 @@
                                 </div>
                             @endif
                         @endif
-        
+
                         <!-- Quota -->
                         <div class="mb-4">
                             <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
@@ -351,7 +352,7 @@
                                 </div>
                             </div>
                         </div>
-        
+
                         <!-- Dates -->
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
@@ -369,7 +370,7 @@
                         </div>
                     @endif
                 </div>
-        
+
                 <!-- Modal Footer -->
                 <div class="p-4 border-t border-gray-100 flex justify-end gap-3 sticky bottom-0 bg-white">
                     <button wire:click="closeModal"
@@ -417,7 +418,7 @@
 async function shareImageAndContent(campaignId) {
     try {
         console.log(campaignId);
-        
+
         const imageUrl = campaign.jobDetail.image;
         console.log(imageUrl);
         // Ambil gambar dari server
