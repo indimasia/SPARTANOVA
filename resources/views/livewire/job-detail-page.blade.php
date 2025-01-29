@@ -267,12 +267,20 @@
                             </button>
                         </div>
                         <p id="copiedMessage" class="text-sm text-green-500 mb-4 hidden">Caption copied to clipboard!</p>
-                        <a href="javascript:void(0);" 
-                            id="shareButton-{{ $jobDetail->id }}" data-image-url="{{ asset('storage/' . $jobDetail->image) }}"
-                            class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Posting Sekarang
-                        </a>
+                        <div class="flex gap-2">
+                            <a href="javascript:void(0);" 
+                                id="shareButton-{{ $jobDetail->id }}" 
+                                data-image-url="{{ asset('storage/' . $jobDetail->image) }}"
+                                class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                Posting Sekarang
+                            </a>
+                            <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
+                                class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-50 transition-colors duration-200">
+                                <i class="fas fa-upload mr-2"></i>
+                                Upload Bukti Posting
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
