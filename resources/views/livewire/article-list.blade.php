@@ -84,7 +84,7 @@
                                                                 <p class="flex items-center text-sm text-gray-500">
                                                                     <i
                                                                         class="fas fa-user flex items-center mr-1.5 h-5 w-5 text-yellow-700"></i>
-                                                                    John Doe
+                                                                   Admin
                                                                 </p>
                                                                 <p
                                                                     class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
