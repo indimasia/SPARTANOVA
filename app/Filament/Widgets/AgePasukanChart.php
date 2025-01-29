@@ -34,7 +34,7 @@ class AgePasukanChart extends ChartWidget
                 [
                     'label' => 'Usia',
                     'data' => $data,
-                    'borderColor' => '#42A5F5',
+                    'borderColor' => 'transparent',
                     'backgroundColor' => ['#42A5F5', '#EC407A', '#FFA726', '#66BB6A'],
                     'fill' => true,
                     'tension' => 0.4,

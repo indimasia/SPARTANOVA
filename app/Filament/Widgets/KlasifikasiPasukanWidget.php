@@ -30,7 +30,7 @@ class KlasifikasiPasukanWidget extends ChartWidget
                 ],
                 [
                     'label' => 'Gen X',
-                    'backgroundColor' => '#F1FAEE',
+                    'backgroundColor' => '#8ECAE6',
                     'borderWidth' => 0,
                     'data' => [
                         '' => $gen_x,
