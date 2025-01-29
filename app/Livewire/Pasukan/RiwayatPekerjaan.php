@@ -71,7 +71,8 @@ class RiwayatPekerjaan extends Component
 
         $jobParticipant = JobParticipant::find($this->selectedJobHistory);
 
-        $path = $this->attachment->store('attachments', 'public');
+        $fileName = $this->attachment->store('attachments', 'public');
+        $path = basename($fileName);
         $jobParticipant->update([
             'attachment' => $path,
             'status' => JobStatusEnum::REPORTED->value,
@@ -87,7 +88,7 @@ class RiwayatPekerjaan extends Component
         $jobParticipant = JobParticipant::find($historyId);
 
         if ($jobParticipant && $jobParticipant->attachment) {
-            $this->viewAttachmentPath = asset('storage/' . $jobParticipant->attachment);
+            $this->viewAttachmentPath = asset('attachments/' . $jobParticipant->attachment);
             $this->status = $jobParticipant->status;
             $this->selectedJobHistory = $historyId;
             $this->viewAttachmentModal = true;
@@ -116,16 +117,17 @@ class RiwayatPekerjaan extends Component
 
     // Hapus file lama jika ada
     if ($jobParticipant->attachment) {
-        \Storage::disk('public')->delete($jobParticipant->attachment);
+        \Storage::disk('attachments')->delete($jobParticipant->attachment);
     }
 
     // Simpan file baru
-    $path = $this->attachment->store('attachments', 'public');
+    $fileName = $this->attachment->store('attachments', 'public');
+    $path = basename($fileName);
     $jobParticipant->update([
         'attachment' => $path,
     ]);
 
-    $this->viewAttachmentPath = asset('storage/' . $path);
+    $this->viewAttachmentPath = asset('attachments/' . $path);
     session()->flash('message', 'Bukti berhasil diperbarui!');
 }
 

@@ -39,7 +39,8 @@ class ParticipantsRelationManager extends RelationManager
                     ->badge()
                     ->color(fn ($record) => $record->status === JobStatusEnum::APPLIED->value ? 'warning' : ($record->status === JobStatusEnum::APPROVED->value  ? 'success' : ($record->status === JobStatusEnum::REJECTED->value ? 'danger' : 'info'))),
                 Tables\Columns\TextColumn::make('reward'),
-                Tables\Columns\ImageColumn::make('attachment'),
+                Tables\Columns\ImageColumn::make('attachment')->disk('attachments')
+                ,
             ])
             ->filters([
                 //
@@ -199,8 +200,9 @@ class ParticipantsRelationManager extends RelationManager
                     ->default(fn($record) => User::getUserLocation($record->user->latitude, $record->user->longitude)['display_name'] ?? 'Lokasi')
                     ->label('Lokasi')
                     ->columnSpanFull(),
+
                 ImageEntry::make('attachment')
-                    ->disk('public')
+                    ->disk('attachments')
                     ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
                     ->extraImgAttributes([
                         'alt' => 'Foto Bukti Pengerjaan',
