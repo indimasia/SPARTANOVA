@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\JobStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -15,11 +16,17 @@ class JobCampaign extends Model
 
     protected $fillable = ['title', 'type', 'platform', 'quota', 'reward', 'status', 'due_date', 'is_multiple', 'start_date', 'end_date', 'instructions', 'created_by'];
 
-    protected $appends = ['participant_count'];
-    
+    protected $appends = ['participant_count', 'active_participant'];
+
     public function getParticipantCountAttribute(): int
     {
         return $this->participants()->count();
+    }
+
+    public function getActiveParticipantAttribute(): int
+    {
+        return $this->participants()->whereNot('status', JobStatusEnum::REJECTED->value)->count();
+
     }
     // public function setInstructionsAttribute($value)
     // {
@@ -60,5 +67,6 @@ class JobCampaign extends Model
     }
 
     
+
 }
 
