@@ -108,10 +108,14 @@ class ApplyJob extends Component
         $jobTypes = $jobCampaigns->pluck('type')->toArray();
 
         $packageRate = PackageRate::whereIn('type', $jobTypes)->pluck('reward')->first();
+        $sosialMediaPlatforms = SosialMediaAccount::where('user_id', $user->id)
+        ->where('account', '!=', 'Tidak punya akun')
+        ->pluck('sosial_media')
+        ->toArray();
 
     return view('livewire.pasukan.apply-job', [
         'jobCampaigns' => $jobCampaigns,
-        'platforms' => PlatformEnum::cases(),
+        'platforms' => $sosialMediaPlatforms,
         'types' => JobType::cases(),
         'packageRate' => $packageRate
     ])->layout('layouts.app');

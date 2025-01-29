@@ -22,7 +22,7 @@
                         class="appearance-none w-full bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-gray-700 cursor-pointer transition-all duration-300 focus:bg-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent hover:border-yellow-300">
                         <option value="">Semua Platform</option>
                         @foreach ($platforms as $platform)
-                            <option value="{{ $platform->value }}">{{ $platform->value }}</option>
+                            <option value="{{ $platform }}">{{ $platform }}</option>
                         @endforeach
                     </select>
                 </div>

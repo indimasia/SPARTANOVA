@@ -105,9 +105,14 @@ class MisiProgres extends Component
             return $job;
         });
 
+        $sosialMediaPlatforms = SosialMediaAccount::where('user_id', $user->id)
+        ->where('account', '!=', 'Tidak punya akun')
+        ->pluck('sosial_media')
+        ->toArray();
+
     return view('livewire.misi-progres', [
         'jobCampaigns' => $jobCampaigns,
-        'platforms' => PlatformEnum::cases(),
+        'platforms' => $sosialMediaPlatforms,
         'types' => JobType::cases()
     ])->layout('layouts.app');
 }
