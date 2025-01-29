@@ -108,4 +108,18 @@ class Location extends Page
             static::$title ??
             __('filament-panels::pages/location.title');
     }
+
+    public function getActiveUserCounts()
+    {
+        return [
+            'pengiklan' => User::whereHas('roles', function ($query) {
+                $query->where('name', 'pengiklan');
+            })->where('is_active', true)->count(),
+
+            'pasukan' => User::whereHas('roles', function ($query) {
+                $query->where('name', 'pasukan');
+            })->where('is_active', true)->count(),
+        ];
+    }
+
 }

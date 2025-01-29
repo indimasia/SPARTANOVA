@@ -15,6 +15,20 @@
             </div>
 
             <div id="user-map" style="height: 450px; width: 100%; position: relative; z-index: 0;"></div>
+
+            <div class="mt-6 p-4 rounded-lg shadow-sm">
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="flex flex-wrap justify-center gap-4 items-center bg-white px-4 py-2 rounded-full shadow-sm">
+                        <div class="w-6 h-6 rounded-full mr-4" style="background-color: red;"></div>
+                        <span class="text-sm font-medium text-gray-700">Pengiklan Aktif: {{ $this->getActiveUserCounts()['pengiklan'] }}</span>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-4 items-center bg-white px-4 py-2 rounded-full shadow-sm">
+                        <div class="w-6 h-6 rounded-full mr-4" style="background-color: green;"></div>
+                        <span class="text-sm font-medium text-gray-700">Pasukan Aktif: {{ $this->getActiveUserCounts()['pasukan'] }}</span>
+                    </div>
+                </div>
+            </div>
+            
         </div>
 
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -39,7 +53,6 @@
                     popupAnchor: [1, -34],
                     shadowSize: [41, 41]
                 });
-
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 18,
