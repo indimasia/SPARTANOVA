@@ -47,9 +47,9 @@
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-500">Total Penghasilan</p>
-                            <h3 class="text-xl font-semibold text-gray-800 mt-1">Rp
-                                {{ number_format($totalEarnings ?? 0, 0, ',', '.') }}</h3>
+                            <p class="text-sm font-medium text-gray-500">Total Poin</p>
+                            <h3 class="text-xl font-semibold text-gray-800 mt-1">
+                                {{ $totalEarnings }}</h3>
                         </div>
                         <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center">
                             <i class="fas fa-wallet text-purple-500"></i>

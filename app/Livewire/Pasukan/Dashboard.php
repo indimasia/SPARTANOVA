@@ -3,10 +3,11 @@
 namespace App\Livewire\Pasukan;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\JobParticipant;
+use App\Models\UserPerformance;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Livewire\Attributes\On;
 
 class Dashboard extends Component
 {
@@ -43,7 +44,9 @@ class Dashboard extends Component
                 return isset($activity['user_id']) && $activity['user_id'] == $userId;
             });
 
-            return view('livewire.pasukan.dashboard', compact('totalJobs', 'pendingJobs', 'approvedJobs', 'recentActivities'))
+            $totalEarnings = UserPerformance::where('user_id', $userId)->pluck('total_reward')->first();
+
+            return view('livewire.pasukan.dashboard', compact('totalJobs', 'pendingJobs', 'approvedJobs', 'recentActivities', 'totalEarnings'))
                 ->layout('layouts.app');
         }
 
