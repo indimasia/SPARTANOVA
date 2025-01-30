@@ -11,6 +11,7 @@ use App\Filament\Widgets\DataJobWidget;
 use App\Filament\Pengiklan\Pages\DashboardPengiklan;
 use Filament\Http\Middleware\Authenticate;
 use App\Http\Middleware\PengiklanMiddleware;
+use App\Livewire\spartavTag;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -43,7 +44,8 @@ class PengiklanPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Pengiklan/Widgets'), for: 'App\\Filament\\Pengiklan\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                spartavTag::class,
+                // Widgets\FilamentInfoWidget::class,
                 DataJobWidget::class,
             ])
             ->middleware([

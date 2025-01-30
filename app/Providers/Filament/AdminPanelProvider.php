@@ -9,6 +9,7 @@ use Filament\PanelProvider;
 use Filament\Pages\Auth\Login;
 use App\Filament\Pages\Location;
 use App\Filament\Pages\Dashboard;
+use App\Filament\Resources\SpartavTagResource\Widgets\spartavTag;
 use Filament\Support\Colors\Color;
 use App\Filament\Widgets\GenderOverview;
 use App\Http\Middleware\AdminMiddleware;
@@ -24,6 +25,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
 use App\Filament\Widgets\KlasifikasiPasukanWidget;
+use App\Livewire\spartavTag as LivewireSpartavTag;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -59,7 +61,8 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                LivewireSpartavTag::class,
+                // Widgets\FilamentInfoWidget::class,
                 StatsOverviewWidget::class,
                 UserGrowthWidget::class,
                 KlasifikasiPasukanWidget::class,
