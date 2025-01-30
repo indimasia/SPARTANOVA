@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Home;
+use App\Livewire\Topup;
 use App\Livewire\ArticleList;
 use App\Livewire\MisiProgres;
 use App\Livewire\Auth\Register;
@@ -27,6 +28,7 @@ Route::middleware([PasukanMiddleware::class])->group(
         Route::get('/pasukan/profile', ViewProfile::class)->name('pasukan.profile');
         Route::get('/pasukan/profile/edit', Profile::class)->name('pasukan.profile.edit');
         Route::get('/articles', ArticleList::class)->name('articles.index');
+        Route::get('/topup', Topup::class)->name('topup.index');
         Route::get('/articles/{slug}', DetailArticle::class)->name('articles.detail');
         Route::get('/job/{jobId}', JobDetailPage::class)->name('job.detail');
     }

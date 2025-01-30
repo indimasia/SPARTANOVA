@@ -138,6 +138,12 @@
                                     class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Artikel</span>
                             </a>
+                            <a href="{{ route('topup.index') }}"
+                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('topup.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i
+                                    class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('topup.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                <span>Top Up</span>
+                            </a>
 
                             <div class="px-4 py-2.5 border-t border-gray-100 mt-auto">
                                 <livewire:auth.logout />
@@ -194,6 +200,13 @@
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Artikel</span>
+                                </a>
+
+                                <a href="{{ route('topup.index') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('topup.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('topup.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Top Up</span>
                                 </a>
 
                                 <div class="px-4 py-2.5 border-t border-gray-100 mt-4">
