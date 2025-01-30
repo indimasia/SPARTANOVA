@@ -76,20 +76,32 @@ class TransaksiResource extends Resource
                         ->action(function (Transaction $record) {
                             try {
                                 $record->update(['status' => 'approved']);
-                                    Notification::make()
+                            
+                                Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
                                     ->send();
-                                    Wallet::updateOrCreate([
-                                        'user_id' => $record->user_id,
-                                        'total_points' => $record->user->wallet->total_points ?? 0 + $record->amount/1000,
+                            
+                                $wallet = Wallet::where('user_id', $record->user_id)->first();
+                            
+                                if ($wallet) {
+                                    $wallet->update([
+                                        'total_points' => $wallet->total_points + $record->amount / 1000,
                                     ]);
+                                } else {
+                                    Wallet::create([
+                                        'user_id' => $record->user_id,
+                                        'total_points' => $record->amount / 1000,
+                                    ]);
+                                }
+                            
                             } catch (\Exception $e) {
                                 Notification::make()
                                     ->title('Failed to approve')
                                     ->danger()
                                     ->send();
                             }
+                            
                         }),
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')

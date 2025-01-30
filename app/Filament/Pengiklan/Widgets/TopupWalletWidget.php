@@ -13,6 +13,6 @@ class TopupWalletWidget extends Widget
 
     public function getTotalPoints(): int
     {
-        return Wallet::where('user_id', auth()->id())->value('total_points') ?? 0;
+        return Wallet::where('user_id', auth()->id())->pluck('total_points')->first() ?? 0;
     }
 }
