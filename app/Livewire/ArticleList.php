@@ -4,10 +4,22 @@ namespace App\Livewire;
 
 use App\Models\Article;
 use Livewire\Component;
+use App\Models\NotificationRead;
 
 class ArticleList extends Component
 {
     public $search = ''; // Properti untuk pencarian
+    public $articleId;
+
+    public function mount($articleId)
+    {
+        $this->articleId = $articleId;
+        // Tandai notifikasi sebagai dibaca
+        NotificationRead::create([
+            'user_id' => auth()->user()->id,
+            'notification_id' => $articleId,
+        ]);
+    }
 
     public function render()
     {

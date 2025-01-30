@@ -43,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>

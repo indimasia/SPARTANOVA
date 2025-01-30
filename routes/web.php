@@ -28,6 +28,7 @@ Route::middleware([PasukanMiddleware::class])->group(
         Route::get('/pasukan/profile', ViewProfile::class)->name('pasukan.profile');
         Route::get('/pasukan/profile/edit', Profile::class)->name('pasukan.profile.edit');
         Route::get('/articles', ArticleList::class)->name('articles.index');
+        Route::get('/articles/read/{articleId}', ArticleList::class)->name('articles.read');
         Route::get('/topup', Topup::class)->name('topup.index');
         Route::get('/articles/{slug}', DetailArticle::class)->name('articles.detail');
         Route::get('/job/{jobId}', JobDetailPage::class)->name('job.detail');

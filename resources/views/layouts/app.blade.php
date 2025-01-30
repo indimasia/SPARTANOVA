@@ -33,17 +33,38 @@
                     <!-- Mobile Menu Button -->
                     @auth
                     <div class="flex items-center space-x-4">
+                        @php
+                                        $notifications = App\Models\Notification::where('notifiable_type', 'App\Models\Article')
+                                        ->whereNotIn('id', function ($query) {
+                                            $query->select('notification_id')
+                                                ->from('notification_reads')
+                                                ->where('user_id', Auth::id());
+                                        })
+                                        ->get();
+                                        $count = $notifications->count();
+                                    @endphp
                         <!-- Notifications Dropdown -->
                         <div class="relative" x-data="{ open: false }" @click.away="open = false">
                             <button @click="open = !open" class="text-gray-500 hover:text-gray-900 focus:outline-none">
                                 <i class="fas fa-bell text-xl"></i>
-                                <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">{{ auth()->user()->unreadNotifications->count() }}</span>
+                                <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                    {{ auth()->user()->unreadNotifications->count() + $count }}
+                                </span>
                             </button>
                             <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg overflow-hidden z-50" style="display: none;">
                                 <div class="py-2">
                                     <div class="px-4 py-2 text-sm font-semibold text-gray-700 border-b">
                                         Notifications
                                     </div>
+                                    @php
+                                        $notifications = App\Models\Notification::where('notifiable_type', 'App\Models\Article')
+                                        ->whereNotIn('id', function ($query) {
+                                            $query->select('notification_id')
+                                                ->from('notification_reads')
+                                                ->where('user_id', Auth::id());
+                                        })
+                                        ->get();
+                                    @endphp
                                     @foreach(auth()->user()->unreadNotifications as $notification)
                                     <a href="{{ route('pasukan.riwayat-pekerjaan') }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
                                         <div class="ml-3">
@@ -51,6 +72,17 @@
                                             <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
                                         </div>
                                     </a>
+                                    @endforeach
+                                    @foreach($notifications as $notification)
+                                        @php
+                                            $notificationData = json_decode($notification->data, true); // Decode the JSON string to an array
+                                        @endphp
+                                        <a href="{{ route('articles.read', ['articleId' => $notification->id]) }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-gray-900">{{ $notificationData['message'] }}</div>
+                                                <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
+                                            </div>
+                                        </a>
                                     @endforeach
                                     <a href="#" class="block bg-gray-50 text-sm text-center font-medium text-indigo-600 py-2 hover:bg-gray-100 transition ease-in-out duration-150">
                                         View all notifications
