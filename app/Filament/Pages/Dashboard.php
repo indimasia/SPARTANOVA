@@ -2,6 +2,16 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\AdvertiserTable;
+use App\Filament\Widgets\AdvertiserWidget;
+use App\Filament\Widgets\AgePasukanChart;
+use App\Filament\Widgets\GenderOverview;
+use App\Filament\Widgets\InterestPasukanChart;
+use App\Filament\Widgets\JobTypeStatsWidget;
+use App\Filament\Widgets\KlasifikasiPasukanWidget;
+use App\Filament\Widgets\StatsOverviewWidget;
+use App\Filament\Widgets\UserGrowthWidget;
+use App\Filament\Widgets\UserPasukanPerProvinsi;
 use App\Models\User;
 use Filament\Pages\Page;
 use Filament\Widgets\Widget;
@@ -9,6 +19,8 @@ use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Http;
 use Filament\Widgets\WidgetConfiguration;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Widgets\AccountWidget;
+use App\Livewire\spartavTag as LivewireSpartavTag;
 use Illuminate\Contracts\Support\Htmlable;
 
 class Dashboard extends Page
@@ -121,7 +133,21 @@ class Dashboard extends Page
      */
     public function getWidgets(): array
     {
-        return Filament::getWidgets();
+        return [
+            AccountWidget::class,
+            LivewireSpartavTag::class,
+            // Widgets\FilamentInfoWidget::class,
+            StatsOverviewWidget::class,
+            UserGrowthWidget::class,
+            KlasifikasiPasukanWidget::class,
+            AdvertiserTable::class,
+            JobTypeStatsWidget::class,
+            AgePasukanChart::class,
+            GenderOverview::class,
+            InterestPasukanChart::class,
+            AdvertiserWidget::class,
+            // UserPasukanPerProvinsi::class,
+        ];
     }
 
     /**

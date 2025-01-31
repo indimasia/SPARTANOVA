@@ -9,7 +9,6 @@ use Filament\PanelProvider;
 use Filament\Pages\Auth\Login;
 use App\Filament\Pages\Location;
 use App\Filament\Pages\Dashboard;
-use App\Filament\Resources\SpartavTagResource\Widgets\spartavTag;
 use Filament\Support\Colors\Color;
 use App\Filament\Widgets\GenderOverview;
 use App\Http\Middleware\AdminMiddleware;
@@ -22,6 +21,7 @@ use App\Filament\Widgets\JobTypeStatsWidget;
 use App\Filament\Widgets\StatsOverviewWidget;
 use App\Filament\Widgets\InterestPasukanChart;
 use Illuminate\Session\Middleware\StartSession;
+use App\Filament\Widgets\UserPasukanPerProvinsi;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
 use App\Filament\Widgets\KlasifikasiPasukanWidget;
@@ -32,6 +32,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Resources\SpartavTagResource\Widgets\spartavTag;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -72,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
                 GenderOverview::class,
                 InterestPasukanChart::class,
                 AdvertiserWidget::class,
+                UserPasukanPerProvinsi::class,
             ])
             ->middleware([
                 EncryptCookies::class,
