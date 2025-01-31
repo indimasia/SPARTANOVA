@@ -12,6 +12,7 @@ class Village extends Model
     use HasFactory;
     protected $table = 'wil_villages';
     protected $primaryKey = 'kode';
+    protected $fillable = ['kode', 'district_kode', 'nama'];
 
     public function users(): HasMany
     {

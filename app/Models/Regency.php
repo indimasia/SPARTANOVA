@@ -13,6 +13,7 @@ class Regency extends Model
 
     protected $table = 'wil_regencies';
     protected $primaryKey = 'kode';
+    protected $fillable = ['kode', 'prov_kode', 'nama'];
 
     public function province()
     {

@@ -12,6 +12,7 @@ class Province extends Model
     use HasFactory;
     protected $table = 'wil_provinces';
     protected $primaryKey = 'kode';
+    protected $fillable = ['kode', 'nama'];
 
 
 

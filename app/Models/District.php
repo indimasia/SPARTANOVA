@@ -12,6 +12,7 @@ class District extends Model
     use HasFactory;
     protected $table = 'wil_districts';
     protected $primaryKey = 'kode';
+    protected $fillable = ['kode', 'regency_kode', 'nama'];
 
     public function users(): HasMany
     {

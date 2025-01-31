@@ -31,6 +31,46 @@
             
         </div>
 
+        {{-- <div class="mt-6 p-4 bg-white rounded-lg shadow-sm">
+            <h3 class="text-lg font-semibold">Pemetaaan Pengguna Berdasarkan Kota dan Provinsi</h3>
+            
+            <!-- Mapa lokasi register -->
+            <h4 class="text-md font-medium text-gray-700 mt-4">Lokasi Register</h4>
+            <div class="grid grid-cols-2 gap-4">
+                @foreach($this->getCityUserCount()['register'] as $province => $cities)
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h5 class="text-sm font-medium text-gray-700">{{ $province }}</h5>
+                        @foreach($cities as $city => $counts)
+                            <div class="mt-2">
+                                <h6 class="text-sm font-medium text-gray-600">{{ $city }}</h6>
+                                <p class="text-sm text-gray-600">Pasukan: {{ $counts['pasukan'] }}</p>
+                                <p class="text-sm text-gray-600">Pengiklan: {{ $counts['pengiklan'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+            </div>
+        
+            <!-- Mapa lokasi saat ini -->
+            <h4 class="text-md font-medium text-gray-700 mt-4">Lokasi Saat Ini</h4>
+            <div class="grid grid-cols-2 gap-4">
+                @foreach($this->getCityUserCount()['current'] as $province => $cities)
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h5 class="text-sm font-medium text-gray-700">{{ $province }}</h5>
+                        @foreach($cities as $city => $counts)
+                            <div class="mt-2">
+                                <h6 class="text-sm font-medium text-gray-600">{{ $city }}</h6>
+                                <p class="text-sm text-gray-600">Pasukan: {{ $counts['pasukan'] }}</p>
+                                <p class="text-sm text-gray-600">Pengiklan: {{ $counts['pengiklan'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+            </div>
+        </div> --}}
+        
+        
+
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
