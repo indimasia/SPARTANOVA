@@ -5,6 +5,11 @@
             <!-- Dropdown to choose location type -->
             <div class="mb-4 flex flex-row justify-between items-center">
                 <h2 class="text-xl font-semibold">User Locations</h2>
+                <button id="fullscreenButton" class="p-2 text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                </button>
                 <div class="flex flex-col">
                     <label for="locationType" class="block text-sm font-medium text-gray-700 mb-1">Pilih Lokasi:</label>
                     <select id="locationType" class="block rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm w-full">
@@ -30,46 +35,6 @@
             </div>
             
         </div>
-
-        {{-- <div class="mt-6 p-4 bg-white rounded-lg shadow-sm">
-            <h3 class="text-lg font-semibold">Pemetaaan Pengguna Berdasarkan Kota dan Provinsi</h3>
-            
-            <!-- Mapa lokasi register -->
-            <h4 class="text-md font-medium text-gray-700 mt-4">Lokasi Register</h4>
-            <div class="grid grid-cols-2 gap-4">
-                @foreach($this->getCityUserCount()['register'] as $province => $cities)
-                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                        <h5 class="text-sm font-medium text-gray-700">{{ $province }}</h5>
-                        @foreach($cities as $city => $counts)
-                            <div class="mt-2">
-                                <h6 class="text-sm font-medium text-gray-600">{{ $city }}</h6>
-                                <p class="text-sm text-gray-600">Pasukan: {{ $counts['pasukan'] }}</p>
-                                <p class="text-sm text-gray-600">Pengiklan: {{ $counts['pengiklan'] }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                @endforeach
-            </div>
-        
-            <!-- Mapa lokasi saat ini -->
-            <h4 class="text-md font-medium text-gray-700 mt-4">Lokasi Saat Ini</h4>
-            <div class="grid grid-cols-2 gap-4">
-                @foreach($this->getCityUserCount()['current'] as $province => $cities)
-                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                        <h5 class="text-sm font-medium text-gray-700">{{ $province }}</h5>
-                        @foreach($cities as $city => $counts)
-                            <div class="mt-2">
-                                <h6 class="text-sm font-medium text-gray-600">{{ $city }}</h6>
-                                <p class="text-sm text-gray-600">Pasukan: {{ $counts['pasukan'] }}</p>
-                                <p class="text-sm text-gray-600">Pengiklan: {{ $counts['pengiklan'] }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                @endforeach
-            </div>
-        </div> --}}
-        
-        
 
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -137,6 +102,45 @@
                 // Update map when dropdown changes
                 locationType.addEventListener('change', function () {
                     updateMap(this.value);
+                });
+
+                var mapContainer = document.getElementById('user-map');
+                var fullscreenButton = document.getElementById('fullscreenButton');
+                var isFullscreen = false;
+
+                fullscreenButton.addEventListener('click', function() {
+                    if (!isFullscreen) {
+                        if (mapContainer.requestFullscreen) {
+                            mapContainer.requestFullscreen();
+                        } else if (mapContainer.mozRequestFullScreen) { /* Firefox */
+                            mapContainer.mozRequestFullScreen();
+                        } else if (mapContainer.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                            mapContainer.webkitRequestFullscreen();
+                        } else if (mapContainer.msRequestFullscreen) { /* IE/Edge */
+                            mapContainer.msRequestFullscreen();
+                        }
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.mozCancelFullScreen) { /* Firefox */
+                            document.mozCancelFullScreen();
+                        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                            document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) { /* IE/Edge */
+                            document.msExitFullscreen();
+                        }
+                    }
+                });
+
+                document.addEventListener('fullscreenchange', function() {
+                    isFullscreen = !isFullscreen;
+                    if (isFullscreen) {
+                        mapContainer.style.height = '100vh';
+                        map.invalidateSize();
+                    } else {
+                        mapContainer.style.height = '450px';
+                        map.invalidateSize();
+                    }
                 });
 
                 var mapElement = document.getElementById('user-map');
