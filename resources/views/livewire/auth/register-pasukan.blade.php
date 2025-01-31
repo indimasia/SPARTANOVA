@@ -333,7 +333,16 @@
                                         <input type="text" id="{{ strtolower($platform->value) }}"
                                             wire:model="social_media.{{ $platform->value }}"
                                             class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm group-hover:border-blue-300 transition-colors duration-200"
-                                            placeholder="{{ 'URL Profile ' . $platform->value }}"
+                                            placeholder="{{ match($platform->value) {
+                                                'Facebook' => 'Username Facebook',
+                                                'Instagram' => 'Username Instagram',
+                                                'Twitter' => 'Username Twitter',
+                                                'Google' => 'Email Google',
+                                                'TikTok' => 'Username TikTok',
+                                                'Youtube' => 'Username YouTube',
+                                                'WhatsApp' => 'Nomor WhatsApp',
+                                                default => 'URL Profile ' . $platform->value,
+                                            } }}"
                                             @if($social_media[$platform->value] == 'Tidak punya akun') @disabled(true) @endif>
                                     </div>
                                     <!-- Toggle Button -->
@@ -347,7 +356,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    </div>
+                    </div>                    
                     <p class="text-gray-600 mt-4 text-center">
                         Jika lokasi tidak tersedia, pastikan GPS diaktifkan pada perangkat Anda. 
                         <a href="#" class="text-blue-500 underline" onclick="openHelp()">Lihat panduan</a>.
