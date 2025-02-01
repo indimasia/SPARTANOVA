@@ -36,7 +36,7 @@ class RegisterPengiklan extends Component
     public $districts = [];
     public $regencies = [];
     public $provinces = [];
-    protected $listeners = ['setLocation'];
+    protected $listeners = ['setLocation', 'register'];
 
     protected $rules = [
         'name' => 'required|string|max:255',

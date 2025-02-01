@@ -38,7 +38,7 @@ class RegisterPasukan extends Component
     public $districts = [];
     public $regencies = [];
     public $provinces = [];
-    protected $listeners = ['setLocation'];
+    protected $listeners = ['setLocation', 'register'];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -93,8 +93,8 @@ class RegisterPasukan extends Component
         try {
             $validated = $this->validate([
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-                'password' => ['required', 'string', 'confirmed', Password::defaults()],
+                'email' => ['required', 'email', 'unique:' . User::class],
+                'password' => ['required', 'string', 'min:6', 'confirmed', Password::defaults()],
                 'gender' => ['required', 'in:L,P'],
                 'date_of_birth' => ['required', 'date'],
                 'phone' => ['required', 'string', 'max:15'],
@@ -102,33 +102,34 @@ class RegisterPasukan extends Component
                 'district_kode' => ['required'],
                 'regency_kode' => ['required'],
                 'province_kode' => ['required'],
-                'social_media.*' => ['nullable', 'string'],
                 'latitude' => ['required'],
                 'longitude' => ['required'],
                 'social_media.*' => ['required', 'string'],
             ], [
                 'name.required' => 'Nama harus diisi.',
-                'name.regex' => 'Nama hanya boleh mengandung huruf dan spasi.',
+                'name.string' => 'Nama harus berupa string.',
                 'name.max' => 'Nama tidak boleh lebih dari 255 karakter.',
                 'email.required' => 'Email harus diisi.',
                 'email.email' => 'Format email tidak valid.',
                 'email.unique' => 'Email sudah terdaftar.',
                 'password.required' => 'Password harus diisi.',
+                'password.string' => 'Password harus berupa string.',
                 'password.confirmed' => 'Password tidak cocok.',
                 'password.min' => 'Password harus terdiri dari setidaknya 6 karakter.',
                 'gender.required' => 'Jenis kelamin harus dipilih.',
                 'gender.in' => 'Jenis kelamin harus L atau P.',
                 'date_of_birth.required' => 'Tanggal lahir harus diisi.',
+                'date_of_birth.date' => 'Tanggal lahir harus berupa tanggal.',
                 'phone.required' => 'Nomor telepon harus diisi.',
                 'phone.max' => 'Nomor telepon tidak boleh lebih dari 15 karakter.',
                 'village_kode.required' => 'Kode desa harus diisi.',
                 'district_kode.required' => 'Kode kecamatan harus diisi.',
                 'regency_kode.required' => 'Kode kabupaten harus diisi.',
                 'province_kode.required' => 'Kode provinsi harus diisi.',
-                'latitude.required' => 'Latitude harus diisi.',
-                'longitude.required' => 'Longitude harus diisi.',
                 'social_media.*.required' => 'Akun sosial media harus diisi.',
                 'social_media.*.string' => 'Akun sosial media harus berupa string.',
+                'latitude.required' => 'Latitude harus diisi.',
+                'longitude.required' => 'Longitude harus diisi.',
             ]);
         } catch (ValidationException $e) {
             $errorField = array_key_first($e->validator->errors()->toArray());

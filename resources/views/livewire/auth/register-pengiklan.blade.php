@@ -340,35 +340,36 @@
 
 </script>
 <script>
+    document.querySelector("#find-me").addEventListener("click", function (event) {
+        event.preventDefault(); // Mencegah form submit langsung
+        geoFindMe();
+    });
+
     function geoFindMe() {
 
         const latitudeInput = document.getElementById('latitude');
         const longitudeInput = document.getElementById('longitude');
 
         function success(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            latitudeInput.value = latitude;
-            longitudeInput.value = longitude;
-            console.log("Latitude: ", latitudeInput.value, "Longitude: ", longitudeInput.value);
+            latitudeInput.value = position.coords.latitude;
+            longitudeInput.value = position.coords.longitude;
 
             latitudeInput.dispatchEvent(new Event("input"));
             longitudeInput.dispatchEvent(new Event("input"));
+
+            window.dispatchEvent(new CustomEvent('register'));
         }
 
         function error() {
-            status.textContent = "Unable to retrieve your location";
+            alert("Tidak dapat mengambil lokasi. Pastikan GPS aktif.");
         }
 
         if (!navigator.geolocation) {
-            status.textContent = "Geolocation is not supported by your browser";
+            alert("Geolocation tidak didukung oleh browser Anda.");
         } else {
-            status.textContent = "Locating…";
             navigator.geolocation.getCurrentPosition(success, error);
         }
-        }
+    }
 
-        document.querySelector("#find-me").addEventListener("click", geoFindMe);
 
 </script>
