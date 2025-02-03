@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use App\Models\Transaksi;
 use Filament\Tables\Table;
 use App\Models\Transaction;
+use App\Models\ConversionRate;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -18,6 +20,8 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use App\Filament\Resources\TransaksiResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
@@ -28,7 +32,8 @@ class TransaksiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
-    // protected static string $navigationGroup = 'Admin Management'; // Opsional, jika ingin membuat grup menu
+    protected static ?string $navigationGroup = 'Transaksi';
+    protected static ?string $navigationLabel = 'Top Up';
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -52,6 +57,7 @@ class TransaksiResource extends Resource
                         'danger' => 'rejected',
                     ])
                     ->sortable(),
+                ImageColumn::make('transfer_proof')->label('Bukti Transfer'),
                 TextColumn::make('created_at')->label('Tanggal Pengajuan')->dateTime(),
             ])
             ->filters([
@@ -66,7 +72,7 @@ class TransaksiResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    // Tables\Actions\DeleteAction::make(),
                     
                     Tables\Actions\Action::make('approve')
                         ->label('Approve')
@@ -83,15 +89,16 @@ class TransaksiResource extends Resource
                                     ->send();
                             
                                 $wallet = Wallet::where('user_id', $record->user_id)->first();
-                            
+                                $conversionRate = ConversionRate::first();
+                                $conversionRateValue = $conversionRate->conversion_rate;
                                 if ($wallet) {
                                     $wallet->update([
-                                        'total_points' => $wallet->total_points + $record->amount / 1000,
+                                        'total_points' => $wallet->total_points + $record->amount / $conversionRateValue,
                                     ]);
                                 } else {
                                     Wallet::create([
                                         'user_id' => $record->user_id,
-                                        'total_points' => $record->amount / 1000,
+                                        'total_points' => $record->amount / $conversionRateValue,
                                     ]);
                                 }
                             
@@ -123,7 +130,21 @@ class TransaksiResource extends Resource
                             }
                         }),
                 ])->label('Action'),
-                    ]);
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->columns(2)
+            ->schema([
+                ImageEntry::make('transfer_proof')->label('Bukti Transfer'),
+                TextEntry::make('user.name')->label('User'),
+                TextEntry::make('amount')->label('Amount'),
+                TextEntry::make('bank_account')->label('Bank Account'),
+                TextEntry::make('status')->label('Status'),
+                TextEntry::make('created_at')->label('Created At'),
+            ]);
     }
 
     public static function getPages(): array

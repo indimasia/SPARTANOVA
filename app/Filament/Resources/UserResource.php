@@ -133,6 +133,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles.name')
                 ->badge()
                 ->color(fn($record) => $record->roles->contains('name', 'admin') ? 'warning' : ($record->roles->contains('name', 'pengiklan') ? 'success' : 'info')),
+                Tables\Columns\TextColumn::make('userPerformance.total_reward')
+    ->label('Saldo')
+    ->default(0)
+    ->formatStateUsing(fn($record) => $record->userPerformance->total_reward ?? '0'),
                 Tables\Columns\TextColumn::make('gender')
                 ->state(fn($record) => $record->gender == 'L' ? 'Laki-Laki' : 'Perempuan')
                 ->color(fn($record) => $record->gender == 'L' ? 'warning' : 'danger'),

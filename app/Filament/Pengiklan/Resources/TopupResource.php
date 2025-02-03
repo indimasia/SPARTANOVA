@@ -9,6 +9,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Transaction;
+use App\Models\ConversionRate;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Radio;
@@ -37,22 +38,31 @@ class TopupResource extends Resource
         ->schema([
             Wizard::make([
                 Wizard\Step::make('Pilih Nominal')
-                    ->schema([
-                        Radio::make('amount')
-                        ->label('Pilih Nominal Top Up')
-                        ->options([
-                            50000 => 'Rp 50,000',
-                            100000 => 'Rp 100,000',
-                            250000 => 'Rp 250,000',
-                            500000 => 'Rp 500,000',
-                            1000000 => 'Rp 1,000,000',
-                        ])
-                        ->reactive()
-                        ->required()
-                        ->afterStateUpdated(function ($state, $set) {
-                            // Simpan nilai amount ke session setelah state berubah
-                            session(['amount' => $state]);
-                        }),
+                ->schema([
+                    Radio::make('amount')
+                    ->label('Pilih Nominal Top Up')
+                    ->options(function () {
+                        $conversionRate = ConversionRate::first(); // Ambil data pertama
+                        if (!$conversionRate) {
+                            return []; // Jika tidak ada data, kosongkan opsi
+                        }
+    
+                        $conversionRateValue = $conversionRate->conversion_rate;
+    
+                        return [
+                            50000 => 'Rp 50,000' . ' (' . round(50000 / $conversionRateValue) . ' Poin)',
+                            100000 => 'Rp 100,000' . ' (' . round(100000 / $conversionRateValue) . ' Poin)',
+                            250000 => 'Rp 250,000' . ' (' . round(250000 / $conversionRateValue) . ' Poin)',
+                            500000 => 'Rp 500,000' . ' (' . round(500000 / $conversionRateValue) . ' Poin)',
+                            1000000 => 'Rp 1,000,000' . ' (' . round(1000000 / $conversionRateValue) . ' Poin)',
+                        ];
+                    })
+                    ->reactive()
+                    ->required()
+                    ->afterStateUpdated(function ($state, $set) {
+                        // Simpan nilai amount ke session setelah state berubah
+                        session(['amount' => $state]);
+                    }),
 
                     ]),
 

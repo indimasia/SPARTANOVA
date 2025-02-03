@@ -2,11 +2,13 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\User;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
-use App\Models\JobCampaign;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\JobCampaign;
+use App\Models\ConversionRate;
+use App\Models\UserPerformance;
+use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class StatsOverviewWidget extends BaseWidget
 {
@@ -31,6 +33,12 @@ class StatsOverviewWidget extends BaseWidget
         $newPengiklanToday = User::role('Pengiklan')
             ->whereDate('created_at', $today)
             ->count();
+        
+        $conversionRate = ConversionRate::value('conversion_rate') ?? 1;
+        $totalPoints = UserPerformance::sum('total_reward');
+
+            // Hitung nominal dalam rupiah
+        $totalNominal = $totalPoints * $conversionRate;
 
         return [
             Stat::make('Misi Aktif', $activeJobsCount)
@@ -46,6 +54,9 @@ class StatsOverviewWidget extends BaseWidget
             Stat::make('Pengiklan', $totalPengiklan)
                 ->description("+" . $newPengiklanToday . " hari ini")
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->color('success'),
+            Stat::make('Total Saldo User', number_format($totalPoints, 0, ',', '.'))
+                ->description("Rp " . number_format($totalNominal, 0, ',', '.'))
                 ->color('success'),
         ];
     }

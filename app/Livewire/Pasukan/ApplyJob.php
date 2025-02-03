@@ -145,11 +145,11 @@ class ApplyJob extends Component
         ]);
 
         // Create or update user performance
-        $userPerformance = UserPerformance::firstOrNew(['user_id' => Auth::id()]);
-        $userPerformance->user_id = Auth::id();
-        $userPerformance->job_completed = 1;
-        $userPerformance->total_reward = $job->reward;
-        $userPerformance->save();
+        // $userPerformance = UserPerformance::firstOrNew(['user_id' => Auth::id()]);
+        // $userPerformance->user_id = Auth::id();
+        // $userPerformance->job_completed = 1;
+        // $userPerformance->total_reward = $job->reward;
+        // $userPerformance->save();
 
         $this->dispatch('success', 'Berhasil melamar pekerjaan.');
         $this->closeModal();

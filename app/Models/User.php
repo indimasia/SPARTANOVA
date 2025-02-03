@@ -121,6 +121,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Wallet::class);
     }
 
+    public function userPerformance()
+    {
+        return $this->hasOne(UserPerformance::class);
+    }
+
     public static function getUserLocation($latitude, $longitude)
     {
         $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$latitude}&lon={$longitude}&zoom=18&addressdetails=1";
