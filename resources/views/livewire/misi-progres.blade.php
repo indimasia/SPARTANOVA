@@ -3,7 +3,7 @@
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <i class="fas fa-briefcase text-yellow-500"></i>
-            Misi Tersedia
+            Misi yang Diambil
         </h2>
 
         <!-- Search and Filter -->
@@ -130,11 +130,21 @@
                                                 class="text-sm font-medium text-blue-500 hover:text-blue-600">
                                                 <i class="fas fa-info-circle mr-1"></i>
                                                 Detail
-                                             </a>                                             
-                                            <span class="inline-flex items-center px-3 py-1.5 border border-blue-200 text-sm font-medium rounded text-blue-600 bg-blue-50">
-                                                <i class="fas fa-check mr-1"></i>
-                                                Sedang Dikerjakan
-                                            </span>
+                                            </a>        
+                                            @php
+                                                $userParticipant = $campaign->participants->where('user_id', auth()->id())->first();
+                                            @endphp                                     
+                                            @if($userParticipant && $userParticipant->attachment != null)
+                                                <span class="inline-flex items-center px-3 py-1.5 border border-green-200 text-sm font-medium rounded text-green-600 bg-green-50">
+                                                    <i class="fas fa-check mr-1"></i>
+                                                    Sudah Dikerjakan
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-3 py-1.5 border border-blue-200 text-sm font-medium rounded text-blue-600 bg-blue-50">
+                                                    <i class="fas fa-hourglass-half mr-1"></i>
+                                                    Sedang Dikerjakan
+                                                </span>
+                                            @endif
                                         </div>
                                         @php
                                             $redirectUrl = $campaign->platform_url;

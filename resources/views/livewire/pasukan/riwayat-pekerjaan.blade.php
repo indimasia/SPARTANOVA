@@ -2,7 +2,7 @@
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <i class="fas fa-history text-yellow-500"></i>
-            Riwayat Misi
+            Laporan Riwayat Misi
         </h2>
 
         <!-- Desktop View - Table -->

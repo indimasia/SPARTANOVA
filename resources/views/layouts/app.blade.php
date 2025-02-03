@@ -147,14 +147,14 @@
                                 class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                 <i
                                     class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
-                                <span>Progres Misi</span>
+                                <span>Misi yang Diambil</span>
                             </a>
 
                             <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
                                 class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
                                 <i
                                     class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
-                                <span>Riwayat Misi</span>
+                                <span>Lapoan Riwayat Misi</span>
                             </a>
 
                             <a href="{{ route('pasukan.profile') }}"
@@ -174,7 +174,7 @@
                                 class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                 <i
                                     class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
-                                <span>Withdraw</span>
+                                <span>Dompet</span>
                             </a>
 
                             <div class="px-4 py-2.5 border-t border-gray-100 mt-auto">
@@ -211,14 +211,14 @@
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
                                         class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
-                                    <span>Progres Misi</span>
+                                    <span>Misi yang Diambil</span>
                                 </a>
 
                                 <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
                                         class="fas fa-history text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
-                                    <span>Riwayat Misi</span>
+                                    <span>Lapoan Riwayat Misi</span>
                                 </a>
 
                                 <a href="{{ route('pasukan.profile') }}"
@@ -238,7 +238,7 @@
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
                                         class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
-                                    <span>Withdraw</span>
+                                    <span>Dompet</span>
                                 </a>
 
                                 <div class="px-4 py-2.5 border-t border-gray-100 mt-4">
@@ -277,24 +277,24 @@
                     </div>
         
                     <!-- Right Column -->
-                    <div class="space-y-6">
-                        <h2 class="text-2xl font-bold">PT Sinergi Mitra Mediatama</h2>
-                        <div class="space-y-4 font-bold">
-                            <div class="flex items-center gap-3">
-                                <i class="fa-regular fa-envelope text-2xl"></i>
-                                <a href="mailto:eov.eventrue@gmail.com" class="hover:text-white/80 text-2xl">
+                    <div class="space-y-4 sm:space-y-6">
+                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold">PT Sinergi Mitra Mediatama</h2>
+                        <div class="space-y-3 sm:space-y-4 font-bold">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <i class="fa-regular fa-envelope text-lg sm:text-xl"></i>
+                                <a href="mailto:eov.eventrue@gmail.com" class="hover:text-white/80 text-base sm:text-xl">
                                     eov.eventrue@gmail.com
                                 </a>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <i class="fa-brands fa-whatsapp text-2xl"></i>
-                                <a href="tel:08999950006" class="hover:text-white/80 text-2xl">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <i class="fa-brands fa-whatsapp text-lg sm:text-xl"></i>
+                                <a href="tel:08999950006" class="hover:text-white/80 text-base sm:text-xl">
                                     08999950006
                                 </a>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-location-dot text-2xl"></i>
-                                <span class="text-2xl">Semarang, Indonesia</span>
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <i class="fa-solid fa-location-dot text-lg sm:text-xl"></i>
+                                <span class="text-base sm:text-xl">Semarang, Indonesia</span>
                             </div>
                         </div>
                     </div>
