@@ -112,12 +112,29 @@
 
             <!-- Riwayat Transaksi -->
             <div x-show="selectedTab === 'history'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
-                <div class="flex space-x-4 mb-6">
-                    <button @click="$wire.setStatusFilter('all')" :class="{'bg-blue-500 text-white': $wire.statusFilter === 'all', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'all'}" class="px-4 py-2 rounded-md transition duration-150 ease-in-out">Semua</button>
-                    <button @click="$wire.setStatusFilter('pending')" :class="{'bg-yellow-500 text-white': $wire.statusFilter === 'pending', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'pending'}" class="px-4 py-2 rounded-md transition duration-150 ease-in-out">Pending</button>
-                    <button @click="$wire.setStatusFilter('Approved')" :class="{'bg-green-500 text-white': $wire.statusFilter === 'Approved', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'Approved'}" class="px-4 py-2 rounded-md transition duration-150 ease-in-out">Berhasil</button>
-                    <button @click="$wire.setStatusFilter('reject')" :class="{'bg-red-500 text-white': $wire.statusFilter === 'reject', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'reject'}" class="px-4 py-2 rounded-md transition duration-150 ease-in-out">Gagal</button>
+                <div class="flex flex-wrap gap-2 overflow-x-auto">
+                    <button @click="$wire.setStatusFilter('all')" 
+                        :class="{'bg-blue-500 text-white': $wire.statusFilter === 'all', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'all'}"
+                        class="px-4 py-2 rounded-md transition duration-150 ease-in-out">
+                        Semua
+                    </button>
+                    <button @click="$wire.setStatusFilter('pending')" 
+                        :class="{'bg-yellow-500 text-white': $wire.statusFilter === 'pending', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'pending'}"
+                        class="px-4 py-2 rounded-md transition duration-150 ease-in-out">
+                        Pending
+                    </button>
+                    <button @click="$wire.setStatusFilter('Approved')" 
+                        :class="{'bg-green-500 text-white': $wire.statusFilter === 'Approved', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'Approved'}"
+                        class="px-4 py-2 rounded-md transition duration-150 ease-in-out">
+                        Berhasil
+                    </button>
+                    <button @click="$wire.setStatusFilter('reject')" 
+                        :class="{'bg-red-500 text-white': $wire.statusFilter === 'reject', 'bg-gray-200 text-gray-700': $wire.statusFilter !== 'reject'}"
+                        class="px-4 py-2 rounded-md transition duration-150 ease-in-out">
+                        Gagal
+                    </button>
                 </div>
+                
 
                 <div class="space-y-4">
                     <template x-if="$wire.transactions.length === 0">
