@@ -66,13 +66,14 @@
                                         ->get();
                                     @endphp
                                     @foreach(auth()->user()->unreadNotifications as $notification)
-                                    <a href="{{ route('pasukan.riwayat-pekerjaan') }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
-                                        <div class="ml-3">
-                                            <div class="text-sm font-medium text-gray-900">{{ $notification->data['message'] }}</div>
-                                            <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                                        </div>
-                                    </a>
+                                        <a href="{{ route('notification.read', ['notification' => $notification->id]) }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-gray-900">{{ $notification->data['message'] }}</div>
+                                                <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
+                                            </div>
+                                        </a>
                                     @endforeach
+                                
                                     @foreach($notifications as $notification)
                                         @php
                                             $notificationData = json_decode($notification->data, true); // Decode the JSON string to an array
@@ -93,7 +94,7 @@
                         
                         <button id="mobile-menu-button"
                             class="md:hidden text-gray-500 hover:text-gray-900 focus:outline-none">
-                            <i class="fas fa-bars text-xl"></i>
+                            <i id="menu-icon" class="fas fa-bars text-xl"></i>
                         </button>
                     </div>
                     @else
@@ -149,12 +150,23 @@
                                     class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Misi yang Diambil</span>
                             </a>
+                            @php
+                                $jobApprovedCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')->where('type', 'Job Approved')
+                                        ->where('read_at', null)
+                                        ->get();
+                                        $countApproved = $jobApprovedCount->count();
+                            @endphp
 
-                            <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
+                                <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
                                 class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
                                 <i
-                                    class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
-                                <span>Lapoan Riwayat Misi</span>
+                                class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                <span>Laporan Riwayat Misi</span>
+                                @if($countApproved > 0)
+                                    <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                        {{ $countApproved }}
+                                    </span>
+                                @endif
                             </a>
 
                             <a href="{{ route('pasukan.profile') }}"
@@ -207,18 +219,30 @@
                                         class="fas fa-briefcase text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Misi</span>
                                 </a>
+                                @php
+                                    $jobApprovedCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')
+                                        ->where('type', 'Job Approved')
+                                        ->where('read_at', null)
+                                        ->get();
+                                        $countApproved = $jobApprovedCount->count();
+                                @endphp
                                 <a href="{{ route('misi.progres') }}"
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
                                         class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Misi yang Diambil</span>
                                 </a>
-
+                                
                                 <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-history text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
-                                    <span>Lapoan Riwayat Misi</span>
+                                    class="fas fa-history text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Laporan Riwayat Misi</span>
+                                    @if($countApproved > 0)
+                                        <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                            {{ $countApproved }}
+                                        </span>
+                                    @endif
                                 </a>
 
                                 <a href="{{ route('pasukan.profile') }}"
@@ -309,28 +333,49 @@
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileSidebar = document.getElementById('mobile-sidebar');
             const closeSidebarButton = document.getElementById('close-sidebar');
-
-            if (mobileMenuButton && mobileSidebar && closeSidebarButton) {
+            const menuIcon = document.getElementById('menu-icon');
+    
+            if (mobileMenuButton && mobileSidebar && menuIcon) {
                 mobileMenuButton.addEventListener('click', function() {
-                    mobileSidebar.classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
-                });
-
-                closeSidebarButton.addEventListener('click', function() {
-                    mobileSidebar.classList.add('hidden');
-                    document.body.style.overflow = 'auto';
-                });
-
-                // Close sidebar when clicking outside
-                mobileSidebar.addEventListener('click', function(e) {
-                    if (e.target === mobileSidebar) {
+                    const isHidden = mobileSidebar.classList.contains('hidden');
+    
+                    if (isHidden) {
+                        // Buka sidebar
+                        mobileSidebar.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                        menuIcon.classList.remove('fa-bars');
+                        menuIcon.classList.add('fa-times');
+                    } else {
+                        // Tutup sidebar
                         mobileSidebar.classList.add('hidden');
                         document.body.style.overflow = 'auto';
+                        menuIcon.classList.remove('fa-times');
+                        menuIcon.classList.add('fa-bars');
                     }
                 });
             }
+    
+            if (closeSidebarButton) {
+                closeSidebarButton.addEventListener('click', function() {
+                    mobileSidebar.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                });
+            }
+    
+            // Tutup sidebar jika klik di luar sidebar
+            mobileSidebar.addEventListener('click', function(e) {
+                if (e.target === mobileSidebar) {
+                    mobileSidebar.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
         });
     </script>
+    
 </body>
 
 </html>

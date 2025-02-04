@@ -4,6 +4,7 @@ namespace App\Livewire\Pasukan;
 
 use Livewire\Component;
 use App\Enums\JobStatusEnum;
+use App\Models\Notification;
 use Livewire\WithFileUploads;
 use App\Models\JobParticipant;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,7 @@ class RiwayatPekerjaan extends Component
 {
     use WithFileUploads;
     public $attachment;
+    public $notification;
     public $jobHistory;
     public $selectedJobHistory;
     public $showModal = false;
@@ -140,6 +142,11 @@ class RiwayatPekerjaan extends Component
 
     public function render()
     {
+        $notification = Notification::find($this->notification);
+        if ($notification) {
+            $notification->read_at = now();
+            $notification->save();
+        }
         return view('livewire.pasukan.riwayat-pekerjaan')->layout('layouts.app');
     }
 }

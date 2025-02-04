@@ -8,14 +8,15 @@ use App\Livewire\Auth\Register;
 use App\Livewire\DetailArticle;
 use App\Livewire\JobDetailPage;
 use App\Livewire\Pasukan\Profile;
+use App\Livewire\NotificationRead;
 use App\Livewire\Pasukan\ApplyJob;
 use App\Livewire\Pasukan\Dashboard;
 use App\Livewire\Pasukan\ViewProfile;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Pasukan\WithdrawPoints;
 use App\Http\Middleware\PasukanMiddleware;
 use App\Livewire\Pasukan\RiwayatPekerjaan;
 use App\Http\Controllers\JobDetailController;
-use App\Livewire\Pasukan\WithdrawPoints;
 
 Route::get('/', Home::class)->name('home');
 Route::get('/register', Register::class)->name('register');
@@ -30,6 +31,7 @@ Route::middleware([PasukanMiddleware::class])->group(
         Route::get('/pasukan/profile/edit', Profile::class)->name('pasukan.profile.edit');
         Route::get('/articles', ArticleList::class)->name('articles.index');
         Route::get('/articles/read/{articleId}', ArticleList::class)->name('articles.read');
+        Route::get('/notification/read/{notification}', RiwayatPekerjaan::class)->name('notification.read');
         Route::get('/withdraw', WithdrawPoints::class)->name('withdraw.index');
         Route::get('/articles/{slug}', DetailArticle::class)->name('articles.detail');
         Route::get('/job/{jobId}', JobDetailPage::class)->name('job.detail');
