@@ -142,11 +142,8 @@ class RiwayatPekerjaan extends Component
 
     public function render()
     {
-        $notification = Notification::find($this->notification);
-        if ($notification) {
-            $notification->read_at = now();
-            $notification->save();
-        }
+        Notification::whereNull('read_at')->update(['read_at' => now()]);
+        
         return view('livewire.pasukan.riwayat-pekerjaan')->layout('layouts.app');
     }
 }
