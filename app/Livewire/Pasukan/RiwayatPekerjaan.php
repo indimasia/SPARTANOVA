@@ -7,6 +7,7 @@ use App\Enums\JobStatusEnum;
 use Livewire\WithFileUploads;
 use App\Models\JobParticipant;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class RiwayatPekerjaan extends Component
 {
@@ -57,38 +58,48 @@ class RiwayatPekerjaan extends Component
     }
 
     public function uploadBukti()
-    {
-        // dd($this->attachment);
-        $this->validate([
-            'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ], [
-            'attachment.required' => 'File bukti harus diunggah.',
-            'attachment.file' => 'Harap unggah file yang valid.',
-            'attachment.mimes' => 'File harus berupa: jpg, jpeg, png, pdf.',
-            'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
-        ]);
+{
+    $this->validate([
+        'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ], [
+        'attachment.required' => 'File bukti harus diunggah.',
+        'attachment.file' => 'Harap unggah file yang valid.',
+        'attachment.mimes' => 'File harus berupa: jpg, jpeg, png, pdf.',
+        'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
+    ]);
 
+    $jobParticipant = JobParticipant::find($this->selectedJobHistory);
 
-        $jobParticipant = JobParticipant::find($this->selectedJobHistory);
-
-        $fileName = $this->attachment->store('attachments', 'public');
-        $path = basename($fileName);
-        $jobParticipant->update([
-            'attachment' => $path,
-            'status' => JobStatusEnum::REPORTED->value,
-        ]);
-
-        $this->showModal = false;
-        session()->flash('message', 'Bukti berhasil diupload!');
-        $this->getData();
+    if (!$jobParticipant) {
+        session()->flash('error', 'Data tidak ditemukan.');
+        return;
     }
+
+    $userId = auth()->id();
+    $fileName = time() . '_' . $this->attachment->getClientOriginalName();
+    $path = "pasukan/attachment/{$userId}/{$fileName}";
+
+    // Simpan ke Cloudflare R2
+    $this->attachment->storeAs('pasukan/attachment/'.$userId, $fileName, 'r2');
+
+    // Update database
+    $jobParticipant->update([
+        'attachment' => $path,
+        'status' => JobStatusEnum::REPORTED->value,
+    ]);
+
+    $this->showModal = false;
+    session()->flash('message', 'Bukti berhasil diupload!');
+    $this->getData();
+}
+
 
     public function showAttachmentModal($historyId)
     {
         $jobParticipant = JobParticipant::find($historyId);
 
         if ($jobParticipant && $jobParticipant->attachment) {
-            $this->viewAttachmentPath = asset('attachments/' . $jobParticipant->attachment);
+            $this->viewAttachmentPath = asset($jobParticipant->attachment);
             $this->status = $jobParticipant->status;
             $this->selectedJobHistory = $historyId;
             $this->viewAttachmentModal = true;
@@ -115,21 +126,22 @@ class RiwayatPekerjaan extends Component
         return;
     }
 
-    // Hapus file lama jika ada
+    $userId = auth()->id();
+    $directory = "pasukan/attachment/{$userId}";
     if ($jobParticipant->attachment) {
-        \Storage::disk('attachments')->delete($jobParticipant->attachment);
+        \Storage::disk('r2')->delete($jobParticipant->attachment);
     }
 
-    // Simpan file baru
-    $fileName = $this->attachment->store('attachments', 'public');
-    $path = basename($fileName);
+    $fileName = $this->attachment->hashName();
+    $filePath = $this->attachment->storeAs($directory, $fileName, 'r2');
+    
     $jobParticipant->update([
-        'attachment' => $path,
+        'attachment' => $filePath,
     ]);
-
-    $this->viewAttachmentPath = asset('attachments/' . $path);
     session()->flash('message', 'Bukti berhasil diperbarui!');
 }
+
+
 
 
     public function closeAttachmentModal()
@@ -137,6 +149,22 @@ class RiwayatPekerjaan extends Component
         $this->viewAttachmentModal = false;
         $this->viewAttachmentPath = null;
     }
+
+    public function getViewAttachmentPathProperty()
+{
+    if (!$this->selectedJobHistory) {
+        return null;
+    }
+
+    $jobParticipant = JobParticipant::find($this->selectedJobHistory);
+
+    if (!$jobParticipant || !$jobParticipant->attachment) {
+        return null;
+    }
+
+    return Storage::disk('r2')->url($jobParticipant->attachment);
+}
+
 
     public function render()
     {

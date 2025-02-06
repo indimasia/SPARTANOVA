@@ -143,6 +143,9 @@ class TopupResource extends Resource
                                 FileUpload::make('transfer_proof')
                                     ->label('Unggah Bukti Transfer')
                                     ->image()
+                                    ->disk('r2')
+                                    ->directory('pengiklan/topup/'.auth()->user()->id)
+                                    ->visibility('public')
                                     ->maxSize(1024)
                                     ->required(),
                             ])

@@ -2,17 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\JobInAdminResource\Pages;
-use App\Filament\Resources\JobInAdminResource\RelationManagers;
-use App\Models\JobCampaign;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
 use App\Enums\GenEnum;
 use App\Enums\JobType;
 use App\Models\Regency;
@@ -21,15 +12,20 @@ use Filament\Forms\Get;
 use Filament\Infolists;
 use App\Models\District;
 use App\Models\Province;
+
+use Filament\Forms\Form;
 use App\Enums\PackageEnum;
+use Filament\Tables\Table;
 use App\Enums\PlatformEnum;
+use App\Models\JobCampaign;
 use App\Models\PackageRate;
 use App\Enums\UserInterestEnum;
-use App\Filament\Resources\JobResource\RelationManagers\ParticipantsRelationManager;
 use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\URL;
 use Filament\Support\Enums\IconSize;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Wizard;
@@ -38,7 +34,12 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\IconPosition;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ToggleButtons;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\JobInAdminResource\Pages;
+use App\Filament\Resources\JobInAdminResource\RelationManagers;
+use App\Filament\Resources\JobResource\RelationManagers\ParticipantsRelationManager;
 
 class JobInAdminResource extends Resource
 {
@@ -231,9 +232,9 @@ class JobInAdminResource extends Resource
                                 ]),
 
                             Infolists\Components\Group::make([
-                                Infolists\Components\ImageEntry::make('jobDetail.image')
-                                    ->hiddenLabel()
-                                    ->grow(false),
+                                Infolists\Components\ImageEntry::make('jobDetail.image')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->jobDetail->image 
+                    ? URL::route('storage.fetch', ['filename' => $record->jobDetail->image]) 
+                    : null),
                                 Infolists\Components\TextEntry::make('start_date')->label('Tanggal Mulai'),
                                 Infolists\Components\TextEntry::make('end_date')->label('Tanggal Selesai'),
                             ])->grow(false),

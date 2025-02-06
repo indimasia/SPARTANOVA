@@ -13,8 +13,10 @@ use App\Models\ConversionRate;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\URL;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\BadgeColumn;
@@ -57,7 +59,9 @@ class TransaksiResource extends Resource
                         'danger' => 'rejected',
                     ])
                     ->sortable(),
-                ImageColumn::make('transfer_proof')->label('Bukti Transfer'),
+                ImageColumn::make('transfer_proof')->label('Bukti Transfer')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->transfer_proof 
+                    ? URL::route('storage.fetch', ['filename' => $record->transfer_proof]) 
+                    : null),
                 TextColumn::make('created_at')->label('Tanggal Pengajuan')->dateTime(),
             ])
             ->filters([
@@ -138,7 +142,9 @@ class TransaksiResource extends Resource
         return $infolist
             ->columns(2)
             ->schema([
-                ImageEntry::make('transfer_proof')->label('Bukti Transfer'),
+                ImageEntry::make('transfer_proof')->label('Bukti Transfer')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->transfer_proof 
+                ? URL::route('storage.fetch', ['filename' => $record->transfer_proof]) 
+                : null),
                 TextEntry::make('user.name')->label('User'),
                 TextEntry::make('amount')->label('Amount'),
                 TextEntry::make('bank_account')->label('Bank Account'),

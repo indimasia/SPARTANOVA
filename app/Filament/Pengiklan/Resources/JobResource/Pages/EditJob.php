@@ -21,31 +21,49 @@ class EditJob extends EditRecord
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
-    {
-        $jobDetail = JobDetail::where('job_id', $this->record->id)->first() ?? new JobDetail();
-        $jobDetail->job_id = $this->record->id;
-        $jobDetail->image = $data['jobDetail']['image']?? $jobDetail->image;
-        $jobDetail->description = $data['jobDetail']['description'] ?? $jobDetail->description;
-        $jobDetail->url_link = $data['jobDetail']['url_link'] ?? $jobDetail->url_link;
-        $jobDetail->specific_gender = $data['specific_gender'] ?? false ? ($data['gender'] ?? null) : null;
-        $jobDetail->specific_generation = $data['specific_generation'] ?? false ? ($data['generation'] ?? null) : null;
-        $jobDetail->specific_interest = $data['specific_interest'] ?? false ? ($data['interest'] ?? null) : null;
+{
+    $jobDetail = JobDetail::where('job_id', $this->record->id)->first() ?? new JobDetail();
+    $jobDetail->job_id = $this->record->id;
 
-        if($data['specific_location'] ?? false){
-            $jobDetail->specific_province = $data['province_kode'] ?? $jobDetail->specific_province;
-            $jobDetail->specific_regency = isset($data['all_regency']) ? (!$data['all_regency'] ? ($data['regency_kode'] ?? null) : null) : null;
-            $jobDetail->specific_district = isset($data['all_district']) ? (!$data['all_district'] ? ($data['district_kode'] ?? null) : null) : null;
-            $jobDetail->specific_village = isset($data['all_village']) ? (!$data['all_village'] ? ($data['village_kode'] ?? null) : null) : null;
-        }else{
-            $jobDetail->specific_province = null;
-            $jobDetail->specific_regency = null;
-            $jobDetail->specific_district = null;
-            $jobDetail->specific_village = null;
-        }
-        $jobDetail->save();
-        $record->update($data);
-        return $record;
+    // Cek apakah ada gambar baru
+    if (isset($data['jobDetail']['image']) && $data['jobDetail']['image']) {
+        // Menyimpan gambar ke R2 Storage dan mendapatkan path yang benar
+        $image = $data['jobDetail']['image'];
+        $userId = auth()->user()->id;
+        $imageName = $image;  // Ambil nama file asli
+        
+        // Menyimpan path gambar ke database
+        $jobDetail->image = $image;
+        
+        // Menyimpan gambar secara otomatis ke session
+        session()->put('temporary_image_path', $image);
     }
+
+    // Update data lainnya
+    $jobDetail->description = $data['jobDetail']['description'] ?? $jobDetail->description;
+    $jobDetail->url_link = $data['jobDetail']['url_link'] ?? $jobDetail->url_link;
+    $jobDetail->specific_gender = $data['specific_gender'] ?? false ? ($data['gender'] ?? null) : null;
+    $jobDetail->specific_generation = $data['specific_generation'] ?? false ? ($data['generation'] ?? null) : null;
+    $jobDetail->specific_interest = $data['specific_interest'] ?? false ? ($data['interest'] ?? null) : null;
+
+    if ($data['specific_location'] ?? false) {
+        $jobDetail->specific_province = $data['province_kode'] ?? $jobDetail->specific_province;
+        $jobDetail->specific_regency = isset($data['all_regency']) ? (!$data['all_regency'] ? ($data['regency_kode'] ?? null) : null) : null;
+        $jobDetail->specific_district = isset($data['all_district']) ? (!$data['all_district'] ? ($data['district_kode'] ?? null) : null) : null;
+        $jobDetail->specific_village = isset($data['all_village']) ? (!$data['all_village'] ? ($data['village_kode'] ?? null) : null) : null;
+    } else {
+        $jobDetail->specific_province = null;
+        $jobDetail->specific_regency = null;
+        $jobDetail->specific_district = null;
+        $jobDetail->specific_village = null;
+    }
+
+    // Simpan data
+    $jobDetail->save();
+    $record->update($data);
+
+    return $record;
+}
     protected function mutateFormDataBeforeFill(array $data): array
     {
         
@@ -92,11 +110,13 @@ class EditJob extends EditRecord
             $data['jobDetail']['image'] = $jobDetail->image;
             $data['jobDetail']['description'] = $jobDetail->description;
             $data['jobDetail']['url_link'] = $jobDetail->url_link;
+            $data['jobDetail']['caption'] = $jobDetail->caption;
         } else {
             $data['jobDetail'] = [
                 'image' => null,
                 'description' => null,
                 'url_link' => null,
+                'caption' => null,
             ];
         }
 

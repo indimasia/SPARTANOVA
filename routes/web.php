@@ -12,13 +12,19 @@ use App\Livewire\Pasukan\ApplyJob;
 use App\Livewire\Pasukan\Dashboard;
 use App\Livewire\Pasukan\ViewProfile;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CobaController;
+use App\Livewire\Pasukan\WithdrawPoints;
 use App\Http\Middleware\PasukanMiddleware;
 use App\Livewire\Pasukan\RiwayatPekerjaan;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\JobDetailController;
-use App\Livewire\Pasukan\WithdrawPoints;
 
 Route::get('/', Home::class)->name('home');
 Route::get('/register', Register::class)->name('register');
+Route::get('storage/{filename}', [StorageController::class, 'fetchFile'])
+    ->where('filename', '.*')
+    ->name('storage.fetch');
+
 
 Route::middleware([PasukanMiddleware::class])->group(
     function () {
