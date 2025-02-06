@@ -154,11 +154,12 @@
                                 <span>Misi yang Diambil</span>
                             </a>
                             @php
-                                $jobApprovedCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')->where('type', 'Job Approved')
+                                    $jobApprovedCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')
+                                        ->where('type', 'Job Approved')
                                         ->where('read_at', null)
                                         ->get();
                                         $countApproved = $jobApprovedCount->count();
-                            @endphp
+                                @endphp
 
                                 <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
                                 class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
@@ -166,10 +167,10 @@
                                 class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
                                 <span>Laporan Riwayat Misi</span>
                                 @if($countApproved > 0)
-                                    <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-                                        {{ $countApproved }}
-                                    </span>
-                                @endif
+                                        <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                            {{ $countApproved }}
+                                        </span>
+                                    @endif
                             </a>
 
                             <a href="{{ route('pasukan.profile') }}"
@@ -195,10 +196,10 @@
                                     class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Artikel</span>
                                 @if($count > 0)
-                                    <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-                                        {{ $count }}
-                                    </span>
-                                @endif
+                                        <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                            {{ $count }}
+                                        </span>
+                                    @endif
                             </a>
                             <a href="{{ route('withdraw.index') }}"
                                 class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
