@@ -240,14 +240,19 @@
                 @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'Posting')
                 <button id="openModalBtn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
                     <i class="fas fa-external-link-alt mr-2"></i>
-                    Kerjakan Misi Sekarang
+                    Posting Sekarang
                 </button>
                 @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'View')
                 <a href="{{ $jobDetail->url_link }}" target="_blank"
                     class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                     <i class="fas fa-external-link-alt mr-2"></i>
-                    Menuju Link
+                    Lihat Sekarang
                 </a>
+                @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'Komentar')
+                <button id="openCommentModalBtn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
+                    <i class="fas fa-comment mr-2"></i>
+                    Komentar Sekarang
+                </button>
                 @endif
 
                 <div id="missionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
@@ -279,6 +284,28 @@
                                 class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-50 transition-colors duration-200">
                                 <i class="fas fa-upload mr-2"></i>
                                 Upload Bukti Posting
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="commentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+                    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Instruksi Komentar</h2>
+                            <button id="closeCommentModalBtn" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-2">Instruksi:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg mb-4">
+                            <p id="commentInstruction" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                        </div>
+                        <div class="flex gap-2">
+                            <a id="commentNowBtn" href="#" target="_blank"
+                                class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                Komentar Sekarang
                             </a>
                         </div>
                     </div>
@@ -375,4 +402,29 @@
         alert('Terjadi kesalahan saat mencoba membagikan konten.');
     }
 }
+</script>
+<script>
+    const commentModal = document.getElementById('commentModal');
+    const openCommentModalBtn = document.getElementById('openCommentModalBtn');
+    const closeCommentModalBtn = document.getElementById('closeCommentModalBtn');
+    const commentInstruction = document.getElementById('commentInstruction');
+    const commentNowBtn = document.getElementById('commentNowBtn');
+
+    function openCommentModal(instructions, url) {
+        commentInstruction.textContent = instructions;
+        commentNowBtn.href = url;
+        commentModal.classList.remove('hidden');
+        commentModal.classList.add('flex');
+    }
+
+    function closeCommentModal() {
+        commentModal.classList.add('hidden');
+        commentModal.classList.remove('flex');
+    }
+
+    openCommentModalBtn.addEventListener('click', () => openCommentModal(
+        '{{ $selectedJob->instructions }}',
+        '{{ $jobDetail->url_link }}'
+    ));
+    closeCommentModalBtn.addEventListener('click', closeCommentModal);
 </script>
