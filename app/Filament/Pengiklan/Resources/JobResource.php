@@ -67,8 +67,8 @@ class JobResource extends Resource
                     ->completedIcon('heroicon-s-funnel')
                     ->schema([
 
-                        Forms\Components\Section::make('Spesifikasi Akun Pasukan')
-                            ->description('Setiap Penambahan Sepesifikasi Akun Pasukan dikenakan biaya tambahan 10%')
+                        Forms\Components\Section::make('Spesifikasi Akun Pasukan (Opsional)')
+                            ->description(new HtmlString('Anda dapat menambahkan spesifikasi tertentu untuk pelamar (Pasukan) yang akan mengerjakan misi ini. Jika tidak diatur, misi akan tersedia untuk semua Pasukan yang memenuhi syarat.<br><br><strong>Catatan: Setiap tambahan spesifikasi akan dikenakan biaya tambahan sebesar 10%.</strong>'))
                             ->aside()
                             ->schema([
                                 Forms\Components\Toggle::make('specific_gender')
