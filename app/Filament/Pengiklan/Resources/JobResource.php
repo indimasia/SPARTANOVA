@@ -25,6 +25,7 @@ use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\URL;
 use Filament\Support\Enums\IconSize;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Wizard;
@@ -339,22 +340,24 @@ class JobResource extends Resource
                                 'required' => 'Nama Misi Harus Diisi',
                             ])
                             ,
-                            Forms\Components\FileUpload::make('jobDetail.image')
+                        Forms\Components\FileUpload::make('jobDetail.image')
                             ->label('Gambar')
                             ->required()
                             ->image()
-                            ->disk('public')
+                            ->disk('r2')
+                            ->directory('pengiklan/misi/'.auth()->user()->id)
+                            ->visibility('public')
                             ->imageEditor()
-                            // ->imageCropAspectRatio('16:9')
+                        // ->imageCropAspectRatio('16:9')
                             ->imageResizeMode('cover')
                             // ->imageResizeTargetWidth('1024')
                             // ->imageResizeTargetHeight('576')
                             ->afterStateUpdated(function (callable $set, $state) {
                                 if ($state) {
-                                    $path = $state->store('images', 'public');
+                                    $path = $state->store('pengiklan/misi/temp'.auth()->user()->id, 'r2'); // Simpan ke disk R2 di folder 'misi'
                                     session()->put('temporary_image_path', $path);
                                 }
-                            })
+                            })                            
                             ->validationMessages([
                                 'required' => 'Gambar Harus Diisi',
                             ])
@@ -411,7 +414,7 @@ class JobResource extends Resource
                                                 $imagePath = session('temporary_image_path');
 
                                                 if ($imagePath) {
-                                                    $imageUrl = asset('storage/images/' . basename($imagePath));
+                                                    $imageUrl = asset( 'storage/' . $imagePath);
 
                                                     return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Misi" style="max-width: 50%; height: auto; margin: 0 auto;">');
                                                 }
@@ -764,9 +767,9 @@ class JobResource extends Resource
                                 ]),
 
                             Infolists\Components\Group::make([
-                                Infolists\Components\ImageEntry::make('jobDetail.image')
-                                    ->hiddenLabel()
-                                    ->grow(false),
+                                Infolists\Components\ImageEntry::make('jobDetail.image')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->jobDetail->image 
+                    ? URL::route('storage.fetch', ['filename' => $record->jobDetail->image]) 
+                    : null),
                                 Infolists\Components\TextEntry::make('start_date')->label('Tanggal Mulai'),
                                 Infolists\Components\TextEntry::make('end_date')->label('Tanggal Selesai'),
                             ])->grow(false),

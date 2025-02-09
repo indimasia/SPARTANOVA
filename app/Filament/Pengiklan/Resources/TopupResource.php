@@ -12,13 +12,16 @@ use App\Models\Transaction;
 use App\Models\ConversionRate;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\URL;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Wizard;
 use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Storage;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Actions\Action;
@@ -143,6 +146,9 @@ class TopupResource extends Resource
                                 FileUpload::make('transfer_proof')
                                     ->label('Unggah Bukti Transfer')
                                     ->image()
+                                    ->disk('r2')
+                                    ->directory('pengiklan/topup/'.auth()->user()->id)
+                                    ->visibility('public')
                                     ->maxSize(1024)
                                     ->required(),
                             ])
@@ -176,6 +182,9 @@ class TopupResource extends Resource
                         'approved' => 'success',
                         'rejected' => 'danger',
                     }),
+                ImageColumn::make('transfer_proof')->label('Bukti Transfer')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->transfer_proof 
+                    ? URL::route('storage.fetch', ['filename' => $record->transfer_proof]) 
+                    : null),
                 TextColumn::make('created_at')->label('Tanggal')->dateTime(),
             ])
             ->filters([

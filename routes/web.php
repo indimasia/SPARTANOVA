@@ -16,10 +16,15 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Pasukan\WithdrawPoints;
 use App\Http\Middleware\PasukanMiddleware;
 use App\Livewire\Pasukan\RiwayatPekerjaan;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\JobDetailController;
 
 Route::get('/', Home::class)->name('home');
 Route::get('/register', Register::class)->name('register');
+Route::get('storage/{filename}', [StorageController::class, 'fetchFile'])
+    ->where('filename', '.*')
+    ->name('storage.fetch');
+
 
 Route::middleware([PasukanMiddleware::class])->group(
     function () {
