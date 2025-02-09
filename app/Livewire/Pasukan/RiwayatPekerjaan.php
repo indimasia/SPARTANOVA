@@ -13,6 +13,7 @@ class RiwayatPekerjaan extends Component
 {
     use WithFileUploads;
     public $attachment;
+    public $jobParticipant;
     public $jobHistory;
     public $selectedJobHistory;
     public $showModal = false;
@@ -103,6 +104,7 @@ class RiwayatPekerjaan extends Component
             $this->status = $jobParticipant->status;
             $this->selectedJobHistory = $historyId;
             $this->viewAttachmentModal = true;
+            $this->jobParticipant = $jobParticipant;
         } else {
             session()->flash('message', 'Bukti tidak ditemukan!');
         }

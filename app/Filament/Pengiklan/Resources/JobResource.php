@@ -354,7 +354,7 @@ class JobResource extends Resource
                             // ->imageResizeTargetHeight('576')
                             ->afterStateUpdated(function (callable $set, $state) {
                                 if ($state) {
-                                    $path = $state->store('misi', 'r2'); // Simpan ke disk R2 di folder 'misi'
+                                    $path = $state->store('pengiklan/misi/temp'.auth()->user()->id, 'r2'); // Simpan ke disk R2 di folder 'misi'
                                     session()->put('temporary_image_path', $path);
                                 }
                             })                            
@@ -414,7 +414,7 @@ class JobResource extends Resource
                                                 $imagePath = session('temporary_image_path');
 
                                                 if ($imagePath) {
-                                                    $imageUrl = asset('storage/images/' . basename($imagePath));
+                                                    $imageUrl = asset( 'storage/' . $imagePath);
 
                                                     return new HtmlString('<img src="' . $imageUrl . '" alt="Gambar Misi" style="max-width: 50%; height: auto; margin: 0 auto;">');
                                                 }

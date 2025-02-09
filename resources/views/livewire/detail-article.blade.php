@@ -3,9 +3,13 @@
     <div class="mx-auto px-10 py-10">
       <article class="bg-white shadow-lg rounded-lg overflow-hidden">
         @if($article->image)
-        <div class="relative h-64 sm:h-80 md:h-96">
-          <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        </div>
+          <div class="relative h-64 sm:h-80 md:h-96">
+            <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+          </div>
+        @else
+          <div class="relative h-64 sm:h-80 md:h-96">
+            <img src="https://placehold.co/400x400?text=Tidak+Ada+Gambar" alt="{{ $article->title }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+          </div>
         @endif
   
         <div class="p-6 sm:p-8">

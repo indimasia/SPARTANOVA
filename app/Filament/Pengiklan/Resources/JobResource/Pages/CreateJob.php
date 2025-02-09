@@ -7,6 +7,7 @@ use App\Enums\PackageEnum;
 use App\Models\PackageRate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Pengiklan\Resources\JobResource;
 
@@ -44,12 +45,13 @@ class CreateJob extends CreateRecord
 
         $imagePath = session('temporary_image_path');
         if ($imagePath) {
-            $fullPath = public_path('storage/images/' . basename($imagePath));
-            if (file_exists($fullPath)) {
-                unlink($fullPath);
-            }
+            // Hapus file dari disk R2
+            Storage::disk('r2')->delete($imagePath);
+            
+            // Hapus session
             session()->forget('temporary_image_path');
         }
+
 
         return $jobData;
     }

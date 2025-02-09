@@ -135,12 +135,24 @@
                         </tr>
 
                         <!-- Modal Lihat Bukti -->
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                Belum ada riwayat misi
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
             <div x-data="{ open: @entangle('viewAttachmentModal'), editing: false, status: @entangle('status') }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Lihat Bukti</h3>
                     <div class="mb-4">
-                        @if($history->attachment)
-                            <img src="{{ asset('storage/' . $history->attachment) }}" 
+                        {{-- @dd($history->attachment) --}}
+                        @if($jobParticipant)
+                            <img src="{{ asset('storage/' . $jobParticipant->attachment) }}" 
                                 alt="Bukti Bayar" 
                                 class="mx-auto rounded-lg shadow-md" 
                                 style="max-width: 100%; max-height: 400px;">
@@ -160,7 +172,7 @@
                         <div>
                             <form wire:submit.prevent="updateAttachment" @submit="editing = false; open = false">
                                 <input type="file" wire:model="attachment" class="block w-full text-sm text-gray-600">
-                                <div class="text-red-500 mt-2" wire:loading wire:target="attachment">Uploading...</div>
+                                <div class="text-red-500 mt-2" wire:loading wire:target="attachment">Uploading...</div> 
                                 @error('attachment') <span class="text-red-500">{{ $message }}</span> @enderror
                                 <div class="flex justify-between mt-4">
                                     <button type="submit" class="px-4 py-2 text-white bg-green-600 rounded-md">Simpan</button>
@@ -170,16 +182,6 @@
                         </div>
                     </template>
                 </div>
-            </div>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                    Belum ada riwayat misi
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
             </div>
 
             <!-- Modal Upload Bukti -->
