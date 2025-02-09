@@ -80,14 +80,27 @@ class JobInAdminResource extends Resource
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('quota')->label('Kuota'),
                 Tables\Columns\TextColumn::make('reward')->label('Hadiah'),
-                Tables\Columns\TextColumn::make('status')->badge()->icon(fn ($state) => match ($state) {
-                    'publish' => 'heroicon-o-check-circle',
-                    'draft' => 'heroicon-o-exclamation-circle',
-                })
-                ->color(fn ($state) => match ($state) {
-                    'publish' => 'success',
-                    'draft' => 'warning',
-                }),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn ($record) => match (true) {
+                        is_null($record->is_verified) => 'Belum Verifikasi',
+                        $record->is_verified === false => 'Verifikasi Ditolak',
+                        default => $record->status, // Gunakan status asli jika sudah diverifikasi
+                    })
+                    ->icon(fn ($record) => match (true) {
+                        is_null($record->is_verified) => 'heroicon-o-question-mark-circle',
+                        $record->is_verified === false => 'heroicon-o-x-circle',
+                        $record->status === 'publish' => 'heroicon-o-check-circle',
+                        $record->status === 'draft' => 'heroicon-o-exclamation-circle',
+                        default => null,
+                    })
+                    ->color(fn ($record) => match (true) {
+                        is_null($record->is_verified) => 'gray',
+                        $record->is_verified === false => 'danger',
+                        $record->status === 'publish' => 'success',
+                        $record->status === 'draft' => 'warning',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('start_date')->date()->label('Tanggal Mulai')->toggleable(),
                 Tables\Columns\TextColumn::make('end_date')->date()->label('Tanggal Selesai')->toggleable(),
                 Tables\Columns\TextColumn::make('createdBy.name')->label('Dibuat Oleh')->toggleable(),
@@ -105,7 +118,7 @@ class JobInAdminResource extends Resource
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'draft')
+                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'draft' || $record->is_verified === null)
                         ->action(function (JobCampaign $record) {
                             try {
                                 $record->update(['status' => 'publish']);
@@ -120,12 +133,12 @@ class JobInAdminResource extends Resource
                                     ->send();
                             }
                         }),
-                        Tables\Actions\Action::make('draft')
+                    Tables\Actions\Action::make('draft')
                         ->label('Draft')
                         ->icon('heroicon-o-exclamation-circle')
                         ->color('warning')
                         ->requiresConfirmation()
-                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'publish')
+                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'publish' || $record->is_verified === null)
                         ->action(function (JobCampaign $record) {
                             try {
                                 $record->update(['status' => 'draft']);
@@ -139,6 +152,28 @@ class JobInAdminResource extends Resource
                                     ->danger()
                                     ->send();
                             }
+                        }),
+                    Tables\Actions\Action::make('verify')
+                        ->label('Verifikasi')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->hidden(fn (JobCampaign $record): bool => $record->is_verified === 1)
+                        ->action(function (JobCampaign $record) {
+                            $record->update(['is_verified' => true]);
+                        }),
+                    Tables\Actions\Action::make('reject')
+                        ->label('Tolak Verifikasi')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->hidden(fn (JobCampaign $record): bool => $record->is_verified === 0)
+                        ->action(function (JobCampaign $record) {
+                            $record->update(['is_verified' => false]);
+                            Notification::make()
+                                ->title('Berhasil Tolak Verifikasi')
+                                ->success()
+                                ->send();
                         }),
                     Tables\Actions\DeleteAction::make(),
                 ]),

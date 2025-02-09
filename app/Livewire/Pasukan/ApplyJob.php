@@ -55,6 +55,8 @@ class ApplyJob extends Component
         ->when($this->search, function ($query) {
             $query->where('title', 'like', '%' . $this->search . '%');
         })
+        ->where('is_verified', 1)
+        ->where('status', 'publish')
         ->when($this->selectedPlatform, function ($query) {
             $query->where('platform', $this->selectedPlatform);
         })
