@@ -353,8 +353,14 @@
                                             @if($social_media[$platform->value] == 'Tidak punya akun') checked @endif>
                                         <span class="ml-2 text-sm text-gray-600">Tidak punya akun</span>
                                     </label>
+                                    @error('social_media.' . $platform->value)
+                                        <p class="mt-1 text-sm text-red-600 flex items-center">
+                                            <i class="fas fa-exclamation-circle mr-2"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
                                 </div>
-                            @endforeach
+                                @endforeach
                         </div>
                     </div>                    
                     <p class="text-gray-600 mt-4 text-center">
