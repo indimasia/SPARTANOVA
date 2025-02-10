@@ -4,7 +4,9 @@ namespace App\Filament\Widgets;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Models\JobCampaign;
+use App\Models\Transaction;
 use App\Models\ConversionRate;
 use App\Models\UserPerformance;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -40,6 +42,11 @@ class StatsOverviewWidget extends BaseWidget
             // Hitung nominal dalam rupiah
         $totalNominal = $totalPoints * $conversionRate;
 
+        $saldoAdvertiser = Wallet::sum('total_points');
+        $totalNominalAdvertiser = $saldoAdvertiser * $conversionRate;
+
+        $withdrawalSuccess = Transaction::where('type', 'withdrawal')->where('status', 'approved')->count();
+        $jumlahWithdrawalSuccess = Transaction::where('type', 'withdrawal')->where('status', 'approved')->sum('amount');
         return [
             Stat::make('Misi Aktif', $activeJobsCount)
                 ->description("+" . $newActiveJobsToday . " hari ini")
@@ -57,6 +64,12 @@ class StatsOverviewWidget extends BaseWidget
                 ->color('success'),
             Stat::make('Total Saldo User', number_format($totalPoints, 0, ',', '.'))
                 ->description("Rp " . number_format($totalNominal, 0, ',', '.'))
+                ->color('success'),
+            Stat::make('Total Saldo Advertiser', number_format($saldoAdvertiser, 0, ',', '.'))
+                ->description("Rp " . number_format($totalNominalAdvertiser, 0, ',', '.'))
+                ->color('success'),
+            Stat::make('Withdrawal', "Rp " . number_format($jumlahWithdrawalSuccess, 0, ',', '.'))
+                ->description($withdrawalSuccess . ' Transaksi')
                 ->color('success'),
         ];
     }
