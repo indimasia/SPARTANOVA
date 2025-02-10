@@ -253,6 +253,11 @@
                     <i class="fas fa-comment mr-2"></i>
                     Komentar Sekarang
                 </button>
+                @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'Selling')
+                    <button id="openSellingModalBtn" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-200">
+                        <i class="fas fa-link mr-2"></i>
+                        Link Selling
+                    </button>
                 @endif
 
                 <div id="missionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
@@ -306,6 +311,32 @@
                                 class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                                 <i class="fas fa-external-link-alt mr-2"></i>
                                 Komentar Sekarang
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sellingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+                    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Link Selling</h2>
+                            <button id="closeSellingModalBtn" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-2">Link:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="sellingLink" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                            <button id="copySellingBtn" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <p id="sellingCopiedMessage" class="text-sm text-green-500 mb-4 hidden">Link copied to clipboard!</p>
+                        <div class="flex gap-2">
+                            <a href="{{ $jobDetail->url_link }}" target="_blank"
+                                class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                Kunjungi Link
                             </a>
                         </div>
                     </div>
@@ -427,4 +458,39 @@
         '{{ $jobDetail->url_link }}'
     ));
     closeCommentModalBtn.addEventListener('click', closeCommentModal);
+</script>
+
+<script>
+    // Selling Modal
+const sellingModal = document.getElementById('sellingModal');
+const openSellingModalBtn = document.getElementById('openSellingModalBtn');
+const closeSellingModalBtn = document.getElementById('closeSellingModalBtn');
+const sellingLink = document.getElementById('sellingLink');
+const copySellingBtn = document.getElementById('copySellingBtn');
+const sellingCopiedMessage = document.getElementById('sellingCopiedMessage');
+
+let currentSellingLink = '';
+
+function openSellingModal(link) {
+    currentSellingLink = link;
+    sellingLink.textContent = link;
+    sellingModal.classList.remove('hidden');
+    sellingModal.classList.add('flex');
+}
+
+function closeSellingModal() {
+    sellingModal.classList.add('hidden');
+    sellingModal.classList.remove('flex');
+}
+
+openSellingModalBtn.addEventListener('click', () => openSellingModal('{{ $jobDetail->url_link }}'));
+closeSellingModalBtn.addEventListener('click', closeSellingModal);
+
+copySellingBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(currentSellingLink).then(() => {
+        sellingCopiedMessage.classList.remove('hidden');
+        setTimeout(() => sellingCopiedMessage.classList.add('hidden'), 2000);
+    });
+});
+
 </script>

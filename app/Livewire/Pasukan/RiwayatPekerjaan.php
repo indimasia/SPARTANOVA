@@ -15,6 +15,7 @@ class RiwayatPekerjaan extends Component
     use WithFileUploads;
     public $attachment;
     public $notification;
+    public $jobParticipant;
     public $jobHistory;
     public $selectedJobHistory;
     public $showModal = false;
