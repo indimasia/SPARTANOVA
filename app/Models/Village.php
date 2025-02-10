@@ -34,13 +34,9 @@ class Village extends Model
             return $this->belongsTo(Province::class, 'prov_kode', 'kode');
     }
 
-    public static function getAvailableWarriorInVillage($district_kode)
+    public static function getAvailableWarriorInVillage(array $districts)
     {
-        return self::where('district_kode', $district_kode)->pluck('nama', 'kode')->mapWithKeys(function ($village, $kode) {
-            return [
-                $kode => $village . ' - ' . self::accountCount($kode) . ' Pasukan'
-            ];
-           });
+        return self::whereIn('district_kode', $districts)->pluck('nama', 'kode');
     }
 
     public static function accountCount($kode): int

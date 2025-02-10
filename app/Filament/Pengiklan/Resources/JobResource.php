@@ -114,85 +114,94 @@ class JobResource extends Resource
                                     ->live()
                                     ->validationMessages([
                                         'required' => 'Lokasi Pasukan Harus Diisi',
-                                ]),
+                                    ]),
+
                                 Grid::make(2)
-                                ->schema([
-                                    Forms\Components\Select::make('province_kode')
-                                    ->label('Provinsi')
-                                    ->options(Province::getAvailableWarriorInProvince())
-                                    ->multiple()
-                                    ->placeholder('pilih wilayah yang ditargetkan')
-                                    ->preload()
-                                    ->searchable()
-                                    ->required(),
+                                    ->schema([
+                                        Forms\Components\Select::make('province_kode')
+                                            ->label('Provinsi')
+                                            ->options(Province::getAvailableWarriorInProvince())
+                                            ->multiple()
+                                            ->placeholder('Pilih wilayah yang ditargetkan')
+                                            ->preload()
+                                            ->searchable()
+                                            ->required(),
 
-                                    Forms\Components\ToggleButtons::make('all_regency')
-                                    ->boolean()
-                                    ->label('Pilih Semua Kabupaten/Kota?')
-                                    ->live()
-                                    ->default(true)
-                                    ->afterStateUpdated(fn(callable $set, $state)=>$set('all_district',true))
-                                    ->grouped()
-                                    ->required(),
-                                    Forms\Components\Select::make('regency_kode')
-                                        ->label('Kabupaten/Kota')
-                                        ->placeholder('pilih wilayah yang ditargetkan')
-                                        ->preload()
-                                        ->searchable()
-                                        ->multiple()
-                                        ->options(function(Get $get){
-                                            return Regency::getAvailableWarriorInRegency($get('province_kode'));
-                                        })
-                                        ->visible(fn(Get $get)=>$get('all_regency') == false)
-                                        ->live()
-                                        ->required(),
-                                    Forms\Components\ToggleButtons::make('all_district')
-                                    ->boolean()
-                                    ->label('Pilih Semua Kecamatan?')
-                                    ->live()
-                                    ->visible(fn(Get $get)=>$get('all_regency') == false)
-                                    ->afterStateUpdated(fn(callable $set, $state)=>$set('all_village',true))
-                                    ->hidden(fn(Get $get) => $get('all_regency') == true)
-                                    ->default(true)
-                                    ->grouped()
-                                    ->required(),
-                                    Forms\Components\Select::make('district_kode')
-                                        ->label('Kecamatan')
-                                        ->placeholder('pilih wilayah yang ditargetkan')
-                                        ->preload()
-                                        ->searchable()
-                                        ->multiple()
-                                        ->options(function(Get $get){
-                                            return District::getAvailableWarriorInDistrict($get('regency_kode'));
-                                        })
-                                        ->visible(fn(Get $get)=>$get('all_district') == false)
-                                        ->hidden(fn(Get $get) => $get('all_regency') == true)
-                                        ->live()
-                                        ->required(),
-                                    Forms\Components\ToggleButtons::make('all_village')
-                                        ->boolean()
-                                        ->label('Pilih Semua Kelurahan?')
-                                        ->live()
-                                        ->visible(fn(Get $get) => $get('all_district') == false)
+                                        Forms\Components\ToggleButtons::make('all_regency')
+                                            ->boolean()
+                                            ->label('Pilih Semua Kabupaten/Kota?')
+                                            ->live()
+                                            ->default(true)
+                                            ->afterStateUpdated(fn(callable $set, $state) => $set('all_district', true))
+                                            ->grouped()
+                                            ->required(),
 
-                                        ->hidden(fn(Get $get) => $get('all_regency') == true || $get('all_district') == true)
-                                        ->default(true)
-                                        ->grouped()
-                                        ->required(),
-                                    Forms\Components\Select::make('village_kode')
-                                        ->label('Kelurahan')
-                                        ->placeholder('pilih wilayah yang ditargetkan"')
-                                        ->preload()
-                                        ->searchable()
-                                        ->multiple()
-                                        ->options(function(Get $get){
-                                            return Village::getAvailableWarriorInVillage($get('district_kode'));
-                                        })
-                                        ->visible(fn(Get $get)=>$get('all_village') == false)
-                                        ->hidden(fn(Get $get) => $get('all_regency') == true  || $get('all_district') == true)
-                                        ->live()
-                                        ->required(),
-                                 ])->visible(fn(Get $get)=>$get('specific_location')),
+                                        Forms\Components\Select::make('regency_kode')
+                                            ->label('Kabupaten/Kota')
+                                            ->placeholder('Pilih wilayah yang ditargetkan')
+                                            ->preload()
+                                            ->searchable()
+                                            ->multiple()
+                                            ->options(function (Get $get) {
+                                                $provinces = $get('province_kode') ?? [];
+                                                return Regency::getAvailableWarriorInRegency($provinces);
+                                            })
+                                            ->visible(fn(Get $get) => $get('all_regency') == false)
+                                            ->live()
+                                            ->required(),
+
+                                        Forms\Components\ToggleButtons::make('all_district')
+                                            ->boolean()
+                                            ->label('Pilih Semua Kecamatan?')
+                                            ->live()
+                                            ->visible(fn(Get $get) => $get('all_regency') == false)
+                                            ->afterStateUpdated(fn(callable $set, $state) => $set('all_village', true))
+                                            ->hidden(fn(Get $get) => $get('all_regency') == true)
+                                            ->default(true)
+                                            ->grouped()
+                                            ->required(),
+
+                                        Forms\Components\Select::make('district_kode')
+                                            ->label('Kecamatan')
+                                            ->placeholder('Pilih wilayah yang ditargetkan')
+                                            ->preload()
+                                            ->searchable()
+                                            ->multiple()
+                                            ->options(function (Get $get) {
+                                                $regencies = $get('regency_kode') ?? [];
+                                                return District::getAvailableWarriorInDistrict($regencies);
+                                            })
+                                            ->visible(fn(Get $get) => $get('all_district') == false)
+                                            ->hidden(fn(Get $get) => $get('all_regency') == true)
+                                            ->live()
+                                            ->required(),
+
+                                        Forms\Components\ToggleButtons::make('all_village')
+                                            ->boolean()
+                                            ->label('Pilih Semua Kelurahan?')
+                                            ->live()
+                                            ->visible(fn(Get $get) => $get('all_district') == false)
+                                            ->hidden(fn(Get $get) => $get('all_regency') == true || $get('all_district') == true)
+                                            ->default(true)
+                                            ->grouped()
+                                            ->required(),
+
+                                        Forms\Components\Select::make('village_kode')
+                                            ->label('Kelurahan')
+                                            ->placeholder('Pilih wilayah yang ditargetkan')
+                                            ->preload()
+                                            ->searchable()
+                                            ->multiple()
+                                            ->options(function (Get $get) {
+                                                $districts = $get('district_kode') ?? [];
+                                                return Village::getAvailableWarriorInVillage($districts);
+                                            })
+                                            ->visible(fn(Get $get) => $get('all_village') == false)
+                                            ->hidden(fn(Get $get) => $get('all_regency') == true || $get('all_district') == true)
+                                            ->live()
+                                            ->required(),
+                                    ])
+                                    ->visible(fn(Get $get) => $get('specific_location')),
                                 Forms\Components\Toggle::make('specific_interest')
                                     ->label('Interest Pasukan')
                                     ->live()
@@ -553,6 +562,7 @@ class JobResource extends Resource
                                                     if ($get('gender')) $additional += 10;
                                                     if ($get('generation')) $additional += 10;
                                                     if ($get('interest')) $additional += 10;
+                                                    if ($get('province_kode') || $get('regency_kode') || $get('district_kode') || $get('village_kode')) $additional += 10;
 
                                                     $finalPrice = $total + ($total * $additional / 100);
 

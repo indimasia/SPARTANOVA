@@ -20,13 +20,9 @@ class Regency extends Model
         return $this->belongsTo(Province::class, 'prov_kode', 'kode');
     }
 
-    public static function getAvailableWarriorInRegency($prov_kode)
+    public static function getAvailableWarriorInRegency(array $provinces)
     {
-        return self::where('prov_kode', $prov_kode)->pluck('nama', 'kode')->mapWithKeys(function ($regency, $kode) {
-            return [
-                $kode => $regency . ' - ' . self::accountCount($kode) . ' Pasukan'
-            ];
-           });
+        return self::whereIn('prov_kode', $provinces)->pluck('nama', 'kode');
     }
 
     public static function accountCount($kode): int

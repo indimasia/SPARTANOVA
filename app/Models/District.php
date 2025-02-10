@@ -30,13 +30,9 @@ class District extends Model
 
     }
 
-    public static function getAvailableWarriorInDistrict($regency_kode)
+    public static function getAvailableWarriorInDistrict(array $regencies)
     {
-        return self::where('regency_kode', $regency_kode)->pluck('nama', 'kode')->mapWithKeys(function ($district, $kode) {
-            return [
-                $kode => $district . ' - ' . self::accountCount($kode) . ' Pasukan'
-            ];
-           });
+        return self::whereIn('regency_kode', $regencies)->pluck('nama', 'kode');
     }
 
     public static function accountCount($kode): int
