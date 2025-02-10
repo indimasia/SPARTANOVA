@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
 use App\Models\UserPerformance;
 use Filament\Infolists\Infolist;
+use Illuminate\Support\Facades\URL;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
@@ -65,11 +66,37 @@ class ParticipantsRelationManager extends RelationManager
                     ->label('Name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('username')
+                    ->label('Username')
+                    ->searchable()
+                    ->sortable()
+                    ->getStateUsing(fn ($record) => 
+                        $record->user?->sosialMediaAccounts()
+                            ->where('sosial_media', $record->job?->platform)
+                            ->value('account') ?? 'Tidak Ada Username'
+                    ),
+                
+                
+                Tables\Columns\ImageColumn::make('attachment')
+                    ->disk('r2')
+                    ->default('https://placehold.co/400x400?text=Belum+Upload')
+                    ->size(100)
+                    ->getStateUsing(fn ($record) => $record->attachment 
+                        ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
+                        : null)
+                    ->extraAttributes(fn ($record) => [
+                        'class' => 'cursor-pointer',
+                        'onclick' => "window.open('".(
+                            $record->attachment 
+                                ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
+                                : 'https://placehold.co/800x800?text=Belum+Upload'
+                        )."', '_blank')"
+                    ]),
+
+                
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn ($record) => $record->status === JobStatusEnum::APPLIED->value ? 'warning' : ($record->status === JobStatusEnum::APPROVED->value  ? 'success' : ($record->status === JobStatusEnum::REJECTED->value ? 'danger' : 'info'))),
-                Tables\Columns\TextColumn::make('reward'),
-                Tables\Columns\ImageColumn::make('attachment'),
             ])
             ->filters([
                 //
@@ -218,27 +245,27 @@ class ParticipantsRelationManager extends RelationManager
                 ]),
             ]);
     }
-    public function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-             TextEntry::make('user.name')
-                    ->label('Name')
-                    ->columnSpanFull(),
-                TextEntry::make('user.location')
-                    ->default(fn($record) => User::getUserLocation($record->user->latitude, $record->user->longitude)['display_name'] ?? 'Lokasi')
-                    ->label('Lokasi')
-                    ->columnSpanFull(),
-                ImageEntry::make('attachment')
-                    ->disk('public')
-                    ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
-                    ->extraImgAttributes([
-                        'alt' => 'Foto Bukti Pengerjaan',
-                        'loading' => 'lazy',
-                    ])
-                    ->label('Bukti Pengerjaan')
-                    ->columnSpanFull(),
-            ]);
-    }
+    // public function infolist(Infolist $infolist): Infolist
+    // {
+    //     return $infolist
+    //         ->schema([
+    //          TextEntry::make('user.name')
+    //                 ->label('Name')
+    //                 ->columnSpanFull(),
+    //             TextEntry::make('user.location')
+    //                 ->default(fn($record) => User::getUserLocation($record->user->latitude, $record->user->longitude)['display_name'] ?? 'Lokasi')
+    //                 ->label('Lokasi')
+    //                 ->columnSpanFull(),
+    //             ImageEntry::make('attachment')
+    //                 ->disk('public')
+    //                 ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
+    //                 ->extraImgAttributes([
+    //                     'alt' => 'Foto Bukti Pengerjaan',
+    //                     'loading' => 'lazy',
+    //                 ])
+    //                 ->label('Bukti Pengerjaan')
+    //                 ->columnSpanFull(),
+    //         ]);
+    // }
 
 }
