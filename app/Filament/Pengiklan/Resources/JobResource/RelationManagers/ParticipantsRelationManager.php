@@ -3,50 +3,58 @@
 namespace App\Filament\Pengiklan\Resources\JobResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Notifications\Notification;
+use App\Models\PackageRate;
+use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
+use App\Models\UserPerformance;
+use Filament\Infolists\Infolist;
+use Illuminate\Support\Facades\URL;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 
 class ParticipantsRelationManager extends RelationManager
 {
     protected static string $relationship = 'participants';
-    protected static ?string $title = 'Peserta';
+    protected static ?string $title = 'Pasukan';
 
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required()
-                    ->label('Nama Peserta'),
-                Forms\Components\Select::make('status')
-                    ->options(JobStatusEnum::options())
-                    ->default('pending')
-                    ->required()
-                    ->label('Status'),
-                Forms\Components\TextInput::make('reward')
-                    ->required()
-                    ->numeric()
-                    ->default(fn ($record) => $this->getOwnerRecord()->reward)
-                    ->readOnly()
-                    ->label('Reward'),
-                Forms\Components\FileUpload::make('attachment')
-                    ->label('Attachment')
-                    ->image()
-                    ->imageEditor()
-                    ->required()
-                    ->label('Bukti Pengerjaan'),
-            ]);
+    // public function form(Form $form): Form
+    // {
+    //     return $form
+    //         ->schema([
+    //             Forms\Components\Select::make('user_id')
+    //                 ->relationship('user', 'name')
+    //                 ->required()
+    //                 ->label('Nama Peserta'),
+    //             Forms\Components\Select::make('status')
+    //                 ->options(JobStatusEnum::options())
+    //                 ->default('pending')
+    //                 ->required()
+    //                 ->label('Status'),
+    //             Forms\Components\TextInput::make('reward')
+    //                 ->required()
+    //                 ->numeric()
+    //                 ->default(fn ($record) => $this->getOwnerRecord()->reward)
+    //                 ->readOnly()
+    //                 ->label('Reward'),
+    //             Forms\Components\FileUpload::make('attachment')
+    //                 ->label('Attachment')
+    //                 ->image()
+    //                 ->imageEditor()
+    //                 ->required()
+    //                 ->label('Bukti Pengerjaan'),
+    //         ]);
 
-        }
+    //     }
 
     public function table(Table $table): Table
     {
@@ -58,11 +66,37 @@ class ParticipantsRelationManager extends RelationManager
                     ->label('Name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('username')
+                    ->label('Username')
+                    ->searchable()
+                    ->sortable()
+                    ->getStateUsing(fn ($record) => 
+                        $record->user?->sosialMediaAccounts()
+                            ->where('sosial_media', $record->job?->platform)
+                            ->value('account') ?? 'Tidak Ada Username'
+                    ),
+                
+                
+                Tables\Columns\ImageColumn::make('attachment')
+                    ->disk('r2')
+                    ->default('https://placehold.co/400x400?text=Belum+Upload')
+                    ->size(100)
+                    ->getStateUsing(fn ($record) => $record->attachment 
+                        ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
+                        : null)
+                    ->extraAttributes(fn ($record) => [
+                        'class' => 'cursor-pointer',
+                        'onclick' => "window.open('".(
+                            $record->attachment 
+                                ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
+                                : 'https://placehold.co/800x800?text=Belum+Upload'
+                        )."', '_blank')"
+                    ]),
+
+                
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn ($record) => $record->status === JobStatusEnum::APPLIED->value ? 'warning' : ($record->status === JobStatusEnum::APPROVED->value  ? 'success' : ($record->status === JobStatusEnum::REJECTED->value ? 'danger' : 'info'))),
-                Tables\Columns\TextColumn::make('reward'),
-                Tables\Columns\ImageColumn::make('attachment'),
             ])
             ->filters([
                 //
@@ -102,8 +136,28 @@ class ParticipantsRelationManager extends RelationManager
                         ->requiresConfirmation()
                         ->action(function ( $record) {
                             try {
-                                $record->update(['status' => JobStatusEnum::APPROVED->value]);
-                                Notification::make()
+
+                                $packageRate = PackageRate::where('type', $record->job->type)->pluck('reward')->first();
+                                $userPerformance = UserPerformance::firstOrNew(['user_id' => $record->user_id]);
+                                $userPerformance->user_id = $record->user_id;
+                                $userPerformance->job_completed += 1;
+                                $userPerformance->total_reward += $packageRate;
+                                $userPerformance->save();
+
+                                \App\Models\Notification::create([
+                                    'id' => (string) Str::uuid(),
+                                    'type' => 'Job Approved',
+                                    'notifiable_id' => $record->user_id,
+                                    'notifiable_type' => User::class,
+                                    'data' => json_encode([
+                                        'message' => 'Your job has been approved!',
+                                        'job_id' => $record->id,
+                                    ]),
+                                    'read_at' => null,
+                                ]);
+
+                                    $record->update(['status' => JobStatusEnum::APPROVED->value]);
+                                    Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
                                     ->send();
@@ -123,6 +177,7 @@ class ParticipantsRelationManager extends RelationManager
                         ->action(function ( $record) {
                             try {
                                 $record->update(['status' => JobStatusEnum::REJECTED->value]);
+                                // TODO: update data user performance if rejected
                                 Notification::make()
                                     ->title('Successfully rejected')
                                     ->success()
@@ -134,7 +189,7 @@ class ParticipantsRelationManager extends RelationManager
                                     ->send();
                             }
                         })
-                        ->visible(fn ( $record) => $record->status === 'pending' || $record->status === JobStatusEnum::APPROVED->value),
+                        ->visible(fn ( $record) => $record->status === 'pending' || $record->status === JobStatusEnum::REPORTED->value || $record->status === JobStatusEnum::APPROVED->value),
                 ])->label('Action'),
             ])
             ->bulkActions([
@@ -148,6 +203,15 @@ class ParticipantsRelationManager extends RelationManager
                         ->action(function ( $records) {
                             try {
                                 $records->each->update(['status' => JobStatusEnum::APPROVED->value]);
+                                $records->each(function ($record) {
+                                    $packageRate = PackageRate::where('type', $record->job->type)->pluck('reward')->first();
+
+                                    $userPerformance = UserPerformance::firstOrNew(['user_id' => $record->user_id]);
+                                    $userPerformance->user_id = $record->user_id;
+                                    $userPerformance->job_completed += 1;
+                                    $userPerformance->total_reward += $packageRate;
+                                    $userPerformance->save();
+                                });
                                 Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
@@ -159,8 +223,49 @@ class ParticipantsRelationManager extends RelationManager
                                     ->send();
                             }
                         }),
+                    Tables\Actions\BulkAction::make('reject_all')
+                        ->label('Reject All')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function ( $records) {
+                            try {
+                                $records->each->update(['status' => JobStatusEnum::REJECTED->value]);
+                                Notification::make()
+                                    ->title('Successfully rejected')
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Failed to reject')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
                 ]),
             ]);
     }
+    // public function infolist(Infolist $infolist): Infolist
+    // {
+    //     return $infolist
+    //         ->schema([
+    //          TextEntry::make('user.name')
+    //                 ->label('Name')
+    //                 ->columnSpanFull(),
+    //             TextEntry::make('user.location')
+    //                 ->default(fn($record) => User::getUserLocation($record->user->latitude, $record->user->longitude)['display_name'] ?? 'Lokasi')
+    //                 ->label('Lokasi')
+    //                 ->columnSpanFull(),
+    //             ImageEntry::make('attachment')
+    //                 ->disk('public')
+    //                 ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
+    //                 ->extraImgAttributes([
+    //                     'alt' => 'Foto Bukti Pengerjaan',
+    //                     'loading' => 'lazy',
+    //                 ])
+    //                 ->label('Bukti Pengerjaan')
+    //                 ->columnSpanFull(),
+    //         ]);
+    // }
 
 }

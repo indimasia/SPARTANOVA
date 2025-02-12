@@ -3,14 +3,21 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Village extends Model
 {
     use HasFactory;
     protected $table = 'wil_villages';
-    protected $primaryKey = 'kel_id';
+    protected $primaryKey = 'kode';
+    protected $fillable = ['kode', 'district_kode', 'nama'];
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'village_kode', 'kode');
+    }
 
     public function district()
     {
@@ -27,13 +34,9 @@ class Village extends Model
             return $this->belongsTo(Province::class, 'prov_kode', 'kode');
     }
 
-    public static function getAvailableWarriorInVillage($district_kode)
+    public static function getAvailableWarriorInVillage(array $districts)
     {
-        return self::where('district_kode', $district_kode)->pluck('nama', 'kode')->mapWithKeys(function ($village, $kode) {
-            return [
-                $kode => $village . ' - ' . self::accountCount($kode) . ' Pasukan'
-            ];
-           });
+        return self::whereIn('district_kode', $districts)->pluck('nama', 'kode');
     }
 
     public static function accountCount($kode): int
@@ -41,5 +44,10 @@ class Village extends Model
         return User::where('village_kode', $kode)->whereHas('roles', function($query){
             $query->where('name', UserRole::PASUKAN->value);
         })->count();
+    }
+
+    public static function getVillageName($specific_village)
+    {
+        return self::whereIn('kode', $specific_village)->pluck('nama')->toArray();
     }
 }

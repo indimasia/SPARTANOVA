@@ -3,11 +3,53 @@
 namespace App\Livewire\Pasukan;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
+use App\Models\JobParticipant;
+use App\Models\UserPerformance;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class Dashboard extends Component
 {
+    #[On('updateLocation')]
+    public function updateLocation($latitude, $longitude)
+    {
+        $user = Auth::user();
+
+        // Update data lokasi pengguna
+        $user->update([
+            'current_latitude' => $latitude,
+            'current_longitude' => $longitude,
+        ]);
+
+        // Set flash message
+        session()->flash('status', 'Lokasi berhasil diperbarui.');
+    }
+
+
     public function render()
     {
-        return view('livewire.pasukan.dashboard')->layout('layouts.app');
+        $user = auth()->user();
+
+        if ($user->hasRole('pasukan')) {
+            $userId = $user->id;
+
+            $recentActivities = Cache::get('user_activities_' . $userId, []);
+
+            $totalJobs = JobParticipant::getTotalJobsByUser($userId);
+            $pendingJobs = JobParticipant::getPendingJobsByUser($userId);
+            $approvedJobs = JobParticipant::getApprovedJobsByUser($userId);
+
+            $recentActivities = array_filter($recentActivities, function ($activity) use ($userId) {
+                return isset($activity['user_id']) && $activity['user_id'] == $userId;
+            });
+
+            $totalEarnings = UserPerformance::where('user_id', $userId)->pluck('total_reward')->first();
+
+            return view('livewire.pasukan.dashboard', compact('totalJobs', 'pendingJobs', 'approvedJobs', 'recentActivities', 'totalEarnings'))
+                ->layout('layouts.app');
+        }
+
+        return redirect()->route('dashboard');
     }
 }

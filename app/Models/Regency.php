@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Regency extends Model
 {
@@ -12,19 +13,16 @@ class Regency extends Model
 
     protected $table = 'wil_regencies';
     protected $primaryKey = 'kode';
+    protected $fillable = ['kode', 'prov_kode', 'nama'];
 
     public function province()
     {
         return $this->belongsTo(Province::class, 'prov_kode', 'kode');
     }
 
-    public static function getAvailableWarriorInRegency($prov_kode)
+    public static function getAvailableWarriorInRegency(array $provinces)
     {
-        return self::where('prov_kode', $prov_kode)->pluck('nama', 'kode')->mapWithKeys(function ($regency, $kode) {
-            return [
-                $kode => $regency . ' - ' . self::accountCount($kode) . ' Pasukan'
-            ];
-           });
+        return self::whereIn('prov_kode', $provinces)->pluck('nama', 'kode');
     }
 
     public static function accountCount($kode): int
@@ -32,5 +30,15 @@ class Regency extends Model
         return User::where('regency_kode', $kode)->whereHas('roles', function($query){
             $query->where('name', UserRole::PASUKAN->value);
         })->count();
+    }
+
+    public static function getRegencyName($specific_regency)
+    {
+        return self::whereIn('kode', $specific_regency)->pluck('nama')->toArray();
+    }
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'regency_kode', 'kode');
     }
 }

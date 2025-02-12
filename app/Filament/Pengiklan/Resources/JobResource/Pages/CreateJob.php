@@ -2,11 +2,16 @@
 
 namespace App\Filament\Pengiklan\Resources\JobResource\Pages;
 
-use App\Enums\PackageEnum;
-use App\Filament\Pengiklan\Resources\JobResource;
 use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
+use App\Enums\PackageEnum;
+use App\Models\PackageRate;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Pengiklan\Resources\JobResource;
+use App\Models\ConversionRate;
+use App\Models\Wallet;
 
 class CreateJob extends CreateRecord
 {
@@ -16,10 +21,12 @@ class CreateJob extends CreateRecord
         if($data['package_rate'] != PackageEnum::LAINNYA->value){
              $data['quota'] = $data['package_rate'];
         }
+        $data['created_by'] = Auth::id();
         return $data;
     }
     protected function handleRecordCreation(array $data): Model
     {
+        $data['reward'] = PackageRate::where('type', $data['type'])->pluck('reward')->first();
         $jobData = static::getModel()::create($data);
         if (isset($data['jobDetail'])) {
             $jobDetail = new \App\Models\JobDetail();
@@ -29,13 +36,44 @@ class CreateJob extends CreateRecord
             $jobDetail->specific_gender = $data['gender'] ?? null;
             $jobDetail->specific_generation = $data['generation'] ?? null;
             $jobDetail->specific_interest = $data['interest'] ?? null;
-            $jobDetail->specific_province = $data['province'] ?? null;
-            $jobDetail->specific_regency = $data['regency'] ?? null;
-            $jobDetail->specific_district = $data['district'] ?? null;
-            $jobDetail->specific_village = $data['village'] ?? null;
+            $jobDetail->specific_province = $data['province_kode'] ?? null;
+            $jobDetail->specific_regency = $data['regency_kode'] ?? null;
+            $jobDetail->specific_district = $data['district_kode'] ?? null;
+            $jobDetail->specific_village = $data['village_kode'] ?? null;
             $jobDetail->url_link = $data['jobDetail']['url_link'] ?? null;
+            $jobDetail->caption = $data['jobDetail']['caption'] ?? null;
             $jobDetail->save();
         }
+
+        $packageRate = PackageRate::where('type', $data['type'])->pluck('price')->first();
+        $totalPackageRate = $packageRate * $data['quota'];
+
+        $incrementPercentage = 0;
+        if (!empty($data['gender'])) $incrementPercentage += 10;
+        if (!empty($data['generation'])) $incrementPercentage += 10;
+        if (!empty($data['interest'])) $incrementPercentage += 10;
+
+        if (!empty($data['province_kode']) || !empty($data['regency_kode']) || !empty($data['district_kode']) || !empty($data['village_kode'])) {
+            $incrementPercentage += 10;
+        }
+
+        $totalPackageRate += ($totalPackageRate * $incrementPercentage / 100);
+
+        $conversionRate = ConversionRate::pluck('conversion_rate')->first();
+        $pointOut = $totalPackageRate / $conversionRate;
+        $point = Wallet::where('user_id', Auth::id())->first();
+        $point->total_points -= $pointOut;
+        $point->save();
+
+        $imagePath = session('temporary_image_path');
+        if ($imagePath) {
+            // Hapus file dari disk R2
+            Storage::disk('r2')->delete($imagePath);
+            
+            // Hapus session
+            session()->forget('temporary_image_path');
+        }
+
 
         return $jobData;
     }

@@ -44,6 +44,9 @@ class PackageRateResource extends Resource
                 Forms\Components\TextInput::make('price')
                 ->numeric()
                 ->required(),
+                Forms\Components\TextInput::make('reward')
+                ->numeric()
+                ->required(),
             ]);
     }
 
@@ -55,10 +58,13 @@ class PackageRateResource extends Resource
                 Tables\Columns\TextColumn::make('type'),
                 Tables\Columns\TextColumn::make('price')
                     ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                Tables\Columns\TextColumn::make('reward')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
             ])
             ->filters([
                 //
             ])
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

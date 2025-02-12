@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Spartav</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -32,12 +32,74 @@
 
                     <!-- Mobile Menu Button -->
                     @auth
-                        <div class="flex items-center space-x-4">
-                            <button id="mobile-menu-button"
-                                class="md:hidden text-gray-500 hover:text-gray-900 focus:outline-none">
-                                <i class="fas fa-bars text-xl"></i>
+                    <div class="flex items-center space-x-4">
+                        @php
+                                        $notifications = App\Models\Notification::where('notifiable_type', 'App\Models\Article')
+                                        ->whereNotIn('id', function ($query) {
+                                            $query->select('notification_id')
+                                                ->from('notification_reads')
+                                                ->where('user_id', Auth::id());
+                                        })
+                                        ->get();
+                                        $count = $notifications->count();
+                                    @endphp
+                        <!-- Notifications Dropdown -->
+                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <button @click="open = !open" class="text-gray-500 hover:text-gray-900 focus:outline-none">
+                                <i class="fas fa-bell text-xl"></i>
+                                @if (auth()->user()->unreadNotifications->count() + $count > 0)
+                                    <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                        {{ auth()->user()->unreadNotifications->count() + $count }}
+                                    </span>
+                                @endif
+
                             </button>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg overflow-hidden z-50" style="display: none;">
+                                <div class="py-2">
+                                    <div class="px-4 py-2 text-sm font-semibold text-gray-700 border-b">
+                                        Notifications
+                                    </div>
+                                    @php
+                                        $notifications = App\Models\Notification::where('notifiable_type', 'App\Models\Article')
+                                        ->whereNotIn('id', function ($query) {
+                                            $query->select('notification_id')
+                                                ->from('notification_reads')
+                                                ->where('user_id', Auth::id());
+                                        })
+                                        ->get();
+                                    @endphp
+                                    @foreach(auth()->user()->unreadNotifications as $notification)
+                                        <a href="{{ route('pasukan.riwayat-pekerjaan') }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-gray-900">{{ $notification->data['message'] }}</div>
+                                                <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                
+                                    @foreach($notifications as $notification)
+                                        @php
+                                            $notificationData = json_decode($notification->data, true); // Decode the JSON string to an array
+                                        @endphp
+                                        <a href="{{ route('articles.read', ['articleId' => $notification->id]) }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-gray-900">{{ $notificationData['message'] }}</div>
+                                                <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                    <a href="#" class="block bg-gray-50 text-sm text-center font-medium text-indigo-600 py-2 hover:bg-gray-100 transition ease-in-out duration-150">
+                                        View all notifications
+                                    </a>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <button id="mobile-menu-button"
+                            class="md:hidden text-gray-500 hover:text-gray-900 focus:outline-none">
+                            <i id="menu-icon" class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
                     @else
                         <div class="flex items-center space-x-4">
                             <a href="{{ route('login') }}"
@@ -82,14 +144,68 @@
                                 class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
                                 <i
                                     class="fas fa-briefcase text-sm mr-3 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
-                                <span>Pekerjaan</span>
+                                <span>Misi</span>
                             </a>
 
-                            <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
+                            <a href="{{ route('misi.progres') }}"
+                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i
+                                    class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                <span>Misi yang Diambil</span>
+                            </a>
+                            @php
+                                    $jobApprovedCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')
+                                        ->where('type', 'Job Approved')
+                                        ->where('read_at', null)
+                                        ->get();
+                                        $countApproved = $jobApprovedCount->count();
+                                @endphp
+
+                                <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
                                 class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
                                 <i
-                                    class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
-                                <span>Riwayat Pekerjaan</span>
+                                class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                <span>Laporan Riwayat Misi</span>
+                                @if($countApproved > 0)
+                                        <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                            {{ $countApproved }}
+                                        </span>
+                                    @endif
+                            </a>
+
+                            <a href="{{ route('pasukan.profile') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-user text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Profile</span>
+                            </a>
+
+                            @php
+                                        $notifications = App\Models\Notification::where('notifiable_type', 'App\Models\Article')
+                                        ->whereNotIn('id', function ($query) {
+                                            $query->select('notification_id')
+                                                ->from('notification_reads')
+                                                ->where('user_id', Auth::id());
+                                        })
+                                        ->get();
+                                        $count = $notifications->count();
+                                    @endphp
+                            <a href="{{ route('articles.index') }}"
+                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i
+                                    class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                <span>Artikel</span>
+                                @if($count > 0)
+                                        <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                            {{ $count }}
+                                        </span>
+                                    @endif
+                            </a>
+                            <a href="{{ route('withdraw.index') }}"
+                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i
+                                    class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                <span>Dompet</span>
                             </a>
 
                             <div class="px-4 py-2.5 border-t border-gray-100 mt-auto">
@@ -110,24 +226,77 @@
                         <div class="hidden md:block w-64 bg-white shadow-sm border-r border-gray-100 min-h-screen">
                             <nav class="py-4 sticky top-16">
                                 <a href="{{ route('dashboard') }}"
-                                    class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
-                                    <i
-                                        class="fas fa-chart-line text-sm mr-3 {{ request()->routeIs('dashboard') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i class="fas fa-chart-line text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Dashboard</span>
                                 </a>
 
+
                                 <a href="{{ route('pasukan.apply-job') }}"
-                                    class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-briefcase text-sm mr-3 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
-                                    <span>Pekerjaan</span>
+                                        class="fas fa-briefcase text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Misi</span>
+                                </a>
+                                <a href="{{ route('misi.progres') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Misi yang Diambil</span>
+                                </a>
+                                
+                                @php
+                                    $jobApprovedCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')
+                                        ->where('type', 'Job Approved')
+                                        ->where('read_at', null)
+                                        ->get();
+                                        $countApproved = $jobApprovedCount->count();
+                                @endphp
+                                <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                    class="fas fa-history text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Laporan Riwayat Misi</span>
+                                    @if($countApproved > 0)
+                                        <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                            {{ $countApproved }}
+                                        </span>
+                                    @endif
                                 </a>
 
-                                <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
-                                    class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
+                                <a href="{{ route('pasukan.profile') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
-                                    <span>Riwayat Pekerjaan</span>
+                                        class="fas fa-user text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Profile</span>
+                                </a>
+
+                                @php
+                                        $notifications = App\Models\Notification::where('notifiable_type', 'App\Models\Article')
+                                        ->whereNotIn('id', function ($query) {
+                                            $query->select('notification_id')
+                                                ->from('notification_reads')
+                                                ->where('user_id', Auth::id());
+                                        })
+                                        ->get();
+                                        $count = $notifications->count();
+                                    @endphp
+                                <a href="{{ route('articles.index') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Artikel</span>
+                                    @if($count > 0)
+                                        <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                            {{ $count }}
+                                        </span>
+                                    @endif
+                                </a>
+
+                                <a href="{{ route('withdraw.index') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Dompet</span>
                                 </a>
 
                                 <div class="px-4 py-2.5 border-t border-gray-100 mt-4">
@@ -149,40 +318,44 @@
             @endauth
         </main>
 
+        <x-toast />
+
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white mt-auto">
-            <div class="container mx-auto px-4 py-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div>
-                        <img src="{{ asset('images/spartav_logo.png') }}" alt="Logo Spartav" class="h-10 mb-4">
-                        <p class="text-sm text-gray-400">Spartav adalah mitra terpercaya Anda dalam keunggulan pemasaran
-                            digital.</p>
+        <footer class="bg-black text-white">
+            <div class="container mx-auto px-12 md:px-20 py-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <!-- Left Column -->
+                    <div class="lg:col-span-2">
+                        <img src="{{ asset('images/spartavlogofooter.png') }}" alt="SPARTAV Logo" class="h-24 object-contain" />
+                        <p class="text-white/90 max-w-4xl text-lg leading-relaxed">
+                            SPARTAV adalah platform manajemen periklanan dan pemasaran digital yang memfasilitasi advertiser untuk
+                            memperluas target market dengan memberdayakan pasukan netizen sebagai 'adsman' untuk melakukan kegiatan
+                            branding, marketing, dan selling secara online.
+                        </p>
                     </div>
-                    <div>
-                        <h4 class="text-sm font-bold mb-4">Kontak</h4>
-                        <ul class="space-y-2 text-sm text-gray-400">
-                            <li><i class="fas fa-envelope mr-2"></i>info@spartav.com</li>
-                            <li><i class="fas fa-phone mr-2"></i>(123) 456-7890</li>
-                            <li><i class="fas fa-map-marker-alt mr-2"></i>Jakarta, Indonesia</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold mb-4">Ikuti Kami</h4>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
-                                <i class="fab fa-twitter"></i>
-                            </a>
+        
+                    <!-- Right Column -->
+                    <div class="space-y-4 sm:space-y-6">
+                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold">PT Sinergi Mitra Mediatama</h2>
+                        <div class="space-y-3 sm:space-y-4 font-bold">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <i class="fa-regular fa-envelope text-lg sm:text-xl"></i>
+                                <a href="mailto:eov.eventrue@gmail.com" class="hover:text-white/80 text-base sm:text-xl">
+                                    eov.eventrue@gmail.com
+                                </a>
+                            </div>
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <i class="fa-brands fa-whatsapp text-lg sm:text-xl"></i>
+                                <a href="tel:08999950006" class="hover:text-white/80 text-base sm:text-xl">
+                                    08999950006
+                                </a>
+                            </div>
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <i class="fa-solid fa-location-dot text-lg sm:text-xl"></i>
+                                <span class="text-base sm:text-xl">Semarang, Indonesia</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="border-t border-gray-700 mt-6 pt-6 text-center">
-                    <p class="text-xs text-gray-400">&copy; 2024 Spartav. Semua hak dilindungi.</p>
                 </div>
             </div>
         </footer>
@@ -194,28 +367,49 @@
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileSidebar = document.getElementById('mobile-sidebar');
             const closeSidebarButton = document.getElementById('close-sidebar');
-
-            if (mobileMenuButton && mobileSidebar && closeSidebarButton) {
+            const menuIcon = document.getElementById('menu-icon');
+    
+            if (mobileMenuButton && mobileSidebar && menuIcon) {
                 mobileMenuButton.addEventListener('click', function() {
-                    mobileSidebar.classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
-                });
-
-                closeSidebarButton.addEventListener('click', function() {
-                    mobileSidebar.classList.add('hidden');
-                    document.body.style.overflow = 'auto';
-                });
-
-                // Close sidebar when clicking outside
-                mobileSidebar.addEventListener('click', function(e) {
-                    if (e.target === mobileSidebar) {
+                    const isHidden = mobileSidebar.classList.contains('hidden');
+    
+                    if (isHidden) {
+                        // Buka sidebar
+                        mobileSidebar.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                        menuIcon.classList.remove('fa-bars');
+                        menuIcon.classList.add('fa-times');
+                    } else {
+                        // Tutup sidebar
                         mobileSidebar.classList.add('hidden');
                         document.body.style.overflow = 'auto';
+                        menuIcon.classList.remove('fa-times');
+                        menuIcon.classList.add('fa-bars');
                     }
                 });
             }
+    
+            if (closeSidebarButton) {
+                closeSidebarButton.addEventListener('click', function() {
+                    mobileSidebar.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                });
+            }
+    
+            // Tutup sidebar jika klik di luar sidebar
+            mobileSidebar.addEventListener('click', function(e) {
+                if (e.target === mobileSidebar) {
+                    mobileSidebar.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
         });
     </script>
+    
 </body>
 
 </html>

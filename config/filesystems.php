@@ -44,6 +44,13 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
+        'attachments' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/attachments'),
+            'url' => env('APP_URL').'/storage/attachments',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
 
         's3' => [
             'driver' => 's3',
@@ -56,6 +63,19 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+
+        'r2' => [
+             'driver' => 's3',
+             'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID'),
+             'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY'),
+             'region' => 'us-east-1',
+             'bucket' => env('CLOUDFLARE_R2_BUCKET'),
+             'url' => env('CLOUDFLARE_R2_URL'),
+             'visibility' => 'public',
+             'endpoint' => env('CLOUDFLARE_R2_ENDPOINT'),
+             'use_path_style_endpoint' => env('CLOUDFLARE_R2_USE_PATH_STYLE_ENDPOINT', false),
+             'throw' => false,
+         ],
 
     ],
 
@@ -72,6 +92,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('attachments') => storage_path('app/public/attachments'),
     ],
 
 ];

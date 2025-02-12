@@ -2,7 +2,7 @@
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <i class="fas fa-history text-yellow-500"></i>
-            Riwayat Pekerjaan
+            Laporan Riwayat Misi
         </h2>
 
         <!-- Desktop View - Table -->
@@ -51,6 +51,14 @@
 
                                         @case('youtube')
                                             <i class="fab fa-youtube text-red-600"></i>
+                                        @break
+
+                                        @case('whatsapp')
+                                            <i class="fab fa-whatsapp text-green-600"></i>
+                                        @break
+
+                                        @case('google')
+                                            <i class="fab fa-google text-blue-600"></i>
                                         @break
 
                                         @default
@@ -125,48 +133,75 @@
                                 @endif
                             </td>
                         </tr>
+
+                        <!-- Modal Lihat Bukti -->
                         @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                    Belum ada riwayat pekerjaan
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                Belum ada riwayat misi
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
-            <!-- Modal Upload Bukti -->
-<div x-data="{ open: @entangle('showModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Upload Bukti</h3>
-        <form wire:submit.prevent="uploadBukti">
-            <div class="mb-4">
-                <label for="attachment" class="block text-sm font-medium text-gray-700">Pilih File</label>
-                <input type="file" id="attachment" wire:model="attachment" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md">
-                @error('attachment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            <div x-data="{ open: @entangle('viewAttachmentModal'), editing: false, status: @entangle('status') }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Lihat Bukti</h3>
+                    <div class="mb-4">
+                        {{-- @dd($history->attachment) --}}
+                        @if($jobParticipant)
+                            <img src="{{ asset('storage/' . $jobParticipant->attachment) }}" 
+                                alt="Bukti Bayar" 
+                                class="mx-auto rounded-lg shadow-md" 
+                                style="max-width: 100%; max-height: 400px;">
+                        @else
+                            <img src="https://placehold.co/400x400?text=Tidak+Ada+Gambar" alt="Tidak Ada Gambar" class="mx-auto rounded-lg shadow-md" style="max-width: 100%; max-height: 400px;">
+                        @endif
+                    </div>
+                    <template x-if="!editing">
+                        <div class="flex justify-between">
+                            <button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-md" 
+                            x-show="status === '{{ \App\Enums\JobStatusEnum::REPORTED->value }}'" 
+                            @click="editing = true">Edit Bukti</button>
+                            <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Tutup</button>
+                        </div>
+                    </template>
+                    <template x-if="editing">
+                        <div>
+                            <form wire:submit.prevent="updateAttachment" @submit="editing = false; open = false">
+                                <input type="file" wire:model="attachment" class="block w-full text-sm text-gray-600">
+                                <div class="text-red-500 mt-2" wire:loading wire:target="attachment">Uploading...</div> 
+                                @error('attachment') <span class="text-red-500">{{ $message }}</span> @enderror
+                                <div class="flex justify-between mt-4">
+                                    <button type="submit" class="px-4 py-2 text-white bg-green-600 rounded-md">Simpan</button>
+                                    <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="editing = false">Batal</button>
+                                </div>
+                            </form>
+                        </div>
+                    </template>
+                </div>
             </div>
-    
-            <div class="flex justify-end gap-2">
-                <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Batal</button>
-                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md">Upload</button>
-            </div>
-        </form>
-    </div>
-</div>
 
-<!-- Modal Lihat Bukti -->
-<div x-data="{ open: @entangle('viewAttachmentModal') }" x-show="open" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Lihat Bukti</h3>
-        <div class="mb-4">
-            <img :src="$wire.viewAttachmentPath" alt="Bukti Bayar" class="w-full h-auto rounded-lg shadow-md">
-        </div>
-        <div class="flex justify-end">
-            <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Tutup</button>
-        </div>
-    </div>
-</div>
+            <!-- Modal Upload Bukti -->
+            <div x-data="{ open: @entangle('showModal') }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Upload Bukti</h3>
+                    <form wire:submit.prevent="uploadBukti">
+                        <div class="mb-4">
+                            <label for="attachment" class="block text-sm font-medium text-gray-700">Pilih File</label>
+                            <input type="file" id="attachment" wire:model="attachment" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md">
+                            @error('attachment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                
+                        <div class="flex justify-end gap-2">
+                            <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Batal</button>
+                            <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             
 
@@ -197,6 +232,14 @@
 
                                         @case('youtube')
                                             <i class="fab fa-youtube text-red-600 text-lg"></i>
+                                        @break
+
+                                        @case('google')
+                                            <i class="fab fa-google text-green-600 text-lg"></i>
+                                        @break
+
+                                        @case('whatsapp')
+                                            <i class="fab fa-whatsapp text-green-600 text-lg"></i>
                                         @break
 
                                         @default
@@ -288,7 +331,7 @@
                                 <i class="fas fa-history text-2xl text-gray-400"></i>
                             </div>
                             <h3 class="text-sm font-medium text-gray-900 mb-1">Belum Ada Riwayat</h3>
-                            <p class="text-sm text-gray-500">Anda belum memiliki riwayat pekerjaan</p>
+                            <p class="text-sm text-gray-500">Anda belum memiliki riwayat misi</p>
                         </div>
                     @endforelse
                 </div>

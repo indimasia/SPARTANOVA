@@ -2,15 +2,23 @@
 
 namespace App\Livewire\Pasukan;
 
-use Livewire\Component;
-use App\Models\JobCampaign;
-use App\Models\JobDetail;
-use App\Models\JobParticipant;
-use App\Enums\PlatformEnum;
 use App\Enums\JobType;
+use App\Models\Regency;
+use App\Models\Village;
+use Livewire\Component;
+use App\Models\District;
+use App\Models\Province;
+use App\Models\JobDetail;
+use App\Enums\PlatformEnum;
+use App\Models\JobCampaign;
+use App\Models\PackageRate;
 use App\Enums\JobStatusEnum;
-use Illuminate\Support\Facades\Auth;
+use App\Models\JobParticipant;
+use App\Models\UserPerformance;
 use Livewire\Attributes\Layout;
+use App\Models\SosialMediaAccount;
+use Mews\Purifier\Facades\Purifier;
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.app')]
 class ApplyJob extends Component
@@ -18,6 +26,10 @@ class ApplyJob extends Component
     public $showModal = false;
     public $selectedJob;
     public $jobDetail;
+    public $province;
+    public $regency;
+    public $district;
+    public $village;
 
     // Search and filter properties
     public $search = '';
@@ -31,34 +43,85 @@ class ApplyJob extends Component
     ];
 
     public function render()
-    {
-        $jobCampaigns = JobCampaign::query()
-            ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%');
-            })
-            ->when($this->selectedPlatform, function ($query) {
-                $query->where('platform', $this->selectedPlatform);
-            })
-            ->when($this->selectedType, function ($query) {
-                $query->where('type', $this->selectedType);
-            })
-            ->withCount('participants as participantCount')
-            ->latest()
-            ->get();
+{
+    $user = Auth::user();
 
-        return view('livewire.pasukan.apply-job', [
-            'jobCampaigns' => $jobCampaigns,
-            'platforms' => PlatformEnum::cases(),
-            'types' => JobType::cases()
-        ])->layout('layouts.app');
-    }
+    $userSocialMediaPlatforms = SosialMediaAccount::where('user_id', $user->id)
+        ->where('account', '!=', 'Tidak punya akun')
+        ->pluck('sosial_media')
+        ->toArray();
 
-    public function showJobDetail($jobId)
-    {
-        $this->selectedJob = JobCampaign::withCount('participants as participantCount')->find($jobId);
-        $this->jobDetail = JobDetail::where('job_id', $jobId)->first();
-        $this->showModal = true;
-    }
+    $jobCampaigns = JobCampaign::query()
+        ->when($this->search, function ($query) {
+            $query->where('title', 'like', '%' . $this->search . '%');
+        })
+        ->where('is_verified', 1)
+        ->where('status', 'publish')
+        ->when($this->selectedPlatform, function ($query) {
+            $query->where('platform', $this->selectedPlatform);
+        })
+        ->when($this->selectedType, function ($query) {
+            $query->where('type', $this->selectedType);
+        })
+        ->whereIn('platform', $userSocialMediaPlatforms)
+        ->whereHas('jobDetail', function ($query) use ($user) {
+            $query->where(function ($q) use ($user) {
+                $q->whereNull('specific_gender')
+                    ->orWhere('specific_gender', $user->gender);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_generation')
+                    ->orWhereJsonContains('specific_generation', $user->generation_category);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_province')
+                    ->orWhereJsonContains('specific_province', $user->province_kode);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_regency')
+                    ->orWhereJsonContains('specific_regency', $user->regency_kode);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_district')
+                    ->orWhereJsonContains('specific_district', $user->district_kode);
+            })
+            ->where(function ($q) use ($user) {
+                $q->whereNull('specific_village')
+                    ->orWhereJsonContains('specific_village', $user->village_kode);
+            })
+            ->where(function ($q) use ($user) {
+                if (!empty($user->interest)) {
+                    $q->whereNull('specific_interest')
+                        ->orWhere(function ($q2) use ($user) {
+                            foreach ($user->interest as $interest) {
+                                $q2->orWhereJsonContains('specific_interest', $interest);
+                            }
+                        });
+                }
+            });
+        })
+        ->withCount('participants as participantCount')
+        ->latest()
+        ->get()
+        ->map(function ($job) {
+            $job->instructions = Purifier::clean($job->instructions);
+            return $job;
+        });
+        $jobTypes = $jobCampaigns->pluck('type')->toArray();
+
+        $packageRate = PackageRate::whereIn('type', $jobTypes)->pluck('reward')->first();
+        $sosialMediaPlatforms = SosialMediaAccount::where('user_id', $user->id)
+        ->where('account', '!=', 'Tidak punya akun')
+        ->pluck('sosial_media')
+        ->toArray();
+
+    return view('livewire.pasukan.apply-job', [
+        'jobCampaigns' => $jobCampaigns,
+        'platforms' => $sosialMediaPlatforms,
+        'types' => JobType::cases(),
+        'packageRate' => $packageRate
+    ])->layout('layouts.app');
+}
 
     public function closeModal()
     {
@@ -83,7 +146,16 @@ class ApplyJob extends Component
             'reward' => $job->reward
         ]);
 
+        // Create or update user performance
+        // $userPerformance = UserPerformance::firstOrNew(['user_id' => Auth::id()]);
+        // $userPerformance->user_id = Auth::id();
+        // $userPerformance->job_completed = 1;
+        // $userPerformance->total_reward = $job->reward;
+        // $userPerformance->save();
+
         $this->dispatch('success', 'Berhasil melamar pekerjaan.');
         $this->closeModal();
+        return redirect()->route('job.detail', $jobId);
+
     }
 }

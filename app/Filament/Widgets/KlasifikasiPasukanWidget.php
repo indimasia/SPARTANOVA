@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class KlasifikasiPasukanWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Distribusi Generasi Pasukan';
 
     public function getData(): array
     {
@@ -22,35 +22,40 @@ class KlasifikasiPasukanWidget extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Baby Boomers',
-                    'backgroundColor' => '#FF5733',
+                    'backgroundColor' => '#E63946',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $baby_boomers,
                     ],
                 ],
                 [
                     'label' => 'Gen X',
-                    'backgroundColor' => '#33FF57',
+                    'backgroundColor' => '#8ECAE6',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_x,
                     ],
                 ],
                 [
                     'label' => 'Gen Y',
-                    'backgroundColor' => '#3357FF',
+                    'backgroundColor' => '#A8DADC',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_y,
                     ],
                 ],
                 [
                     'label' => 'Gen Z',
-                    'backgroundColor' => '#FF33A1',
+                    'backgroundColor' => '#457B9D',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_z,
                     ],
                 ],
                 [
                     'label' => 'Gen Alpha',
-                    'backgroundColor' => '#FFC733',
+                    'backgroundColor' => '#1D3557',
+                    'borderWidth' => 0,
                     'data' => [
                         '' => $gen_alpha,
                     ],
