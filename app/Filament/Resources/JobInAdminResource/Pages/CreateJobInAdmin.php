@@ -16,7 +16,6 @@ class CreateJobInAdmin extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['quota'] = 0;
         $data['created_by'] = Auth::id();
         $data['is_verified'] = 1;
         return $data;
