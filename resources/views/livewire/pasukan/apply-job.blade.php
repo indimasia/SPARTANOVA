@@ -42,11 +42,14 @@
         <div class="space-y-6">
             <!-- Applied Jobs Section -->
             @php
-                $availableJobs = $jobCampaigns->filter(function($campaign) {
-                    return !Auth::user()->jobParticipants()->where('job_id', $campaign->id)->exists();
-                });
-                // dd($availableJobs);
+            $availableJobs = $jobCampaigns->filter(function ($campaign) use ($jobCampaigns) {
+                if ($campaign->is_multiple) {
+                    return true; // Tetap tampil meskipun user sudah pernah ikut
+                }
+                return !Auth::user()->jobParticipants()->where('job_id', $campaign->id)->exists();
+            });
             @endphp
+
 
             <!-- Available Jobs Section -->
             <div class="space-y-4">

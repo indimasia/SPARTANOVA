@@ -347,30 +347,44 @@ class JobInAdminResource extends Resource
                                     'required' => 'Instruksi Harus Diisi',
                                 ])
                                 ,
-                            Forms\Components\TextInput::make('reward')
-                                ->required()
-                                ->label('Reward')
-                                ->validationMessages([
-                                    'required' => 'Reward Harus Diisi',
+                            Grid::make(2)
+                                ->schema([
+                                    Forms\Components\TextInput::make('reward')
+                                        ->required()
+                                        ->label('Reward')
+                                        ->validationMessages([
+                                            'required' => 'Reward Harus Diisi',
+                                        ])
+                                        ,
+                                    Forms\Components\TextInput::make('quota')
+                                        ->required()
+                                        ->label('Kuota')
+                                        ->validationMessages([
+                                            'required' => 'Kuota Harus Diisi',
+                                        ])
+                                        ,
                                 ])
                                 ,
-                            Forms\Components\TextInput::make('jobDetail.url_link')
-                                ->label('Link')
-                                ->required(fn (Get $get) => $get('type') !== JobType::POSTING->value)
-                                ->url()
-                                ->maxLength(255)
-                                ->validationMessages([
-                                    'required' => 'Link Harus Diisi',
+                            Grid::make(2)
+                                ->schema([
+                                    Forms\Components\TextInput::make('jobDetail.url_link')
+                                        ->label('Link')
+                                        ->required(fn (Get $get) => $get('type') !== JobType::POSTING->value)
+                                        ->url()
+                                        ->maxLength(255)
+                                        ->validationMessages([
+                                            'required' => 'Link Harus Diisi',
+                                        ])
+                                        ,
+                                    Forms\Components\TextInput::make('jobDetail.caption')
+                                        ->label('Caption')
+                                        ->required(fn (Get $get) => $get('type') == JobType::POSTING->value)
+                                        ->maxLength(255)
+                                        ->validationMessages([
+                                            'required' => 'Caption Harus Diisi',
+                                        ])
+                                        ,
                                 ])
-                                ,
-                            Forms\Components\TextInput::make('jobDetail.caption')
-                                ->label('Caption')
-                                ->required(fn (Get $get) => $get('type') == JobType::POSTING->value)
-                                ->maxLength(255)
-                                ->validationMessages([
-                                    'required' => 'Caption Harus Diisi',
-                                ])
-                                ,
                         ]),
                     Wizard\Step::make('Tinjauan')
                     ->icon('heroicon-s-eye')
