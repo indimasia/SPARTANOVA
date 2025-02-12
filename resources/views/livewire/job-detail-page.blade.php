@@ -242,12 +242,11 @@
                     <i class="fas fa-external-link-alt mr-2"></i>
                     Posting Sekarang
                 </button>
-                @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'View')
-                <a href="{{ $jobDetail->url_link }}" target="_blank"
-                    class="inline-flex items-center justify-center w-full px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && ($selectedJob->type->value === 'View' || $selectedJob->type->value === 'Rating & Review' || $selectedJob->type->value === 'Download, Rating, Review' || $selectedJob->type->value === 'Subscribe/Follow' || $selectedJob->type->value === 'Follow Marketplace'))
+                <button id="openViewModalBtn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
                     <i class="fas fa-external-link-alt mr-2"></i>
                     Lihat Sekarang
-                </a>
+                </button>
                 @elseif (Auth::user()->jobParticipants()->where('job_id', $selectedJob->id)->exists() && $selectedJob->type->value === 'Komentar')
                 <button id="openCommentModalBtn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200">
                     <i class="fas fa-comment mr-2"></i>
@@ -269,6 +268,10 @@
                             </button>
                         </div>
                         <img id="missionImage" src="{{ asset('storage/' . $jobDetail->image) }}"  alt="Mission Image" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <p class="text-sm text-gray-500 mb-2">Instruksi:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="missionInstruction" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                        </div>
                         <p class="text-sm text-gray-500 mb-2">Caption:</p>
                         <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
                             <p id="missionCaption" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
@@ -306,11 +309,49 @@
                         <div class="bg-gray-100 p-3 rounded-lg mb-4">
                             <p id="commentInstruction" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
                         </div>
+                        <p class="text-sm text-gray-500 mb-2">Link:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="commentLink" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                            <button id="copyCommentBtn" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <p id="commentCopiedMessage" class="text-sm text-green-500 mb-4 hidden">Link copied to clipboard!</p>
                         <div class="flex gap-2">
                             <a id="commentNowBtn" href="#" target="_blank"
                                 class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                                 <i class="fas fa-external-link-alt mr-2"></i>
                                 Komentar Sekarang
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="viewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+                    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Instruksi View</h2>
+                            <button id="closeViewModalBtn" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-2">Instruksi:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg mb-4">
+                            <p id="viewInstruction" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-2">Link:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="viewLink" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                            <button id="copyViewBtn" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <p id="viewCopiedMessage" class="text-sm text-green-500 mb-4 hidden">Link copied to clipboard!</p>
+                        <div class="flex gap-2">
+                            <a id="viewNowBtn" href="#" target="_blank"
+                                class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                View Sekarang
                             </a>
                         </div>
                     </div>
@@ -324,6 +365,15 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
+                        <img id="sellingImage" src="{{ asset('storage/' . $jobDetail->image) }}"  alt="Mission Image" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <p class="text-sm text-gray-500 mb-2">Caption:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="sellingCaption" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-2">Instruksi:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="sellingInstruction" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                        </div>
                         <p class="text-sm text-gray-500 mb-2">Link:</p>
                         <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
                             <p id="sellingLink" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
@@ -332,11 +382,22 @@
                             </button>
                         </div>
                         <p id="sellingCopiedMessage" class="text-sm text-green-500 mb-4 hidden">Link copied to clipboard!</p>
+                        <p class="text-sm text-gray-500 mb-2">Deskripsi:</p>
+                        <div class="bg-gray-100 p-3 rounded-lg relative mb-4">
+                            <p id="sellingDescription" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
+                        </div>
                         <div class="flex gap-2">
-                            <a href="{{ $jobDetail->url_link }}" target="_blank"
+                            <a href="javascript:void(0);" 
+                                id="shareButton-{{ $jobDetail->id }}" 
+                                data-image-url="{{ asset('storage/' . $jobDetail->image) }}"
                                 class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                                 <i class="fas fa-external-link-alt mr-2"></i>
-                                Kunjungi Link
+                                Posting Sekarang
+                            </a>
+                            <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
+                                class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-50 transition-colors duration-200">
+                                <i class="fas fa-upload mr-2"></i>
+                                Upload Bukti Posting
                             </a>
                         </div>
                     </div>
@@ -358,10 +419,11 @@
     
         let currentMission = { caption: '', imageUrl: '' };
 
-        function openModal(caption, imageUrl) {
+        function openModal(caption, imageUrl, instructions) {
             currentMission = { caption, imageUrl };
             missionImage.src = imageUrl;
             missionCaption.textContent = caption;
+            missionInstruction.textContent = instructions;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
@@ -371,7 +433,7 @@
             modal.classList.remove('flex');
         }
 
-        openModalBtn.addEventListener('click', () => openModal('{{ $jobDetail->caption }}', '{{ asset('storage/' . $jobDetail->image) }}'));
+        openModalBtn.addEventListener('click', () => openModal('{{ $jobDetail->caption }}', '{{ asset('storage/' . $jobDetail->image) }}', '{{ $selectedJob->instructions }}'));
         closeModalBtn.addEventListener('click', closeModal);
 
         copyBtn.addEventListener('click', () => {
@@ -435,14 +497,55 @@
 }
 </script>
 <script>
+    const viewModal = document.getElementById('viewModal');
+    const openViewModalBtn = document.getElementById('openViewModalBtn');
+    const closeViewModalBtn = document.getElementById('closeViewModalBtn');
+    const viewInstruction = document.getElementById('viewInstruction');
+    const viewLink = document.getElementById('viewLink');
+    const viewNowBtn = document.getElementById('viewNowBtn');
+    const copyViewBtn = document.getElementById('copyViewBtn');
+    const viewCopiedMessage = document.getElementById('viewCopiedMessage');
+
+    function openViewModal(instructions, url) {
+        viewInstruction.textContent = instructions;
+        viewLink.textContent = url;
+        viewNowBtn.href = url;
+        viewModal.classList.remove('hidden');
+        viewModal.classList.add('flex');
+    }
+
+    function closeViewModal() {
+        viewModal.classList.add('hidden');
+        viewModal.classList.remove('flex');
+    }
+
+    openViewModalBtn.addEventListener('click', () => openViewModal(
+        '{{ $selectedJob->instructions }}',
+        '{{ $jobDetail->url_link }}'
+    ));
+    closeViewModalBtn.addEventListener('click', closeViewModal);
+
+    copyViewBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(viewLink.textContent).then(() => {
+            viewCopiedMessage.classList.remove('hidden');
+            setTimeout(() => viewCopiedMessage.classList.add('hidden'), 2000);
+        });
+    });
+
+</script>
+<script>
     const commentModal = document.getElementById('commentModal');
     const openCommentModalBtn = document.getElementById('openCommentModalBtn');
     const closeCommentModalBtn = document.getElementById('closeCommentModalBtn');
     const commentInstruction = document.getElementById('commentInstruction');
+    const commentLink = document.getElementById('commentLink');
     const commentNowBtn = document.getElementById('commentNowBtn');
+    const copyCommentBtn = document.getElementById('copyCommentBtn');
+    const commentCopiedMessage = document.getElementById('commentCopiedMessage');
 
     function openCommentModal(instructions, url) {
         commentInstruction.textContent = instructions;
+        commentLink.textContent = url;
         commentNowBtn.href = url;
         commentModal.classList.remove('hidden');
         commentModal.classList.add('flex');
@@ -458,6 +561,13 @@
         '{{ $jobDetail->url_link }}'
     ));
     closeCommentModalBtn.addEventListener('click', closeCommentModal);
+
+    copyCommentBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(commentLink.textContent).then(() => {
+            commentCopiedMessage.classList.remove('hidden');
+            setTimeout(() => commentCopiedMessage.classList.add('hidden'), 2000);
+        });
+    });
 </script>
 
 <script>
@@ -466,14 +576,22 @@ const sellingModal = document.getElementById('sellingModal');
 const openSellingModalBtn = document.getElementById('openSellingModalBtn');
 const closeSellingModalBtn = document.getElementById('closeSellingModalBtn');
 const sellingLink = document.getElementById('sellingLink');
+const sellingCaption = document.getElementById('sellingCaption');
+const sellingInstruction = document.getElementById('sellingInstruction');
+const sellingDescription = document.getElementById('sellingDescription');
+const sellingImage = document.getElementById('sellingImage');
 const copySellingBtn = document.getElementById('copySellingBtn');
 const sellingCopiedMessage = document.getElementById('sellingCopiedMessage');
 
 let currentSellingLink = '';
 
-function openSellingModal(link) {
+function openSellingModal(link, caption, instructions, description, imageUrl) {
     currentSellingLink = link;
     sellingLink.textContent = link;
+    sellingCaption.textContent = caption;
+    sellingInstruction.textContent = instructions;
+    sellingDescription.textContent = description;
+    sellingImage.src = imageUrl;
     sellingModal.classList.remove('hidden');
     sellingModal.classList.add('flex');
 }
@@ -482,15 +600,58 @@ function closeSellingModal() {
     sellingModal.classList.add('hidden');
     sellingModal.classList.remove('flex');
 }
-
-openSellingModalBtn.addEventListener('click', () => openSellingModal('{{ $jobDetail->url_link }}'));
+openSellingModalBtn.addEventListener('click', () => openSellingModal( '{{ $jobDetail->url_link }}', '{{ $jobDetail->caption }}', '{{ $selectedJob->instructions }}', '{{ $jobDetail->description }}', '{{ asset('storage/' . $jobDetail->image) }}'));
 closeSellingModalBtn.addEventListener('click', closeSellingModal);
 
-copySellingBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(currentSellingLink).then(() => {
-        sellingCopiedMessage.classList.remove('hidden');
-        setTimeout(() => sellingCopiedMessage.classList.add('hidden'), 2000);
+    copySellingBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(currentSellingLink).then(() => {
+            sellingCopiedMessage.classList.remove('hidden');
+            setTimeout(() => sellingCopiedMessage.classList.add('hidden'), 2000);
+        });
     });
-});
+
+    document.querySelectorAll('[id^="shareButton-"]').forEach(button => {
+        button.addEventListener('click', async () => {
+            const imageUrl = button.dataset.imageUrl;
+            await shareImageAndContent(imageUrl);
+        });
+    });
+
+    // Fungsi untuk berbagi konten
+    async function shareImageAndContent(imageUrl) {
+        try {
+            console.log(imageUrl);
+            // Ambil gambar dari server
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+
+            // Siapkan file untuk Web Share API
+            const filesArray = [
+                new File([blob], `misi.jpg`, {
+                    type: "image/jpeg",
+                    lastModified: new Date().getTime(),
+                }),
+            ];
+
+            // Data yang akan dibagikan
+            const shareData = {
+                title: 'Kerjakan Misi Sekarang',
+                text: 'Ayo kerjakan misi sekarang!',
+                files: filesArray,
+            };
+
+            // Periksa apakah browser mendukung Web Share API dengan file
+            if (navigator.canShare && navigator.canShare({ files: filesArray })) {
+                await navigator.share(shareData);
+                console.log('Konten berhasil dibagikan!');
+            } else {
+                console.error('Browser tidak mendukung fitur berbagi file.');
+                alert('Browser Anda tidak mendukung fitur ini.');
+            }
+        } catch (error) {
+            console.error('Gagal membagikan konten:', error);
+            alert('Terjadi kesalahan saat mencoba membagikan konten.');
+        }
+    }
 
 </script>
