@@ -3,6 +3,7 @@
 namespace App\Filament\Pengiklan\Resources\JobResource\Pages;
 
 use Filament\Actions;
+use App\Enums\JobType;
 use App\Enums\PackageEnum;
 use App\Models\PackageRate;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,9 @@ class CreateJob extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         $data['reward'] = PackageRate::where('type', $data['type'])->pluck('reward')->first();
+        if($data['type'] == JobType::SELLING->value){
+            $data['is_multiple'] = true;
+        }
         $jobData = static::getModel()::create($data);
         if (isset($data['jobDetail'])) {
             $jobDetail = new \App\Models\JobDetail();

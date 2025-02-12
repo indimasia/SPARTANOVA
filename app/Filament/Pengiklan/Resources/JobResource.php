@@ -332,6 +332,7 @@ class JobResource extends Resource
                                             ]),
                                         Forms\Components\Toggle::make('is_multiple')
                                             ->label('Dapat Diikuti Berulang')
+                                            ->visible(fn(Get $get)=>$get('type') != JobType::SELLING->value)
                                             ->required(),
                                 ]),
 
