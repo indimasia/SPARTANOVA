@@ -2,6 +2,7 @@
 
 use App\Livewire\Home;
 use App\Livewire\Topup;
+use App\Livewire\MiniGame;
 use App\Livewire\ArticleList;
 use App\Livewire\MisiProgres;
 use App\Livewire\Auth\Register;
@@ -10,9 +11,11 @@ use App\Livewire\JobDetailPage;
 use App\Livewire\Pasukan\Profile;
 use App\Livewire\NotificationRead;
 use App\Livewire\Pasukan\ApplyJob;
+use App\Livewire\ReferralRegister;
 use App\Livewire\Pasukan\Dashboard;
 use App\Livewire\Pasukan\ViewProfile;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Auth\RegisterPasukan;
 use App\Livewire\Pasukan\WithdrawPoints;
 use App\Http\Middleware\PasukanMiddleware;
 use App\Livewire\Pasukan\RiwayatPekerjaan;
@@ -21,6 +24,7 @@ use App\Http\Controllers\JobDetailController;
 
 Route::get('/', Home::class)->name('home');
 Route::get('/register', Register::class)->name('register');
+Route::get('pasukan/register/{referred_by}', RegisterPasukan::class)->name('register.pasukan');
 Route::get('storage/{filename}', [StorageController::class, 'fetchFile'])
     ->where('filename', '.*')
     ->name('storage.fetch');
@@ -38,6 +42,7 @@ Route::middleware([PasukanMiddleware::class])->group(
         Route::get('/articles/read/{articleId}', ArticleList::class)->name('articles.read');
         // Route::get('/notification/read/{notification}', RiwayatPekerjaan::class)->name('notification.read');
         Route::get('/withdraw', WithdrawPoints::class)->name('withdraw.index');
+        Route::get('/mini-game', MiniGame::class)->name('mini-game.index');
         Route::get('/articles/{slug}', DetailArticle::class)->name('articles.detail');
         Route::get('/job/{jobId}', JobDetailPage::class)->name('job.detail');
     }

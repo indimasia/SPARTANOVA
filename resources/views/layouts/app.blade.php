@@ -118,6 +118,7 @@
 
         <!-- Mobile Sidebar -->
         @auth
+            @if (auth()->user() && !request()->routeIs('register.pasukan'))
             <div id="mobile-sidebar" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 md:hidden hidden"
                 aria-modal="true">
                 <div
@@ -208,6 +209,13 @@
                                 <span>Dompet</span>
                             </a>
 
+                            <a href="{{ route('mini-game.index') }}"
+                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i
+                                    class="fas fa-gamepad text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                <span>Mini Game</span>
+                            </a>
+
                             <div class="px-4 py-2.5 border-t border-gray-100 mt-auto">
                                 <livewire:auth.logout />
                             </div>
@@ -215,12 +223,13 @@
                     </div>
                 </div>
             </div>
+            @endif
         @endauth
 
         <!-- Page Content -->
         <main class="flex-grow pt-16">
             @auth
-                @if (auth()->user())
+                @if (auth()->user() && !request()->routeIs('register.pasukan'))
                     <div class="flex">
                         <!-- Desktop Sidebar -->
                         <div class="hidden md:block w-64 bg-white shadow-sm border-r border-gray-100 min-h-screen">
@@ -297,6 +306,13 @@
                                     <i
                                         class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Dompet</span>
+                                </a>
+
+                                <a href="{{ route('mini-game.index') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i
+                                        class="fas fa-gamepad text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    <span>Mini Game</span>
                                 </a>
 
                                 <div class="px-4 py-2.5 border-t border-gray-100 mt-4">
