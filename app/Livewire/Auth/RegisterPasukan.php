@@ -9,6 +9,7 @@ use Livewire\Component;
 use App\Models\District;
 use App\Models\Province;
 use App\Enums\PlatformEnum;
+use Illuminate\Support\Str;
 use App\Enums\UserStatusEnum;
 use App\Models\SosialMediaAccount;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,8 @@ class RegisterPasukan extends Component
     public $latitude;
     public $longitude;
     public $social_media = [];
+    public $referral_code;
+    public $referred_by;
 
     public $villages = [];
     public $districts = [];
@@ -54,10 +57,13 @@ class RegisterPasukan extends Component
         'social_media.*' => ['nullable', 'string'],
         'latitude' => 'required|numeric',
         'longitude' => 'required|numeric',
+        'referred_by' => 'nullable|exists:users,referral_code',
     ];
 
-    public function mount()
+    public function mount($referred_by = null)
     {
+        $this->referred_by = $referred_by;
+        // dd($referral_code);
         $this->provinces = Province::all();
         foreach (PlatformEnum::cases() as $platform) {
             $this->social_media[$platform->value] = '';
@@ -105,6 +111,7 @@ class RegisterPasukan extends Component
                 'latitude' => ['required'],
                 'longitude' => ['required'],
                 'social_media.*' => ['required', 'string'],
+                'referred_by' => ['nullable', 'exists:users,referral_code'],
             ], [
                 'name.required' => 'Nama harus diisi.',
                 'name.string' => 'Nama harus berupa string.',
@@ -130,6 +137,7 @@ class RegisterPasukan extends Component
                 'social_media.*.string' => 'Akun sosial media harus berupa string.',
                 'latitude.required' => 'Latitude harus diisi.',
                 'longitude.required' => 'Longitude harus diisi.',
+                'referred_by.exists' => 'Kode referral tidak valid.',
             ]);
         } catch (ValidationException $e) {
             $errorField = array_key_first($e->validator->errors()->toArray());
@@ -145,6 +153,12 @@ class RegisterPasukan extends Component
 
         $birthYear = (int) date('Y', strtotime($validated['date_of_birth']));
         $validated['status'] = UserStatusEnum::PENDING->value;
+
+        if ($validated['referred_by']) {
+            $referredBy = User::where('referral_code', $validated['referred_by'])->pluck('id')->first();
+        } else {
+            $referredBy = null;
+        }
 
         $generationCategory = $this->determineGeneration($birthYear);
 
@@ -162,6 +176,8 @@ class RegisterPasukan extends Component
             'generation_category' => $generationCategory,
             'latitude' => $validated['latitude'],
             'longitude' => $validated['longitude'],
+            'referred_by' => $referredBy,
+            'referral_code' => Str::random(6),
         ];
 
         $user = User::create($userData);

@@ -123,6 +123,21 @@
                                         <i class="fas fa-user w-5"></i>
                                         <span>{{ $generation_category }}</span>
                                     </div>
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-qrcode w-5"></i>
+                                        <span x-data="{ copied: false }">
+                                            <span>{{ $referral_code }}</span>
+                                            <button @click="
+                                                let url = '{{ env('APP_URL') }}/pasukan/register/{{ $referral_code }}';
+                                                navigator.clipboard.writeText(url);
+                                                copied = true;
+                                                setTimeout(() => copied = false, 2000);
+                                            " class="ml-2 px-2 py-1 bg-gray-200 rounded text-sm">
+                                                Copy
+                                            </button>
+                                            <span x-show="copied" class="text-green-500 text-sm ml-2">Copied!</span>
+                                        </span>
+                                    </div>                                                                
                                 </div>
                             </div>
                         </div>

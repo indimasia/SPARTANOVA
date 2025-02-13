@@ -14,12 +14,17 @@ use App\Filament\Widgets\GenderOverview;
 use App\Http\Middleware\AdminMiddleware;
 use App\Filament\Widgets\AdvertiserTable;
 use App\Filament\Widgets\AgePasukanChart;
+use App\Filament\Widgets\TopWDUsersChart;
 use App\Filament\Widgets\AdvertiserWidget;
 use App\Filament\Widgets\UserGrowthWidget;
 use Filament\Http\Middleware\Authenticate;
 use App\Filament\Widgets\JobTypeStatsWidget;
+use App\Filament\Widgets\TopLoginUsersChart;
+use App\Filament\Widgets\TopSaldoUsersChart;
 use App\Filament\Widgets\StatsOverviewWidget;
 use App\Filament\Widgets\InterestPasukanChart;
+use App\Filament\Widgets\TopMissionUsersChart;
+use App\Filament\Widgets\TopReferralUsersChart;
 use Illuminate\Session\Middleware\StartSession;
 use App\Filament\Widgets\UserPasukanPerProvinsi;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -63,6 +68,11 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 LivewireSpartavTag::class,
+                TopLoginUsersChart::class,
+                TopMissionUsersChart::class,
+                TopSaldoUsersChart::class,
+                TopWDUsersChart::class,
+                TopReferralUsersChart::class,
                 // Widgets\FilamentInfoWidget::class,
                 StatsOverviewWidget::class,
                 UserGrowthWidget::class,

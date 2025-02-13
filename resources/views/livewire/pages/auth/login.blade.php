@@ -41,6 +41,7 @@ new #[Layout('layouts.app')] class extends Component {
             $this->redirect(route('filament.pengiklan.pages.dashboard-pengiklan'), navigate: false);
         } elseif ($user->hasRole(App\Enums\UserRole::PASUKAN->value)) {
             $user->is_active = true;
+            $user->login_count++;
             $user->save();
             $this->redirect(route('dashboard'), navigate: false);
         }

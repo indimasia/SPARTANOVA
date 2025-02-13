@@ -192,6 +192,25 @@
                                     </p>
                                 @enderror
                             </div>
+
+                            <!-- Referral Code -->
+                            <div class="group">
+                                <label for="referred_by" class="block text-sm font-medium text-gray-700">Kode Referral</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user-tag text-gray-400 group-hover:text-blue-500 transition-colors duration-200"></i>
+                                    </div>
+                                    <input type="text" id="referred_by" wire:model="referred_by"
+                                        class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm group-hover:border-blue-300 transition-colors duration-200"
+                                        placeholder="Masukkan kode referral" value="{{ $referred_by ?? '' }}">
+                                </div>
+                                @error('referred_by')
+                                    <p class="mt-1 text-sm text-red-600 flex items-center">
+                                        <i class="fas fa-exclamation-circle mr-2"></i>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 

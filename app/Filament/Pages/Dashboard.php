@@ -2,26 +2,31 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\AdvertiserTable;
-use App\Filament\Widgets\AdvertiserWidget;
-use App\Filament\Widgets\AgePasukanChart;
-use App\Filament\Widgets\GenderOverview;
-use App\Filament\Widgets\InterestPasukanChart;
-use App\Filament\Widgets\JobTypeStatsWidget;
-use App\Filament\Widgets\KlasifikasiPasukanWidget;
-use App\Filament\Widgets\StatsOverviewWidget;
-use App\Filament\Widgets\UserGrowthWidget;
-use App\Filament\Widgets\UserPasukanPerProvinsi;
 use App\Models\User;
 use Filament\Pages\Page;
 use Filament\Widgets\Widget;
 use Filament\Facades\Filament;
-use Illuminate\Support\Facades\Http;
-use Filament\Widgets\WidgetConfiguration;
-use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\AccountWidget;
-use App\Livewire\spartavTag as LivewireSpartavTag;
+use Illuminate\Support\Facades\Http;
+use App\Filament\Widgets\GenderOverview;
+use App\Filament\Widgets\AdvertiserTable;
+use App\Filament\Widgets\AgePasukanChart;
+use App\Filament\Widgets\TopWDUsersChart;
+use Filament\Widgets\WidgetConfiguration;
+use App\Filament\Widgets\AdvertiserWidget;
+use App\Filament\Widgets\UserGrowthWidget;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
+use App\Filament\Widgets\JobTypeStatsWidget;
+use App\Filament\Widgets\TopLoginUsersChart;
+use App\Filament\Widgets\TopSaldoUsersChart;
+use App\Filament\Widgets\StatsOverviewWidget;
+use App\Filament\Widgets\InterestPasukanChart;
+use App\Filament\Widgets\TopMissionUsersChart;
+use App\Filament\Widgets\TopReferralUsersChart;
+use App\Filament\Widgets\UserPasukanPerProvinsi;
+use App\Filament\Widgets\KlasifikasiPasukanWidget;
+use App\Livewire\spartavTag as LivewireSpartavTag;
 
 class Dashboard extends Page
 {
@@ -136,6 +141,11 @@ class Dashboard extends Page
         return [
             AccountWidget::class,
             LivewireSpartavTag::class,
+            TopLoginUsersChart::class,
+            TopMissionUsersChart::class,
+            TopSaldoUsersChart::class,
+            TopWDUsersChart::class,
+            TopReferralUsersChart::class,
             // Widgets\FilamentInfoWidget::class,
             StatsOverviewWidget::class,
             UserGrowthWidget::class,

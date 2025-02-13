@@ -37,6 +37,7 @@ class ViewProfile extends Component
     public $job_done;
     public $reward;
     public $created_at;
+    public $referral_code;
     public $updated_at;
     public $status;
     public $villages = [];
@@ -72,6 +73,7 @@ class ViewProfile extends Component
         $this->updated_at = $this->user->updated_at->format('d F Y');
         $this->job_done = UserPerformance::where('user_id', $this->user->id)->pluck('job_completed')->first();
         $this->reward = UserPerformance::where('user_id', $this->user->id)->pluck('total_reward')->first();
+        $this->referral_code = $this->user->referral_code;
     }
 
     public function handleAccountClick($platform)

@@ -43,6 +43,9 @@ class User extends Authenticatable implements FilamentUser
         'longitude',
         'current_latitude',
         'current_longitude',
+        'login_count',
+        'referral_code',
+        'referred_by',
     ];
 
     /**
@@ -124,6 +127,16 @@ class User extends Authenticatable implements FilamentUser
     public function userPerformance()
     {
         return $this->hasOne(UserPerformance::class);
+    }
+
+    public function referredBy()
+    {
+        return $this->belongsTo(User::class, 'referred_by', 'referral_code');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by', 'referral_code');
     }
 
     public static function getUserLocation($latitude, $longitude)
