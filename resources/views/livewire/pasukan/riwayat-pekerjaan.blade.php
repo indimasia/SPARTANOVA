@@ -6,7 +6,7 @@
         </h2>
 
         <!-- Desktop View - Table -->
-        <div class="hidden md:block overflow-x-auto">
+        <div class="hidden md:block overflow-x-auto pb-20">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
@@ -114,24 +114,70 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $history->created_at->format('d M Y') }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                @if ($history->status === 'Applied' && $history->attachment == null)
-                                    <button wire:click="showUploadModal({{ $history->id }})" class="text-blue-600 hover:text-blue-900 text-xs font-medium">
-                                        <i class="fas fa-upload mr-1"></i>
-                                        Upload Bukti
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
+                                <div x-data="{ open: false }" class="inline-block text-left">
+                                    <!-- Tombol tiga titik -->
+                                    <button @click="open = !open" class="text-gray-600 hover:text-gray-800">
+                                        <i class="fas fa-ellipsis-v"></i>
                                     </button>
-                                @elseif($history->attachment)
-                                    <button wire:click="showAttachmentModal({{ $history->id }})" class="text-green-600 hover:text-green-900 text-xs font-medium">
-                                        <i class="fas fa-eye mr-1"></i>
-                                        Lihat Bukti
-                                    </button>
-                                @else
-                                    <span class="text-gray-500 text-xs">
-                                        <i class="fas fa-info-circle mr-1"></i>
-                                        Menunggu persetujuan
-                                    </span>
-                                @endif
-                            </td>
+                            
+                                    <!-- Dropdown Aksi -->
+                                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
+                                        <ul class="py-1 text-sm text-gray-700">
+                                            {{-- @if ($history->status === 'Applied' && $history->attachment == null)
+                                                <button wire:click="showUploadModal({{ $history->id }})" class="text-blue-600 hover:text-blue-900 text-xs font-medium">
+                                                    <i class="fas fa-upload mr-1"></i>
+                                                    Upload Bukti
+                                                </button>
+                                            @elseif($history->attachment)
+                                                <button wire:click="showAttachmentModal({{ $history->id }})" class="text-green-600 hover:text-green-900 text-xs font-medium">
+                                                    <i class="fas fa-eye mr-1"></i>
+                                                    Lihat Bukti
+                                                </button>
+                                            @else
+                                                <span class="text-gray-500 text-xs">
+                                                    <i class="fas fa-info-circle mr-1"></i>
+                                                    Menunggu persetujuan
+                                                </span>
+                                            @endif
+                                            <button wire:click="showUpdateViewModal({{ $history->id }})" class="text-purple-600 hover:text-purple-900 text-xs font-medium">
+                                                <i class="fas fa-chart-line mr-1"></i>
+                                                Update View
+                                            </button> --}}
+
+
+                                            @if ($history->status === 'Applied' && $history->attachment == null)
+                                                <li>
+                                                    <button wire:click="showUploadModal({{ $history->id }})" class="block px-4 py-2 hover:bg-gray-100 w-full text-left">
+                                                        <i class="fas fa-upload mr-1"></i> Upload Bukti
+                                                    </button>
+                                                </li>
+                                            @elseif($history->attachment)
+                                                <li>
+                                                    <button wire:click="showAttachmentModal({{ $history->id }})" class="block px-4 py-2 hover:bg-gray-100 w-full text-left">
+                                                        <i class="fas fa-eye mr-1"></i> Lihat Bukti
+                                                    </button>
+                                                </li>
+                                            @else
+                                                <li>
+                                                    <span class="text-gray-500 text-xs">
+                                                        <i class="fas fa-info-circle mr-1"></i>
+                                                        Menunggu persetujuan
+                                                    </span>
+                                                </li>
+                                            @endif
+
+                                            @if($history->job->platform->value === 'WhatsApp' && $history->job->type->value === 'Posting')
+                                                <li>
+                                                    <button wire:click="showUpdateViewModal({{ $history->id }})" class="block px-4 py-2 hover:bg-gray-100 w-full text-left">
+                                                        <i class="fas fa-chart-line mr-1"></i> Update View
+                                                    </button>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>                            
                         </tr>
 
                         <!-- Modal Lihat Bukti -->
@@ -203,7 +249,23 @@
                 </div>
             </div>
 
-            
+            <div x-data="{ open: @entangle('showUpdateView') }" x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Update Jumlah View</h3>
+                    <form wire:submit.prevent="updateView">
+                        <div class="mb-4">
+                            <label for="views" class="block text-sm font-medium text-gray-700">Jumlah View Terbaru</label>
+                            <input type="number" id="views" wire:model="views" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md" min="0" value="{{ $views }}">
+                            @error('views') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                
+                        <div class="flex justify-end gap-2">
+                            <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Batal</button>
+                            <button type="submit" class="px-4 py-2 text-white bg-purple-600 rounded-md">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- Mobile View - Cards -->
             <div class="md:hidden space-y-4">
@@ -322,6 +384,16 @@
                                     <i class="fas fa-info-circle mr-1"></i>
                                     Menunggu persetujuan
                                 </span>
+                            @endif
+
+                            @if($history->job->platform->value === 'WhatsApp' && $history->job->type->value === 'Posting')
+                                <div class="mt-3 text-center">
+                                    <button wire:click="showUpdateViewModal({{ $history->id }})"
+                                        class="inline-flex items-center text-purple-600 hover:text-purple-900 text-sm font-medium">
+                                        <i class="fas fa-chart-line mr-1"></i>
+                                        Update View
+                                    </button>
+                                </div>
                             @endif
                         </div>
                     </div>

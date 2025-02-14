@@ -13,7 +13,7 @@ class JobParticipant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['job_id', 'user_id', 'status', 'reward', 'attachment'];
+    protected $fillable = ['job_id', 'user_id', 'status', 'reward', 'attachment', 'views'];
 
     public function job(): BelongsTo
     {
