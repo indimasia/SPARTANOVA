@@ -195,7 +195,17 @@
 
                             <!-- Referral Code -->
                             <div class="group">
-                                <label for="referred_by" class="block text-sm font-medium text-gray-700">Kode Referral</label>
+                                <div class="flex justify-between items-center">
+                                    <!-- Label di kiri -->
+                                    <label for="referred_by" class="block text-sm font-medium text-gray-700">
+                                        Kode Referral
+                                    </label>
+                            
+                                    <!-- Informasi di kanan -->
+                                    <p class="text-xs text-red-500">
+                                        Kosongkan jika tidak ada kode referral.
+                                    </p>
+                                </div>
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-user-tag text-gray-400 group-hover:text-blue-500 transition-colors duration-200"></i>
