@@ -16,5 +16,17 @@ class ConversionRate extends Model
             }
         });
     }
+
+    public static function pointToRupiah($points)
+    {
+        $conversionRate = self::first();
+        return $points * $conversionRate->conversion_rate;
+    }
+
+    public static function rupiahToPoint($rupiah)
+    {
+        $conversionRate = self::first();
+        return $rupiah / $conversionRate->conversion_rate;
+    }
     
 }

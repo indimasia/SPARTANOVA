@@ -110,7 +110,7 @@
                                         {{ $campaign->type->value }}
                                     </span>
                                     <span class="text-sm font-semibold text-gray-900">
-                                        Rp {{ number_format($packageRate, 0, ',', '.') }}
+                                        {{ $packageRate }} Poin
                                     </span>
                                 </div>
 

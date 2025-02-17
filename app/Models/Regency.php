@@ -34,6 +34,9 @@ class Regency extends Model
 
     public static function getRegencyName($specific_regency)
     {
+        if (empty($specific_regency)) {
+            return null;
+        }
         return self::whereIn('kode', $specific_regency)->pluck('nama')->toArray();
     }
 

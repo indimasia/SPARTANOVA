@@ -49,24 +49,21 @@ class CreateJob extends CreateRecord
             $jobDetail->save();
         }
 
-        $packageRate = PackageRate::where('type', $data['type'])->pluck('price')->first();
-        $totalPackageRate = $packageRate * $data['quota'];
-
+        
         $incrementPercentage = 0;
         if (!empty($data['gender'])) $incrementPercentage += 10;
         if (!empty($data['generation'])) $incrementPercentage += 10;
         if (!empty($data['interest'])) $incrementPercentage += 10;
-
+        
         if (!empty($data['province_kode']) || !empty($data['regency_kode']) || !empty($data['district_kode']) || !empty($data['village_kode'])) {
             $incrementPercentage += 10;
         }
+        $packageRate = PackageRate::where('type', $data['type'])->pluck('price')->first();
+        $totalPackageRate = $packageRate * $data['quota'];
 
-        $totalPackageRate += ($totalPackageRate * $incrementPercentage / 100);
-
-        $conversionRate = ConversionRate::pluck('conversion_rate')->first();
-        $pointOut = $totalPackageRate / $conversionRate;
+        
         $point = Wallet::where('user_id', Auth::id())->first();
-        $point->total_points -= $pointOut;
+        $point->total_points -= $totalPackageRate;
         $point->save();
 
         $imagePath = session('temporary_image_path');

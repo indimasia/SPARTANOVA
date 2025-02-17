@@ -26,7 +26,8 @@ class PackageRate extends Model
             if ($package !== PackageEnum::LAINNYA->value) {
                 $price = $type ? self::where('type', $type)->pluck('price')->first() : 0;
                 $rate = $package * $price;
-                $packageName = $package . ' Pasukan - Rp. ' . number_format($rate, 0, ',', '.');
+                $rupiah = ConversionRate::pointToRupiah($rate);
+                $packageName = $package . ' Pasukan - Poin ' . $rate . ' - Rp. ' . number_format($rupiah, 0, ',', '.');
             }
             else{
                 $packageName = '>10.000 Pasukan';

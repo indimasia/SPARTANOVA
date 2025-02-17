@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('conversion_rates', function (Blueprint $table) {
             $table->id();
-            $table->decimal('rupiah_amount', 10, 2);
+            $table->decimal('rupiah_amount', 10);
             $table->integer('points_amount');
             $table->decimal('conversion_rate', 10, 4);
             $table->timestamps();

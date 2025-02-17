@@ -44,6 +44,9 @@ class District extends Model
 
     public static function getDistrictName($specific_district)
     {
+        if (empty($specific_district)) {
+            return null;
+        }
         return self::whereIn('kode', $specific_district)->pluck('nama')->toArray();
     }
 }

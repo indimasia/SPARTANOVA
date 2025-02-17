@@ -48,6 +48,9 @@ class Village extends Model
 
     public static function getVillageName($specific_village)
     {
+        if (empty($specific_village)) {
+            return null;
+        }
         return self::whereIn('kode', $specific_village)->pluck('nama')->toArray();
     }
 }
