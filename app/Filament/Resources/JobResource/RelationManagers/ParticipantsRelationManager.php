@@ -11,6 +11,7 @@ use App\Models\PackageRate;
 use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
 use App\Models\UserPerformance;
+use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Infolist;
 use Illuminate\Support\Facades\URL;
 use Filament\Notifications\Notification;
@@ -53,15 +54,15 @@ class ParticipantsRelationManager extends RelationManager
                     ->size(100)
                     ->getStateUsing(fn ($record) => $record->attachment 
                         ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
-                        : null)
-                    ->extraAttributes(fn ($record) => [
-                        'class' => 'cursor-pointer',
-                        'onclick' => "window.open('".(
-                            $record->attachment 
-                                ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
-                                : 'https://placehold.co/800x800?text=Belum+Upload'
-                        )."', '_blank')"
-                    ]),
+                        : null),
+                    // ->extraAttributes(fn ($record) => [
+                    //     'class' => 'cursor-pointer',
+                    //     'onclick' => "window.open('".(
+                    //         $record->attachment 
+                    //             ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
+                    //             : 'https://placehold.co/800x800?text=Belum+Upload'
+                    //     )."', '_blank')"
+                    // ]),
 
                 
                 Tables\Columns\TextColumn::make('status')
@@ -216,28 +217,41 @@ class ParticipantsRelationManager extends RelationManager
                 ]),
             ]);
     }
-    // public function infolist(Infolist $infolist): Infolist
-    // {
-    //     return $infolist
-    //         ->schema([
-    //          TextEntry::make('user.name')
-    //                 ->label('Name')
-    //                 ->columnSpanFull(),
-    //             TextEntry::make('user.location')
-    //                 ->default(fn($record) => User::getUserLocation($record->user->latitude, $record->user->longitude)['display_name'] ?? 'Lokasi')
-    //                 ->label('Lokasi')
-    //                 ->columnSpanFull(),
+    public function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
 
-    //             ImageEntry::make('attachment')
-    //                 ->disk('attachments')
-    //                 ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
-    //                 ->extraImgAttributes([
-    //                     'alt' => 'Foto Bukti Pengerjaan',
-    //                     'loading' => 'lazy',
-    //                 ])
-    //                 ->label('Bukti Pengerjaan')
-    //                 ->columnSpanFull(),
-    //         ]);
-    // }
+        
+            ->schema([
+            //  TextEntry::make('user.name')
+            //         ->label('Name')
+            //         ->columnSpanFull(),
+            //     TextEntry::make('user.location')
+            //         ->default(fn($record) => User::getUserLocation($record->user->latitude, $record->user->longitude)['display_name'] ?? 'Lokasi')
+            //         ->label('Lokasi')
+            //         ->columnSpanFull(),
+
+
+            
+                ImageEntry::make('attachment')
+                    ->disk('r2')
+                    ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
+                    // ->maxWidth(600)
+                    // ->size(700)
+
+                    ->getStateUsing(fn ($record) => $record->attachment 
+                        ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
+                        : null)
+                    ->extraImgAttributes([
+                        'alt' => 'Foto Bukti Pengerjaan',
+                        'loading' => 'lazy',
+                        'style' => 'max-width:100%; height:auto; margin-inline: auto;',
+                        'class' => 'rounded-2xl '
+                    ])
+                    ->columnSpanFull()
+                    ->label('Bukti Pengerjaan')
+
+                    ])->columns(1);
+    }
 }
 
