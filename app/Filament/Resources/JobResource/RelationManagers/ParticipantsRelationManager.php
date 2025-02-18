@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use App\Models\PackageRate;
 use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
+use Filament\Tables\Actions\Action;
 use App\Models\UserPerformance;
 use Filament\Infolists\Infolist;
 use Illuminate\Support\Facades\URL;
@@ -56,12 +57,12 @@ class ParticipantsRelationManager extends RelationManager
                         : null)
                     ->extraAttributes(fn ($record) => [
                         'class' => 'cursor-pointer',
-                        'onclick' => "window.open('".(
+                        'wire:click' => "\$dispatch('open-modal', { image: '".(
                             $record->attachment 
                                 ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
                                 : 'https://placehold.co/800x800?text=Belum+Upload'
-                        )."', '_blank')"
-                    ]),
+                        )."' })"
+                    ]),  
 
                 
                 Tables\Columns\TextColumn::make('status')
@@ -216,28 +217,24 @@ class ParticipantsRelationManager extends RelationManager
                 ]),
             ]);
     }
-    // public function infolist(Infolist $infolist): Infolist
-    // {
-    //     return $infolist
-    //         ->schema([
-    //          TextEntry::make('user.name')
-    //                 ->label('Name')
-    //                 ->columnSpanFull(),
-    //             TextEntry::make('user.location')
-    //                 ->default(fn($record) => User::getUserLocation($record->user->latitude, $record->user->longitude)['display_name'] ?? 'Lokasi')
-    //                 ->label('Lokasi')
-    //                 ->columnSpanFull(),
 
-    //             ImageEntry::make('attachment')
-    //                 ->disk('attachments')
-    //                 ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
-    //                 ->extraImgAttributes([
-    //                     'alt' => 'Foto Bukti Pengerjaan',
-    //                     'loading' => 'lazy',
-    //                 ])
-    //                 ->label('Bukti Pengerjaan')
-    //                 ->columnSpanFull(),
-    //         ]);
-    // }
+    public function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                ImageEntry::make('attachment')
+                    ->disk('r2')
+                    ->getStateUsing(fn ($record) => $record->attachment 
+                        ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
+                        : null)
+                    ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
+                    ->extraImgAttributes([
+                        'alt' => 'Foto Bukti Pengerjaan',
+                        'loading' => 'lazy',
+                    ])
+                    ->label('Bukti Pengerjaan')
+                    ->columnSpanFull(),
+            ]);
+    }
 }
 

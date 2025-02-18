@@ -134,14 +134,44 @@ class UserResource extends Resource
                 ->badge()
                 ->color(fn($record) => $record->roles->contains('name', 'admin') ? 'warning' : ($record->roles->contains('name', 'pengiklan') ? 'success' : 'info')),
                 Tables\Columns\TextColumn::make('userPerformance.total_reward')
-    ->label('Saldo')
-    ->default(0)
-    ->formatStateUsing(fn($record) => $record->userPerformance->total_reward ?? '0'),
+                ->label('Saldo')
+                ->default(0)
+                ->formatStateUsing(fn($record) => $record->userPerformance->total_reward ?? '0'),
                 Tables\Columns\TextColumn::make('gender')
                 ->state(fn($record) => $record->gender == 'L' ? 'Laki-Laki' : 'Perempuan')
                 ->color(fn($record) => $record->gender == 'L' ? 'warning' : 'danger'),
 
                 Tables\Columns\TextColumn::make('date_of_birth')->date(),
+                Tables\Columns\TextColumn::make('Instagram')
+    ->label('Instagram')
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Instagram')),
+
+Tables\Columns\TextColumn::make('Tiktok')
+    ->label('Tiktok')
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Tiktok')),
+
+Tables\Columns\TextColumn::make('Youtube')
+    ->label('Youtube')
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Youtube')),
+
+Tables\Columns\TextColumn::make('Facebook')
+    ->label('Facebook')
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Facebook')),
+
+Tables\Columns\TextColumn::make('Twitter')
+    ->label('Twitter')
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Twitter')),
+
+Tables\Columns\TextColumn::make('Google')
+    ->label('Google')
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Google')),
+
+Tables\Columns\TextColumn::make('Whatsapp')
+    ->label('Whatsapp')
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Whatsapp')),
+
+
+                
                 Tables\Columns\TextColumn::make('status')
                 ->getStateUsing(fn($record) => match($record?->status) {
                     UserStatusEnum::ACTIVE->value => 'aktif',

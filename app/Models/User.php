@@ -147,4 +147,10 @@ class User extends Authenticatable implements FilamentUser
         ])->get($url);
         return $response->json();
     }
+
+    public function getSocialMediaUsername($platform)
+    {
+        return $this->sosialMediaAccounts->where('sosial_media', $platform)->first()?->account ?? 'Tidak punya akun';
+    }
+
 }
