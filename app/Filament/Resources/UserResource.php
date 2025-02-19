@@ -13,13 +13,14 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Enums\UserStatusEnum;
 use Filament\Resources\Resource;
+use App\Models\SosialMediaAccount;
+use Filament\Support\Colors\Color;
 use Illuminate\Support\Collection;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
-use Filament\Support\Colors\Color;
 
 class UserResource extends Resource
 {
@@ -98,7 +99,7 @@ class UserResource extends Resource
                     ->searchable()
                     ->options(function(Get $get){
                         return District::where('regency_kode', $get('regency_kode'))->whereNotNull(['nama','kode'])
-                            ->pluck('nama', 'kode');
+                            ->pluck('nama', 'kode');            
                     })
                     ->live()
                     ->required(),
@@ -112,6 +113,35 @@ class UserResource extends Resource
                     })
                     ->live()
                     ->required(),
+                    Forms\Components\TextInput::make('instagram')
+                    ->label('Instagram')
+                    ->maxLength(225)
+                    ->hint('Kosongkan jika tidak memiliki akun Instagram'),
+                    Forms\Components\TextInput::make('tiktok')
+                    ->label('Tiktok')
+                    ->maxLength(225)
+                    ->hint('Kosongkan jika tidak memiliki akun Toktok'),
+                    Forms\Components\TextInput::make('youtube')
+                    ->label('Youtube')
+                    ->maxLength(225)
+                    ->hint('Kosongkan jika tidak memiliki akun Youtube'),
+                    Forms\Components\TextInput::make('facebook')
+                    ->label('Facebook')
+                    ->maxLength(225)
+                    ->hint('Kosongkan jika tidak memiliki akun Facebook'),
+                    Forms\Components\TextInput::make('twitter')
+                    ->label('Twitter')
+                    ->maxLength(225)
+                    ->hint('Kosongkan jika tidak memiliki akun Twitter'),
+                    Forms\Components\TextInput::make('google')
+                    ->label('Goggle')
+                    ->maxLength(225)
+                    ->hint('Kosongkan jika tidak memiliki akun Goggle'),
+                    Forms\Components\TextInput::make('whatsapp')
+                    ->label('WhatsApp')
+                    ->tel()
+                    ->telRegex('/^(\+62|62|0)8[1-9][0-9]{6,10}$|^\+?[1-9][0-9\s\-\(\)]{6,20}$/')
+                    ->hint('Kosongkan jika tidak memiliki akun Goggle'),
             ]);
     }
 
@@ -148,7 +178,7 @@ class UserResource extends Resource
 
 Tables\Columns\TextColumn::make('Tiktok')
     ->label('Tiktok')
-    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Tiktok')),
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('TikTok')),
 
 Tables\Columns\TextColumn::make('Youtube')
     ->label('Youtube')
@@ -168,7 +198,7 @@ Tables\Columns\TextColumn::make('Google')
 
 Tables\Columns\TextColumn::make('Whatsapp')
     ->label('Whatsapp')
-    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('Whatsapp')),
+    ->getStateUsing(fn($record) => $record->getSocialMediaUsername('WhatsApp')),
 
 
                 
