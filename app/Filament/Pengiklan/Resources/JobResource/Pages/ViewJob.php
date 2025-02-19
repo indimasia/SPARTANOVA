@@ -24,14 +24,6 @@ class ViewJob extends ViewRecord
                 ->label('Edit Job')
                 ->icon('heroicon-o-pencil')
                 ->color('primary'),
-            Action::make('Export Excel')
-                ->label('Export Excel')
-                ->color('success')
-                ->action(fn ($record) => Excel::download(new JobExport($record->id), $record->title . '.xlsx')),
-            Action::make('Export PDF')
-                ->label('Export PDF')
-                ->color('primary')
-                ->action(fn ($record) => (new JobPdfExport($record->id))->download()),
         ];
     }
 

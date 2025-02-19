@@ -150,11 +150,13 @@
             <tbody>
                 @foreach ($jobParticipants as $participant)
                     <tr>
+                        {{-- @dd($participant->user->sosialMediaAccounts); --}}
                         <td>{{ $participant->user->name ?? '-' }}</td>
-                        <td>{{ $participant->reward ?? '-' }}</td>
-                        <td>{{ $participant->created_at->format('d-m-Y') ?? '-' }}</td>
-                        <td>{{ $participant->user->gender ?? '-' }}</td>
-                        <td>{{ $participant->user->generation_category ?? '-' }}</td>
+                        <td>{{ $participant->lokasi['county'] ?? '-' }}</td>
+                        <td>{{ $participant->filtered_social_account ?? '-' }}</td>
+                        <td>
+                            image
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

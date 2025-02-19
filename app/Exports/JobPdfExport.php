@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\User;
 use App\Models\Regency;
 use App\Models\Village;
 use App\Models\District;
@@ -10,6 +11,8 @@ use App\Models\JobDetail;
 use App\Models\JobCampaign;
 use App\Models\JobParticipant;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class JobPdfExport
 {
@@ -37,10 +40,39 @@ class JobPdfExport
         $districts = District::getDistrictName($jobDetail->specific_district ?? null);
         $villages = Village::getVillageName($jobDetail->specific_village ?? null);
 
+        $jobParticipants = JobParticipant::where('job_id', $this->id)
+            ->with(['user.sosialMediaAccounts'])
+            ->get()
+            ->map(function ($participant) use ($job) {
+                // Ambil akun sosial media yang sesuai dengan platform job
+                $filteredAccount = $participant->user->sosialMediaAccounts
+                    ->firstWhere('sosial_media', $job->platform->value);
+                $user = User::where('id', $participant->user_id)->first();
+                if ($user->latitude && $user->longitude) {
+                    $lokasi = $this->getLocation($user->latitude, $user->longitude);
+                } else {
+                    $lokasi = '-';
+                }
+                $participant->lokasi = $lokasi;
+
+                // Tambahkan akun sosial media yang difilter ke dalam object user
+                $participant->filtered_social_account = $filteredAccount ? $filteredAccount->account : '-';
+
+                // Tambahkan URL gambar attachment
+                if ($participant->attachment) {
+                    $participant->attachment_url = Storage::disk('r2')->url("{$participant->attachment}");
+                } else {
+                    $participant->attachment_url = null;
+                }
+
+                return $participant;
+            });
+
+
         $data = [
             'job' => $job,
             'jobDetails' => JobDetail::where('job_id', $this->id)->first(),
-            'jobParticipants' => JobParticipant::where('job_id', $this->id)->with('user')->get(),
+            'jobParticipants' => $jobParticipants,
             'jobHeadings' => self::jobHeadings(),
             'jobDetailHeadings' => self::jobDetailHeadings(),
             'jobParticipantHeadings' => self::jobParticipantHeadings(),
@@ -57,6 +89,30 @@ class JobPdfExport
             echo $pdf->stream();
         }, $job->title . '.pdf');
     }
+
+    public function getLocation($latitude, $longitude)
+    {
+        try {
+            $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$latitude}&lon={$longitude}&zoom=18&addressdetails=1";
+
+            $response = Http::withHeaders([
+                'User-Agent' => config('app.name'), // atau gunakan nama aplikasi Anda
+            ])->get($url);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        if ($response->successful()) {
+            $data = $response->json();
+
+            return [
+                'county' => $data['address']['county'] ?? null,
+            ];
+        }
+
+        return null;
+    }
+
 
     private static function jobHeadings(): array
     {
@@ -91,10 +147,9 @@ class JobPdfExport
     {
         return [
             'Nama',
-            'Poin',
-            'Tanggal Bergabung',
-            'Gender',
-            'Generasi',
+            'Lokasi',
+            'Username',
+            'Image',
         ];
     }
 }

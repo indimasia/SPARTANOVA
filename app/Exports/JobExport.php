@@ -65,6 +65,9 @@ class JobExport implements FromArray, WithStyles, WithEvents
         $regencies = Regency::getRegencyName($jobDetail->specific_regency ?? null);
         $districts = District::getDistrictName($jobDetail->specific_district ?? null);
         $villages = Village::getVillageName($jobDetail->specific_village ?? null);
+        $specific_gender = empty($jobDetail->specific_gender) ? null : $jobDetail->specific_gender;
+        $specific_generation = empty($jobDetail->specific_generation) ? null : $jobDetail->specific_generation;
+        $specific_interest = empty($jobDetail->specific_interest) ? null : $jobDetail->specific_interest;
 
         
         if ($jobDetail) {
@@ -74,9 +77,9 @@ class JobExport implements FromArray, WithStyles, WithEvents
                 $jobDetail->description ?? '-',
                 $jobDetail->url_link ?? '-',
                 $jobDetail->caption ?? '-',
-                $jobDetail->specific_gender ?? '-',
-                implode(', ', $jobDetail->specific_generation) ?? '-',
-                implode(', ', $jobDetail->specific_interest) ?? '-',
+                $specific_gender ?? '-',
+                implode(', ', $specific_generation ?? []) ?? '-',
+                implode(', ', $specific_interest ?? []) ?? '-',
                 implode(', ', $provinces ?? []) ?? '-',
                 implode(', ', $regencies ?? []) ?? '-',
                 implode(', ', $districts ?? []) ?? '-',
