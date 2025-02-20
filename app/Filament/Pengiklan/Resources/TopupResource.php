@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\URL;
 use Filament\Forms\Components\Radio;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Wizard;
 use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Components\Section;
@@ -34,6 +35,11 @@ class TopupResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->where('user_id', Auth::id());
+    }
 
     public static function form(Form $form): Form
 {
