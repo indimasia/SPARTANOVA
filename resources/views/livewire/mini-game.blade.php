@@ -1,155 +1,131 @@
-<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-orange-100 to-orange-300 overflow-hidden relative">
-    <!-- Animated background elements -->
-    <div class="absolute inset-0 overflow-hidden">
-        @for ($i = 0; $i < 20; $i++)
-            <div class="absolute animate-float" style="
-                left: {{ rand(0, 100) }}%;
-                top: {{ rand(0, 100) }}%;
-                animation-delay: {{ $i * 0.5 }}s;
-                animation-duration: {{ rand(10, 20) }}s;
-            ">
-                <i class="fas fa-gamepad text-orange-400 opacity-20 text-{{ rand(3, 6) }}xl"></i>
+<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-orange-100 to-orange-300 overflow-hidden relative flex-col">
+    <h1 class="text-4xl md:text-6xl font-bold text-orange-800 mb-6 animate-pulse">
+        Gacha Box 🎁✨
+    </h1>
+    <p class="text-xl md:text-2xl text-orange-700 mb-8 animate-bounce">
+        Klik salah satu box untuk membuka hadiahmu!
+    </p>
+
+    <!-- Grid Gacha Boxes -->
+    <div class="grid grid-cols-3 md:grid-cols-4 gap-6">
+        <script>
+            let prizes = [
+                { name: "🎉 Jackpot!", img: "https://via.placeholder.com/150/ffcc00/000000?text=Jackpot!" },
+                { name: "💰 100 Coins", img: "https://via.placeholder.com/150/FFD700/000000?text=100+Coins" },
+                { name: "🎮 New Skin", img: "https://via.placeholder.com/150/4CAF50/ffffff?text=New+Skin" },
+                { name: "🎟️ Shopping Ticket", img: "https://via.placeholder.com/150/ff4500/ffffff?text=Shopping+Ticket" },
+                { name: "⭐ Lucky Star", img: "https://via.placeholder.com/150/1E90FF/ffffff?text=Lucky+Star" },
+                { name: "🔥 Power Boost", img: "https://via.placeholder.com/150/DC143C/ffffff?text=Power+Boost" }
+            ];
+        </script>
+        @for ($i = 0; $i < 12; $i++)
+            <div class="gacha-box group relative cursor-pointer w-28 h-28 md:w-32 md:h-32 flex items-center justify-center bg-orange-500 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+                 onclick="openBox(this)">
+                <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-50 group-hover:opacity-70 rounded-lg"></div>
+                <span class="text-white text-2xl font-bold relative z-10">🎁</span>
+                <div class="absolute inset-0 flex items-center justify-center bg-white text-orange-800 text-lg font-semibold opacity-0 transition duration-500 rounded-lg hidden">
+                    <span class="prize-text">?</span>
+                </div>
             </div>
         @endfor
     </div>
 
-    <!-- Animated gamer -->
-    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-8">
-        <div class="gamer">
-            <div class="head"></div>
-            <div class="body"></div>
-            <div class="arms">
-                <div class="arm left"></div>
-                <div class="arm right"></div>
-            </div>
-            <div class="legs">
-                <div class="leg left"></div>
-                <div class="leg right"></div>
-            </div>
-            <div class="controller"></div>
+    <!-- Modal Hadiah -->
+    <div id="prize-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center transform scale-0 transition-transform duration-300">
+            <h2 class="text-2xl font-bold text-orange-700 mb-4">🎁 Selamat! Kamu mendapatkan:</h2>
+            <img id="prize-image" src="" alt="Hadiah" class="mx-auto w-40 h-40 mb-4 rounded-md shadow-lg">
+            <p id="prize-text" class="text-lg font-semibold text-orange-800"></p>
+            <button onclick="closePrizeModal()" class="mt-4 px-4 py-2 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700 transition">Tutup</button>
         </div>
     </div>
 
-    <div class="text-center z-10">
-        <h1 class="text-4xl md:text-6xl font-bold text-orange-800 mb-4 animate-pulse">
-            Mini Game Coming Soon!
-        </h1>
-        <p class="text-xl md:text-2xl text-orange-700 mb-8 animate-bounce">
-            We're working hard to bring you an exciting new mini game. Stay tuned!
-        </p>
-        <div class="flex justify-center space-x-4 mb-8">
-            <div class="flex items-center text-orange-800 animate-pulse">
-                <i class="fas fa-clock mr-2"></i>
-                <span>Launch Date: TBA</span>
-            </div>
-            <div class="flex items-center text-orange-800 animate-pulse">
-                <i class="fas fa-rocket mr-2"></i>
-                <span>Get Ready for Fun!</span>
-            </div>
-        </div>
-        <div class="w-16 h-16 mx-auto mb-8 border-4 border-orange-600 border-t-orange-300 rounded-full animate-spin"></div>
-        
-        @if (session()->has('message'))
-            <div class="mb-4 text-green-600 font-semibold animate-fade-in-down">
-                {{ session('message') }}
-            </div>
-        @endif
-
-        <form wire:submit.prevent="notifyMe" class="mb-4">
-            <input type="email" wire:model="email" placeholder="Enter your email" 
-                   class="px-4 py-2 border border-orange-400 rounded-l-md focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent">
-            <button type="submit" 
-                    class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-r-md transition duration-300 animate-pulse">
-                Notify Me
-            </button>
-        </form>
-        @error('email') <span class="text-red-600 text-sm animate-shake">{{ $message }}</span> @enderror
+    <!-- Confetti Animation -->
+    <div id="confetti" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
+        <canvas id="confettiCanvas"></canvas>
     </div>
-    <style>
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-            100% { transform: translateY(0px) rotate(360deg); }
-        }
-        @keyframes fade-in-down {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        .animate-float { animation: float 15s infinite; }
-        .animate-fade-in-down { animation: fade-in-down 0.5s ease-out; }
-        .animate-shake { animation: shake 0.5s ease-in-out; }
-    
-        /* Gamer animation styles */
-        .gamer {
-            width: 100px;
-            height: 150px;
-            position: relative;
-        }
-        .gamer .head {
-            width: 40px;
-            height: 40px;
-            background-color: #FFA500;
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 30px;
-        }
-        .gamer .body {
-            width: 60px;
-            height: 70px;
-            background-color: #FF8C00;
-            position: absolute;
-            top: 40px;
-            left: 20px;
-        }
-        .gamer .arm {
-            width: 20px;
-            height: 50px;
-            background-color: #FFA500;
-            position: absolute;
-            top: 50px;
-        }
-        .gamer .arm.left {
-            left: 0;
-            animation: move-left-arm 0.5s infinite alternate;
-        }
-        .gamer .arm.right {
-            right: 0;
-            animation: move-right-arm 0.5s infinite alternate;
-        }
-        .gamer .leg {
-            width: 20px;
-            height: 50px;
-            background-color: #FF8C00;
-            position: absolute;
-            bottom: 0;
-        }
-        .gamer .leg.left { left: 20px; }
-        .gamer .leg.right { right: 20px; }
-        .gamer .controller {
-            width: 60px;
-            height: 30px;
-            background-color: #333;
-            position: absolute;
-            bottom: 60px;
-            left: 20px;
-            border-radius: 5px;
-        }
-    
-        @keyframes move-left-arm {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(-15deg); }
-        }
-        @keyframes move-right-arm {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(15deg); }
-        }
-    </style>
 
-</div>    
+    <script>
+        function openBox(box) {
+            if (box.classList.contains("opened")) return; // Cegah buka ulang
 
+            box.classList.add("opened");
+            let prizeElement = box.querySelector(".prize-text");
+            let prizeContainer = box.querySelector(".absolute.inset-0");
+            let randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+
+            // Animasi flip
+            box.style.transition = "transform 0.8s";
+            box.style.transform = "rotateY(180deg)";
+
+            setTimeout(() => {
+                prizeElement.innerText = randomPrize.name;
+                prizeContainer.classList.remove("hidden");
+                prizeContainer.style.opacity = "1";
+
+                // Tampilkan hadiah di modal
+                showPrize(randomPrize.name, randomPrize.img);
+
+                // Tampilkan confetti
+                showConfetti();
+            }, 800);
+        }
+
+        function showPrize(name, image) {
+            let modal = document.getElementById("prize-modal");
+            let modalBox = modal.querySelector("div");
+            document.getElementById("prize-text").innerText = name;
+            document.getElementById("prize-image").src = image;
+
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modalBox.classList.remove("scale-0");
+                modalBox.classList.add("scale-100");
+            }, 50);
+        }
+
+        function closePrizeModal() {
+            let modal = document.getElementById("prize-modal");
+            let modalBox = modal.querySelector("div");
+            modalBox.classList.remove("scale-100");
+            modalBox.classList.add("scale-0");
+            setTimeout(() => modal.classList.add("hidden"), 300);
+        }
+
+        function showConfetti() {
+            document.getElementById("confetti").classList.remove("hidden");
+            let canvas = document.getElementById("confettiCanvas");
+            let ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let confettiPieces = [];
+            for (let i = 0; i < 100; i++) {
+                confettiPieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 20 + 10,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                    velocity: Math.random() * 3 + 2
+                });
+            }
+
+            function drawConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confettiPieces.forEach(piece => {
+                    ctx.fillStyle = piece.color;
+                    ctx.fillRect(piece.x, piece.y, piece.w, piece.h);
+                    piece.y += piece.velocity;
+                    if (piece.y > canvas.height) piece.y = 0;
+                });
+                requestAnimationFrame(drawConfetti);
+            }
+            drawConfetti();
+
+            setTimeout(() => {
+                document.getElementById("confetti").classList.add("hidden");
+            }, 3000);
+        }
+    </script>
+</div>

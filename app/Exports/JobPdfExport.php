@@ -11,6 +11,7 @@ use App\Models\JobDetail;
 use App\Models\JobCampaign;
 use App\Models\JobParticipant;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
@@ -55,19 +56,37 @@ class JobPdfExport
                 }
                 $participant->lokasi = $lokasi;
 
+                // dd($participant->attachment);
+
+                
+
                 // Tambahkan akun sosial media yang difilter ke dalam object user
                 $participant->filtered_social_account = $filteredAccount ? $filteredAccount->account : '-';
 
-                // Tambahkan URL gambar attachment
                 if ($participant->attachment) {
-                    $participant->attachment_url = Storage::disk('r2')->url("{$participant->attachment}");
+                    // Ambil file dari R2
+                    $imageContent = Storage::disk('r2')->get($participant->attachment);
+                    
+                    // Path penyimpanan di folder public/export/
+                    $localPath = 'export/' . basename($participant->attachment);
+                    $destinationPath = public_path($localPath);
+                
+                    // Pastikan folder 'export' ada di public/
+                    if (!File::exists(public_path('export'))) {
+                        File::makeDirectory(public_path('export'), 0755, true);
+                    }
+                
+                    // Simpan file ke public/
+                    File::put($destinationPath, $imageContent);
+                
+                    // Simpan path baru untuk digunakan di Blade
+                    $participant->attachment_url = asset($localPath);
                 } else {
                     $participant->attachment_url = null;
                 }
 
                 return $participant;
             });
-
 
         $data = [
             'job' => $job,
