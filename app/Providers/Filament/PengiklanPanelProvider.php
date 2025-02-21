@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pengiklan\Widgets\Announcement;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -47,6 +48,7 @@ class PengiklanPanelProvider extends PanelProvider
                 spartavTag::class,
                 // Widgets\FilamentInfoWidget::class,
                 DataJobWidget::class,
+                Announcement::class
             ])
             ->middleware([
                 EncryptCookies::class,

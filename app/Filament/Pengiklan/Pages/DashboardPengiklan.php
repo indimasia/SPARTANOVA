@@ -42,7 +42,9 @@ class DashboardPengiklan extends Page
      */
     public function getWidgets(): array
     {
-        return Filament::getWidgets();
+        return array_merge(
+            Filament::getWidgets()
+            );
     }
 
     /**
