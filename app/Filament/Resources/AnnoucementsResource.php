@@ -48,7 +48,8 @@ class AnnoucementsResource extends Resource
                     'pengiklan' => 'pengiklan',
                     'pasukan' => 'pasukan',
                     'both' => 'both'
-                ]),
+                ])
+                ->required(),
                 DateTimePicker::make('start_date')
                 ->nullable(),
                 DateTimePicker::make('end_date')

@@ -69,7 +69,8 @@
 
                     <!-- Job Details -->
                     @if ($jobDetail)
-                        @if ($jobDetail->image)
+                        @if (!empty($jobDetail->image) )
+                        
                         <div class="mb-10">
                             <div class="relative w-full" style="padding-top: 40%;">
                                 <img 
@@ -79,6 +80,20 @@
                                 >
                             </div>
                         </div>
+
+                        
+                        @else
+                            
+                        <div class="mb-10">
+                            <div class="relative w-full" style="padding-top: 40%;">
+                                <img 
+                                    src="https://placehold.co/400x400?text=Tidak+Ada+Gambar" 
+                                    alt="Job Image empty" 
+                                    class="absolute inset-0 w-full h-full object-contain rounded-2xl"
+                                >
+                            </div>
+                        </div>
+
                         @endif
                         @if ($jobDetail->description || $jobDetail->requirements || $selectedJob->instructions)
                             <div class="mb-10 p-6 bg-gray-50 border border-gray-200 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md">
