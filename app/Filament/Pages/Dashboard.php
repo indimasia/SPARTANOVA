@@ -69,7 +69,7 @@ class Dashboard extends Page
     {
         try {
             $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$current_latitude}&lon={$current_longitude}&zoom=18&addressdetails=1";
-                        
+
             $response = Http::withHeaders([
                 'User-Agent' => config('app.name'), // atau gunakan nama aplikasi Anda
             ])->get($url);
@@ -93,7 +93,7 @@ class Dashboard extends Page
     {
         try {
             $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$latitude}&lon={$longitude}&zoom=18&addressdetails=1";
-                        
+
             $response = Http::withHeaders([
                 'User-Agent' => config('app.name'), // atau gunakan nama aplikasi Anda
             ])->get($url);
@@ -149,13 +149,13 @@ class Dashboard extends Page
             // Widgets\FilamentInfoWidget::class,
             StatsOverviewWidget::class,
             UserGrowthWidget::class,
+            AdvertiserWidget::class,
             KlasifikasiPasukanWidget::class,
             AdvertiserTable::class,
             JobTypeStatsWidget::class,
             AgePasukanChart::class,
             GenderOverview::class,
             InterestPasukanChart::class,
-            AdvertiserWidget::class,
             // UserPasukanPerProvinsi::class,
         ];
     }
