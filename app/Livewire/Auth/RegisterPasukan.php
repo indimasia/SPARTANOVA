@@ -12,6 +12,7 @@ use App\Enums\PlatformEnum;
 use Illuminate\Support\Str;
 use App\Enums\UserStatusEnum;
 use App\Models\SosialMediaAccount;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -139,6 +140,27 @@ class RegisterPasukan extends Component
                 'longitude.required' => 'Longitude harus diisi.',
                 'referred_by.exists' => 'Kode referral tidak valid.',
             ]);
+
+            $errors = [];
+
+            if (!empty($validated['social_media'])) {
+                foreach ($validated['social_media'] as $platform => $account) {
+                    if (!empty($account) && !in_array($account, ['Tidak punya akun'])) {
+                        $exists = SosialMediaAccount::where([
+                            ['sosial_media', $platform],
+                            ['account', $account]
+                        ])->exists();
+            
+                        if ($exists) {
+                            $errors["social_media.$platform"] = "Akun '$account' sudah digunakan pada platform '$platform'.";
+                        }
+                    }
+                }
+            }
+            
+            if (!empty($errors)) {
+                throw ValidationException::withMessages($errors);
+            }
         } catch (ValidationException $e) {
             $errorField = array_key_first($e->validator->errors()->toArray());
             $this->js(<<<JS
