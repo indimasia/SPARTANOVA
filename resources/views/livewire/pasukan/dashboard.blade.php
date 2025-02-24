@@ -161,7 +161,6 @@
                                 </button>
                                
                                 <!-- slides -->
-                                <!-- Change min-h-[50svh] to your preferred height size -->
                                 <div class="relative min-h-[50svh] w-full">
                                     <template x-for="(slide, index) in slides">
                                         <div x-cloak x-show="currentSlideIndex == index + 1" class="absolute inset-0" x-transition.opacity.duration.1000ms>
@@ -173,7 +172,7 @@
                                                 </div>
                                                 <!-- body -->
                                                 <div class="flex flex-col  p-6 col-span-5">
-                                                    <small class="mb-4 font-medium">Artificial Intelligence</small>
+                                                    {{-- <small class="mb-4 font-medium">Artificial Intelligence</small> --}}
                                                     <h3 class="text-balance text-xl font-bold text-on-surface-strong lg:text-2xl dark:text-on-surface-dark-strong"   x-text="slide.title" x-bind:aria-describedby="'slide' + (index + 1) + 'Description'" ></h3>
                                                     <p id="articleDescription" class="my-4 max-w-lg text-pretty text-sm" x-text="slide.description" x-bind:id="'slide' + (index + 1) + 'Description'">
                                                     </p>
