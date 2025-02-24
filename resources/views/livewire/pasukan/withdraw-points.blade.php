@@ -100,6 +100,11 @@
                                 </p>
                             </div>
                         </div>
+                    <div class="space-y-3">     
+                                <p class=" text-md font-bold text-gray-600">
+                                    Penarikan akan diproses dalam periode tanggal 1 - 10 setiap bulannya.
+                                </p>
+                        </div>
 
                         <button @click="$wire.submitWithdraw(selectedPoints === 'custom' ? customPoints : selectedPoints)" 
                                 class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
