@@ -97,29 +97,7 @@ class RegisterPasukan extends Component
 
     public function register(): void
     {
-        $errors = [];
-    
-        // Validasi sosial media terlebih dahulu
-        if (!empty($this->social_media)) {
-            foreach ($this->social_media as $platform => $account) {
-                if (!empty($account) && !in_array($account, ['Tidak punya akun'])) {
-                    $exists = SosialMediaAccount::where([
-                        ['sosial_media', $platform],
-                        ['account', $account]
-                    ])->exists();
-    
-                    if ($exists) {
-                        $errors["social_media.$platform"] = "Akun '$account' sudah digunakan pada platform '$platform'.";
-                    }
-                }
-            }
-        }
-    
-        // Jika ada error pada sosial media, langsung lempar error tanpa menunggu validasi lainnya
-        if (!empty($errors)) {
-            throw ValidationException::withMessages($errors);
-        }
-    
+       
         // Validasi utama
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -163,6 +141,30 @@ class RegisterPasukan extends Component
             'longitude.required' => 'Longitude harus diisi.',
             'referred_by.exists' => 'Kode referral tidak valid.',
         ]);
+
+        $errors = [];
+    
+        // Validasi sosial media terlebih dahulu
+        if (!empty($this->social_media)) {
+            foreach ($this->social_media as $platform => $account) {
+                if (!empty($account) && !in_array($account, ['Tidak punya akun'])) {
+                    $exists = SosialMediaAccount::where([
+                        ['sosial_media', $platform],
+                        ['account', $account]
+                    ])->exists();
+    
+                    if ($exists) {
+                        $errors["social_media.$platform"] = "Akun '$account' sudah digunakan pada platform '$platform'.";
+                    }
+                }
+            }
+        }
+    
+        // Jika ada error pada sosial media, langsung lempar error tanpa menunggu validasi lainnya
+        if (!empty($errors)) {
+            throw ValidationException::withMessages($errors);
+        }
+    
     
         // Proses pendaftaran user setelah validasi berhasil
         $validated['status'] = UserStatusEnum::PENDING->value;
