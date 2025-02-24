@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Home;
+use App\Models\Reward;
 use App\Livewire\Topup;
 use App\Livewire\MiniGame;
 use App\Livewire\ArticleList;
@@ -28,6 +29,9 @@ Route::get('pasukan/register/{referred_by}', RegisterPasukan::class)->name('regi
 Route::get('storage/{filename}', [StorageController::class, 'fetchFile'])
     ->where('filename', '.*')
     ->name('storage.fetch');
+Route::get('/rewards', function () {
+    return Reward::where('status', 'available')->get();
+});
 
 
 Route::middleware([PasukanMiddleware::class])->group(

@@ -1,131 +1,131 @@
-<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-orange-100 to-orange-300 overflow-hidden relative flex-col">
-    <h1 class="text-4xl md:text-6xl font-bold text-orange-800 mb-6 animate-pulse">
-        Gacha Box 🎁✨
-    </h1>
-    <p class="text-xl md:text-2xl text-orange-700 mb-8 animate-bounce">
-        Klik salah satu box untuk membuka hadiahmu!
-    </p>
+<div>
+    <div class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 overflow-hidden">
+        <div id="particles-js" class="absolute inset-0 z-0"></div>
 
-    <!-- Grid Gacha Boxes -->
-    <div class="grid grid-cols-3 md:grid-cols-4 gap-6">
-        <script>
-            let prizes = [
-                { name: "🎉 Jackpot!", img: "https://via.placeholder.com/150/ffcc00/000000?text=Jackpot!" },
-                { name: "💰 100 Coins", img: "https://via.placeholder.com/150/FFD700/000000?text=100+Coins" },
-                { name: "🎮 New Skin", img: "https://via.placeholder.com/150/4CAF50/ffffff?text=New+Skin" },
-                { name: "🎟️ Shopping Ticket", img: "https://via.placeholder.com/150/ff4500/ffffff?text=Shopping+Ticket" },
-                { name: "⭐ Lucky Star", img: "https://via.placeholder.com/150/1E90FF/ffffff?text=Lucky+Star" },
-                { name: "🔥 Power Boost", img: "https://via.placeholder.com/150/DC143C/ffffff?text=Power+Boost" }
-            ];
-        </script>
-        @for ($i = 0; $i < 12; $i++)
-            <div class="gacha-box group relative cursor-pointer w-28 h-28 md:w-32 md:h-32 flex items-center justify-center bg-orange-500 rounded-lg shadow-lg transition-transform transform hover:scale-105"
-                 onclick="openBox(this)">
-                <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-50 group-hover:opacity-70 rounded-lg"></div>
-                <span class="text-white text-2xl font-bold relative z-10">🎁</span>
-                <div class="absolute inset-0 flex items-center justify-center bg-white text-orange-800 text-lg font-semibold opacity-0 transition duration-500 rounded-lg hidden">
-                    <span class="prize-text">?</span>
+        <div class="relative z-10 max-w-4xl w-full space-y-8">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white text-center mb-4 drop-shadow-lg">
+                Ultra Modern Gacha 🎁✨
+            </h1>
+            <p class="text-xl md:text-2xl text-white text-center mb-8 drop-shadow">
+                Choose a box to unveil your fortune!
+            </p>
+
+            @if (session()->has('error'))
+                <div class="text-red-500 font-bold text-center">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+
+            <div class="grid grid-cols-3 gap-4 md:gap-6 max-w-lg mx-auto">
+                @for ($i = 0; $i < 9; $i++)
+                    <button wire:click="spin" class="relative w-full aspect-square cursor-pointer overflow-hidden rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:rotate-3">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500"></div>
+                        <div class="absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-white bg-opacity-30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                            </svg>
+                        </div>
+                    </button>
+                @endfor
+            </div>
+        </div>
+
+        <!-- Prize Modal -->
+        @if ($prize)
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 reward-modal">
+                <div class="bg-white bg-opacity-80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl max-w-sm w-full m-4">
+                    <h2 class="text-3xl font-bold text-center mb-4 text-purple-700">
+                        {{ $prize['name'] === 'ZONK' ? 'Better luck next time!' : 'Congratulations! 🎉' }}
+                    </h2>
+                    <div class="flex flex-col items-center">
+                        <img src="{{ $prize['image'] }}" alt="Prize" class="w-48 h-48 object-cover mb-4 rounded-lg shadow-lg">
+                        <p class="text-xl font-semibold text-center text-purple-600 mb-2">
+                            {{ $prize['name'] === 'ZONK' ? 'You got:' : 'You won:' }}
+                        </p>
+                        <p class="text-2xl font-bold text-purple-700 mt-2">
+                            {{ $prize['name'] }}
+                        </p>
+                    </div>
+                    <button wire:click="$set('prize', null)" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        Close
+                    </button>
                 </div>
             </div>
-        @endfor
+        @endif
     </div>
 
-    <!-- Modal Hadiah -->
-    <div id="prize-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center transform scale-0 transition-transform duration-300">
-            <h2 class="text-2xl font-bold text-orange-700 mb-4">🎁 Selamat! Kamu mendapatkan:</h2>
-            <img id="prize-image" src="" alt="Hadiah" class="mx-auto w-40 h-40 mb-4 rounded-md shadow-lg">
-            <p id="prize-text" class="text-lg font-semibold text-orange-800"></p>
-            <button onclick="closePrizeModal()" class="mt-4 px-4 py-2 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700 transition">Tutup</button>
-        </div>
-    </div>
-
-    <!-- Confetti Animation -->
-    <div id="confetti" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
-        <canvas id="confettiCanvas"></canvas>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
     <script>
-        function openBox(box) {
-            if (box.classList.contains("opened")) return; // Cegah buka ulang
+        // Initialize particles.js
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: false },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            retina_detect: true
+        });
+    </script>
+    <script>
+        function startConfetti() {
+            const duration = 5 * 1000,
+                animationEnd = Date.now() + duration,
+                defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
 
-            box.classList.add("opened");
-            let prizeElement = box.querySelector(".prize-text");
-            let prizeContainer = box.querySelector(".absolute.inset-0");
-            let randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
-
-            // Animasi flip
-            box.style.transition = "transform 0.8s";
-            box.style.transform = "rotateY(180deg)";
-
-            setTimeout(() => {
-                prizeElement.innerText = randomPrize.name;
-                prizeContainer.classList.remove("hidden");
-                prizeContainer.style.opacity = "1";
-
-                // Tampilkan hadiah di modal
-                showPrize(randomPrize.name, randomPrize.img);
-
-                // Tampilkan confetti
-                showConfetti();
-            }, 800);
-        }
-
-        function showPrize(name, image) {
-            let modal = document.getElementById("prize-modal");
-            let modalBox = modal.querySelector("div");
-            document.getElementById("prize-text").innerText = name;
-            document.getElementById("prize-image").src = image;
-
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-                modalBox.classList.remove("scale-0");
-                modalBox.classList.add("scale-100");
-            }, 50);
-        }
-
-        function closePrizeModal() {
-            let modal = document.getElementById("prize-modal");
-            let modalBox = modal.querySelector("div");
-            modalBox.classList.remove("scale-100");
-            modalBox.classList.add("scale-0");
-            setTimeout(() => modal.classList.add("hidden"), 300);
-        }
-
-        function showConfetti() {
-            document.getElementById("confetti").classList.remove("hidden");
-            let canvas = document.getElementById("confettiCanvas");
-            let ctx = canvas.getContext("2d");
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            let confettiPieces = [];
-            for (let i = 0; i < 100; i++) {
-                confettiPieces.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    w: Math.random() * 10 + 5,
-                    h: Math.random() * 20 + 10,
-                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-                    velocity: Math.random() * 3 + 2
-                });
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
             }
 
-            function drawConfetti() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                confettiPieces.forEach(piece => {
-                    ctx.fillStyle = piece.color;
-                    ctx.fillRect(piece.x, piece.y, piece.w, piece.h);
-                    piece.y += piece.velocity;
-                    if (piece.y > canvas.height) piece.y = 0;
-                });
-                requestAnimationFrame(drawConfetti);
-            }
-            drawConfetti();
+            const interval = setInterval(function () {
+                const timeLeft = animationEnd - Date.now();
 
-            setTimeout(() => {
-                document.getElementById("confetti").classList.add("hidden");
-            }, 3000);
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                }));
+            }, 250);
         }
+
+        // Listen for changes to the reward-modal
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.classList && node.classList.contains('reward-modal')) {
+                            // Only start confetti if it's not a ZONK prize
+                            if (!document.querySelector('.reward-modal').textContent.includes('Better luck next time!')) {
+                                startConfetti();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     </script>
 </div>
