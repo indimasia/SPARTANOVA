@@ -19,6 +19,18 @@ class WithdrawPoints extends Component
     public $transactions = [];
     public $notification = '';
     public $notificationType = '';
+    public $in_the_name_of = '';
+    public $no_bank_account = '';
+
+    public $bank_account;
+
+    public $isOpen = false;
+
+    public $rules = [
+        'in_the_name_of' => ['required','string','min:3'],
+        'no_bank_account' => ['required','integer','min:8'],
+        'bank_account' => ['required','string','max:255'],
+    ];
 
     protected $listeners = ['refreshTransactions'];
 
@@ -54,6 +66,7 @@ class WithdrawPoints extends Component
 }
 
 
+
     public function setStatusFilter($status)
     {
         $this->statusFilter = $status;
@@ -62,6 +75,45 @@ class WithdrawPoints extends Component
 
     public function submitWithdraw($points)
     {
+        $pointsToWithdraw = $points;
+
+        $validated = $this->validate([
+            'in_the_name_of' => ['required', 'min:3'],
+            'no_bank_account' => ['required', 'min:8'],
+            'bank_account' => 'required',
+        ],[
+            'in_the_name_of.required' => 'Anda harus mengisi atas nama',
+            'in_the_name_of.min' => 'Anda harus mengisi atas nama minimal 3 karakter',
+            'no_bank_account.required' => 'Anda harus mengisi nomor rekening',
+            'no_bank_account.min' => 'Anda harus mengisi nomor rekening minimal 8 karakter',
+            'bank_account.required' => 'Anda harus mengisi metode tranfer',
+        ]);
+
+
+         Transaction::create([
+            'user_id' => Auth::id(),
+            'type' => 'withdrawal',
+            'amount' => $pointsToWithdraw * $this->conversionRate,
+            'status' => 'pending',
+            'in_the_name_of' => $validated['in_the_name_of'],
+            'no_bank_account' => $validated['no_bank_account'],
+            'bank_account' => $validated['bank_account']
+        ]);
+
+        UserPerformance::where('user_id', Auth::id())
+            ->decrement('total_reward', $pointsToWithdraw);
+
+        $this->notification = 'Penarikan berhasil diajukan.';
+        $this->notificationType = 'success';
+
+        $this->refreshUserData();
+        $this->refreshTransactions();
+        $this->reset(['selectedPoints', 'customPoints']);
+        $this->isOpen = false;
+    }
+
+    public function openModal($points) {
+        
         $pointsToWithdraw = $points;
 
         if ($pointsToWithdraw < 250) {
@@ -76,22 +128,15 @@ class WithdrawPoints extends Component
             return;
         }
 
-        Transaction::create([
-            'user_id' => Auth::id(),
-            'type' => 'withdrawal',
-            'amount' => $pointsToWithdraw * $this->conversionRate,
-            'status' => 'pending',
-        ]);
+        $this->isOpen = true;
 
-        UserPerformance::where('user_id', Auth::id())
-            ->decrement('total_reward', $pointsToWithdraw);
+        
 
-        $this->notification = 'Penarikan berhasil diajukan.';
-        $this->notificationType = 'success';
 
-        $this->refreshUserData();
-        $this->refreshTransactions();
-        $this->reset(['selectedPoints', 'customPoints']);
+    }
+
+    public function closeModal() {
+        $this->isOpen = false;
     }
 
     public function render()

@@ -106,12 +106,72 @@
                                 </p>
                         </div>
 
-                        <button @click="$wire.submitWithdraw(selectedPoints === 'custom' ? customPoints : selectedPoints)" 
-                                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                                :disabled="!selectedPoints || (selectedPoints === 'custom' && customPoints < 250)">
+                        <button 
+                            @click="$wire.openModal(selectedPoints === 'custom' ? customPoints : selectedPoints)" 
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                            :disabled="!selectedPoints || (selectedPoints === 'custom' && customPoints < 250)">
                             Ajukan Penarikan
                         </button>
-                    </div>
+
+                        <div class="w-full relative" x-data="{ open: @entangle('isOpen') }">
+                            <div 
+                                x-show="open" 
+                                class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
+                                x-transition.opacity.duration.300ms>
+                                
+                                <div class="bg-white rounded-2xl py-4 px-5 w-full max-w-lg mx-auto shadow-lg transform transition-all"
+                                    x-transition:enter="ease-out duration-300" 
+                                    x-transition:enter-start="opacity-0 scale-95" 
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="ease-in duration-200"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95">
+                                    
+                                    <div class="flex justify-between items-center pb-4 border-b border-gray-200">
+                                        <h4 class="text-sm text-gray-900 font-medium">Modal Simple</h4>
+                                        <button class="block cursor-pointer" @click="$wire.closeModal">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M7.75732 7.75739L16.2426 16.2427M16.2426 7.75739L7.75732 16.2427" stroke="black" stroke-width="1.6" stroke-linecap="round"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <form method="POST">
+
+                                        @csrf
+                                        @method('POST')
+                                        
+                                        <div class="mb-4">
+                                            <label for="In_the_name_of" class="block text-sm font-medium text-gray-700">Atas Nama</label>
+                                            <input type="text" id="In_the_name_of" placeholder="Nama di rekening" wire:model="in_the_name_of" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md" min="0">
+                                            @error('In_the_name_of') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            <label for="metode" class="block text-sm font-medium text-gray-700" >Metode</label>
+                                            <input type="text" name="metode" wire:model="bank_account" placeholder="misal: Dana, BRI, BCA, Shopeepay" id="bank_account" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md">
+                                            @error('bank_account') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            
+                                            <label for="no_bank_account" class="block text-sm font-medium text-gray-700">Nomer Rekening</label>
+                                            <input type="text" id="no_bank_account" placeholder="Nomer rekening akun" wire:model="no_bank_account" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md" min="0">
+                                            @error('no_bank_account') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        </div>
+                                
+
+                                        <div class="flex items-center justify-end pt-4 border-t border-gray-200 space-x-4">
+                                            <button type="button" class=" bg-indigo-50 text-indigo-500 w-28 flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-50 transition duration-150 ease-in-out" @click="$wire.closeModal">
+                                                Cancel
+                                            </button>
+                                            
+                                            <button 
+                                                type="button" @click="$wire.submitWithdraw(selectedPoints === 'custom' ? customPoints : selectedPoints)" 
+                                                class="w-28 flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                                                :disabled="!selectedPoints || (selectedPoints === 'custom' && customPoints < 250)">
+                                                Konfirmasi
+                                            </button>
+                                        </div>
+                                    </div>
+                                    </form>
+
+                            </div>
+                        </div>
                 </div>
             </div>
 
