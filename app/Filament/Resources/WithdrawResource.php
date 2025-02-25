@@ -20,6 +20,7 @@ use App\Filament\Resources\WithdrawResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\WithdrawResource\RelationManagers;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
 
 class WithdrawResource extends Resource
 {
@@ -114,37 +115,47 @@ class WithdrawResource extends Resource
                         ]);
            
                     }) ,
+
+                    
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
                         ->icon('heroicon-o-x-mark')
                         ->color('danger')
-                        ->requiresConfirmation()
-                        ->action(function ( $record) {
-                            $record->update(['status' => 'rejected']);
+                        ->form([
+                            TextInput::make('description')
+                            ->label('Alasan')
+                            ->required()
+                            ->minLength(5)
+                        ])
+                        ->action(function ( Transaction $record, Array $data) {
+                            $record->update([
+                                'description' => $data['description'],
+                                'status' => 'rejected'
+                            ]);
                         }),
                     ]),
             ])
-            ->defaultSort('created_at', 'desc')
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\Action::make('approve')
-                        ->label('Approve')
-                        ->icon('heroicon-o-check')
-                        ->color('success')
-                        ->requiresConfirmation()
-                        ->action(function ( $record) {
-                            $record->update(['status' => 'approved']);
-                        }),
-                    Tables\Actions\Action::make('reject')
-                        ->label('Reject')
-                        ->icon('heroicon-o-x-mark')
-                        ->color('danger')
-                        ->requiresConfirmation()
-                        ->action(function ( $record) {
-                            $record->update(['status' => 'rejected']);
-                        }),
-                ]),
-            ]);
+            ->defaultSort('created_at', 'desc');
+            // ->bulkActions([
+            //     Tables\Actions\BulkActionGroup::make([
+            //         Tables\Actions\Action::make('approve')
+            //             ->label('Approve')
+            //             ->icon('heroicon-o-check')
+            //             ->color('success')
+            //             ->requiresConfirmation()
+            //             ->action(function ( $record) {
+            //                 $record->update(['status' => 'approved']);
+            //             }),
+            //         Tables\Actions\Action::make('reject')
+            //             ->label('Reject')
+            //             ->icon('heroicon-o-x-mark')
+            //             ->color('danger')
+            //             ->requiresConfirmation()
+            //             ->action(function ( $record) {
+            //                 $record->update(['status' => 'rejected']);
+            //             }),
+            //     ]),
+            // ]);
     }
 
     public static function infolist(Infolist $infolist): Infolist
