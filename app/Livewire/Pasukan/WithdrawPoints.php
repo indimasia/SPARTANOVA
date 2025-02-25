@@ -60,6 +60,9 @@ class WithdrawPoints extends Component
             'id' => $transaction->id,
             'amount' => $transaction->amount,
             'status' => $transaction->status,
+            'in_the_name_of' => $transaction->in_the_name_of,
+            'no_bank_account' => $transaction->no_bank_account,
+            'bank_account' => $transaction->bank_account,
             'created_at' => $transaction->created_at->format('Y-m-d H:i:s'), // Format ke string yang bisa diproses
         ];
     })->toArray();
