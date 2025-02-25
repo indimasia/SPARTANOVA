@@ -168,10 +168,10 @@
                                             </button>
                                         </div>
                                     </div>
-                                    </form>
-
+                                </form>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
 
@@ -217,6 +217,15 @@
                             </div>
                             <p class="text-sm text-gray-500 mt-2" 
                             x-text="transaction.created_at ? new Date(transaction.created_at).toLocaleString('id-ID') : 'Tanggal Tidak Tersedia'">
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2" 
+                            x-text="`Atas Nama : ${transaction.in_the_name_of}`">
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2" 
+                            x-text="`Metode : ${transaction.bank_account}`">
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2" 
+                            x-text="`Nomer Rekening : ${transaction.no_bank_account}`">
                             </p>
                             <p class="text-sm text-gray-500 mt-2" 
                             x-text="transaction.amount ? `${(transaction.amount / $wire.conversionRate).toLocaleString()} Poin` : 'Jumlah Poin Tidak Tersedia'">
