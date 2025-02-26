@@ -49,7 +49,7 @@
                         {{ $prize['name'] === 'ZONK' ? 'Better luck next time!' : 'Congratulations! 🎉' }}
                     </h2>
                     <div class="flex flex-col items-center">
-                        <img src="{{ asset('storage/' . $prize['image']) }}" default="https://placehold.co/400x400?text=Tidak+Ada+Gambar" alt="Prize" class="w-48 h-48 object-cover mb-4 rounded-lg shadow-lg">
+                        <img src="{{ $prize['image'] ? asset('storage/' . $prize['image']) : 'https://placehold.co/400x400?text=Tidak+Ada+Gambar' }}" alt="Prize" class="w-48 h-48 object-cover mb-4 rounded-lg shadow-lg">
                         <p class="text-xl font-semibold text-center text-purple-600 mb-2">
                             {{ $prize['name'] === 'ZONK' ? 'You got:' : 'You won:' }}
                         </p>
