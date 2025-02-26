@@ -28,13 +28,19 @@ class RewardResource extends Resource
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form->schema([
-            TextInput::make('name')->required(),
-            Textarea::make('description')->nullable(),
+            TextInput::make('name')
+                ->required()
+                ->disabled(fn ($get) => $get('name') === 'ZONK'),
+
+            Textarea::make('description')
+                ->nullable()
+                ->disabled(fn ($get) => $get('description') === 'ZONK'),
+
             FileUpload::make('image')->disk('r2')->image()
             ->disk('r2')
             ->directory('reward/')
             ->visibility('public'),
-            TextInput::make('quantity')->numeric()->required(),
+            TextInput::make('quantity')->numeric(),
             TextInput::make('probability')->numeric()->step(0.01)->required(),
             Toggle::make('is_available')
                 ->default(true)->required(),

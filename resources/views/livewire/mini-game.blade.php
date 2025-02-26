@@ -1,16 +1,14 @@
 <div>
-    <div class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 overflow-hidden">
+    <div class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 overflow-hidden relative">
         <div id="particles-js" class="absolute inset-0 z-0"></div>
 
         <div class="relative z-10 max-w-4xl w-full space-y-8">
             <h1 class="text-5xl md:text-7xl font-extrabold text-white text-center mb-4 drop-shadow-lg">
-                Gacha Game 🎁✨
+                Gatcha Game 🎁✨
             </h1>
             <p class="text-xl md:text-2xl text-white text-center mb-8 drop-shadow">
                 Pilih kotak untuk mengambil hadiahmu!
             </p>
-
-            
 
             @if (session()->has('error'))
                 <div class="text-red-500 font-bold text-center">
