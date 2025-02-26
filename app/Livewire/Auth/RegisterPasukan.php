@@ -97,94 +97,81 @@ class RegisterPasukan extends Component
 
     public function register(): void
     {
-        try {
-            $validated = $this->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'unique:' . User::class],
-                'password' => ['required', 'string', 'min:6', 'confirmed', Password::defaults()],
-                'gender' => ['required', 'in:L,P'],
-                'date_of_birth' => ['required', 'date'],
-                'phone' => ['required', 'string', 'max:15'],
-                'village_kode' => ['required'],
-                'district_kode' => ['required'],
-                'regency_kode' => ['required'],
-                'province_kode' => ['required'],
-                'latitude' => ['required'],
-                'longitude' => ['required'],
-                'social_media.*' => ['required', 'string'],
-                'referred_by' => ['nullable', 'exists:users,referral_code'],
-            ], [
-                'name.required' => 'Nama harus diisi.',
-                'name.string' => 'Nama harus berupa string.',
-                'name.max' => 'Nama tidak boleh lebih dari 255 karakter.',
-                'email.required' => 'Email harus diisi.',
-                'email.email' => 'Format email tidak valid.',
-                'email.unique' => 'Email sudah terdaftar.',
-                'password.required' => 'Password harus diisi.',
-                'password.string' => 'Password harus berupa string.',
-                'password.confirmed' => 'Password tidak cocok.',
-                'password.min' => 'Password harus terdiri dari setidaknya 6 karakter.',
-                'gender.required' => 'Jenis kelamin harus dipilih.',
-                'gender.in' => 'Jenis kelamin harus L atau P.',
-                'date_of_birth.required' => 'Tanggal lahir harus diisi.',
-                'date_of_birth.date' => 'Tanggal lahir harus berupa tanggal.',
-                'phone.required' => 'Nomor telepon harus diisi.',
-                'phone.max' => 'Nomor telepon tidak boleh lebih dari 15 karakter.',
-                'village_kode.required' => 'Kode desa harus diisi.',
-                'district_kode.required' => 'Kode kecamatan harus diisi.',
-                'regency_kode.required' => 'Kode kabupaten harus diisi.',
-                'province_kode.required' => 'Kode provinsi harus diisi.',
-                'social_media.*.required' => 'Akun sosial media harus diisi.',
-                'social_media.*.string' => 'Akun sosial media harus berupa string.',
-                'latitude.required' => 'Latitude harus diisi.',
-                'longitude.required' => 'Longitude harus diisi.',
-                'referred_by.exists' => 'Kode referral tidak valid.',
-            ]);
+       
+        // Validasi utama
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:6', 'confirmed', Password::defaults()],
+            'gender' => ['required', 'in:L,P'],
+            'date_of_birth' => ['required', 'date'],
+            'phone' => ['required', 'string', 'max:15'],
+            'village_kode' => ['required'],
+            'district_kode' => ['required'],
+            'regency_kode' => ['required'],
+            'province_kode' => ['required'],
+            'latitude' => ['required'],
+            'longitude' => ['required'],
+            'social_media.*' => ['required', 'string'],
+            'referred_by' => ['nullable', 'exists:users,referral_code'],
+        ], [
+            'name.required' => 'Nama harus diisi.',
+            'name.string' => 'Nama harus berupa string.',
+            'name.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
+            'password.string' => 'Password harus berupa string.',
+            'password.confirmed' => 'Password tidak cocok.',
+            'password.min' => 'Password harus terdiri dari setidaknya 6 karakter.',
+            'gender.required' => 'Jenis kelamin harus dipilih.',
+            'gender.in' => 'Jenis kelamin harus L atau P.',
+            'date_of_birth.required' => 'Tanggal lahir harus diisi.',
+            'date_of_birth.date' => 'Tanggal lahir harus berupa tanggal.',
+            'phone.required' => 'Nomor telepon harus diisi.',
+            'phone.max' => 'Nomor telepon tidak boleh lebih dari 15 karakter.',
+            'village_kode.required' => 'Kode desa harus diisi.',
+            'district_kode.required' => 'Kode kecamatan harus diisi.',
+            'regency_kode.required' => 'Kode kabupaten harus diisi.',
+            'province_kode.required' => 'Kode provinsi harus diisi.',
+            'social_media.*.required' => 'Akun sosial media harus diisi.',
+            'social_media.*.string' => 'Akun sosial media harus berupa string.',
+            'latitude.required' => 'Latitude harus diisi.',
+            'longitude.required' => 'Longitude harus diisi.',
+            'referred_by.exists' => 'Kode referral tidak valid.',
+        ]);
 
-            $errors = [];
-
-            if (!empty($validated['social_media'])) {
-                foreach ($validated['social_media'] as $platform => $account) {
-                    if (!empty($account) && !in_array($account, ['Tidak punya akun'])) {
-                        $exists = SosialMediaAccount::where([
-                            ['sosial_media', $platform],
-                            ['account', $account]
-                        ])->exists();
-            
-                        if ($exists) {
-                            $errors["social_media.$platform"] = "Akun '$account' sudah digunakan pada platform '$platform'.";
-                        }
+        $errors = [];
+    
+        // Validasi sosial media terlebih dahulu
+        if (!empty($this->social_media)) {
+            foreach ($this->social_media as $platform => $account) {
+                if (!empty($account) && !in_array($account, ['Tidak punya akun'])) {
+                    $exists = SosialMediaAccount::where([
+                        ['sosial_media', $platform],
+                        ['account', $account]
+                    ])->exists();
+    
+                    if ($exists) {
+                        $errors["social_media.$platform"] = "Akun '$account' sudah digunakan pada platform '$platform'.";
                     }
                 }
             }
-            
-            if (!empty($errors)) {
-                throw ValidationException::withMessages($errors);
-            }
-        } catch (ValidationException $e) {
-            $errorField = array_key_first($e->validator->errors()->toArray());
-            $this->js(<<<JS
-                const input = document.getElementById('$errorField');
-                if (input) {
-                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    input.focus();
-                }
-            JS);
-            throw $e;
         }
-
-        $birthYear = (int) date('Y', strtotime($validated['date_of_birth']));
+    
+        // Jika ada error pada sosial media, langsung lempar error tanpa menunggu validasi lainnya
+        if (!empty($errors)) {
+            throw ValidationException::withMessages($errors);
+        }
+    
+    
+        // Proses pendaftaran user setelah validasi berhasil
         $validated['status'] = UserStatusEnum::PENDING->value;
-
-        if ($validated['referred_by']) {
-            $referredBy = User::where('referral_code', $validated['referred_by'])->pluck('id')->first();
-        } else {
-            $referredBy = null;
-        }
-
-        $generationCategory = $this->determineGeneration($birthYear);
-
-        $userData = [
+        $referredBy = $validated['referred_by'] ? User::where('referral_code', $validated['referred_by'])->pluck('id')->first() : null;
+        $generationCategory = $this->determineGeneration((int) date('Y', strtotime($validated['date_of_birth'])));
+    
+        $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -200,11 +187,10 @@ class RegisterPasukan extends Component
             'longitude' => $validated['longitude'],
             'referred_by' => $referredBy,
             'referral_code' => Str::random(6),
-        ];
-
-        $user = User::create($userData);
+        ]);
+    
         event(new Registered($user));
-
+    
         foreach ($validated['social_media'] as $platform => $account) {
             if (!empty($account)) {
                 SosialMediaAccount::create([
@@ -214,11 +200,11 @@ class RegisterPasukan extends Component
                 ]);
             }
         }
-
+    
         $user->assignRole('pasukan');
-
         $this->redirect(route('home', absolute: false), navigate: true);
     }
+    
 
     public function render()
     {

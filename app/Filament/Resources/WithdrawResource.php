@@ -19,6 +19,8 @@ use Filament\Infolists\Components\TextEntry;
 use App\Filament\Resources\WithdrawResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\WithdrawResource\RelationManagers;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
 
 class WithdrawResource extends Resource
 {
@@ -58,6 +60,25 @@ class WithdrawResource extends Resource
                         $conversionRate = ConversionRate::value('conversion_rate') ?? 1; // Pastikan nilai tidak null
                         return $state ? round($state / $conversionRate) . ' Poin' : '-';
                     }),
+
+                    TextColumn::make('in_the_name_of')
+                    ->label('Atas Nama')
+                    ->formatStateUsing(function ($state){
+                        return $state ?? '-';
+                    }),
+
+                    TextColumn::make('bank_account')
+                    ->label('Metode')
+                    ->formatStateUsing(function ($state){
+                        return $state ?? '-';
+                    }),
+
+                    TextColumn::make('no_bank_account')
+                    ->label('Nomer Rekening')
+                    ->formatStateUsing(function ($state){
+                        return $state ?? '-';
+                    }),
+
                 TextColumn::make('status')->color(fn ($record) => $record->status === 'pending' ? 'warning' : ($record->status === 'approved' ? 'success' : ($record->status === 'rejected' ? 'danger' : 'info'))),
                 TextColumn::make('created_at'),
             ])
@@ -73,45 +94,68 @@ class WithdrawResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
-                    Tables\Actions\Action::make('approve')
-                        ->label('Approve')
+                    Tables\Actions\Action::make('transfer_proof')
+                    ->label('Approve')
                         ->icon('heroicon-o-check')
                         ->color('success')
-                        ->requiresConfirmation()
-                        ->action(function ( $record) {
-                            $record->update(['status' => 'approved']);
-                        }),
+                    ->form([
+                        FileUpload::make('transfer_proof')
+                        ->label('Transfer Proof')
+                        ->required()
+                        ->image()
+                        ->visibility('public')
+                        ->disk('r2')
+                        ->directory(fn (Transaction $record) => 'pasukan/withdraw' . $record->user_id . '/')
+                        
+                    ])
+                    ->action(function (Transaction $record, array $data) {
+                        $record->update([
+                            'transfer_proof' => $data['transfer_proof'],
+                            'status' => 'approved', 
+                        ]);
+           
+                    }) ,
+
+                    
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
                         ->icon('heroicon-o-x-mark')
                         ->color('danger')
-                        ->requiresConfirmation()
-                        ->action(function ( $record) {
-                            $record->update(['status' => 'rejected']);
+                        ->form([
+                            TextInput::make('description')
+                            ->label('Alasan')
+                            ->required()
+                            ->minLength(5)
+                        ])
+                        ->action(function ( Transaction $record, Array $data) {
+                            $record->update([
+                                'description' => $data['description'],
+                                'status' => 'rejected'
+                            ]);
                         }),
                     ]),
             ])
-            ->defaultSort('created_at', 'desc')
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\Action::make('approve')
-                        ->label('Approve')
-                        ->icon('heroicon-o-check')
-                        ->color('success')
-                        ->requiresConfirmation()
-                        ->action(function ( $record) {
-                            $record->update(['status' => 'approved']);
-                        }),
-                    Tables\Actions\Action::make('reject')
-                        ->label('Reject')
-                        ->icon('heroicon-o-x-mark')
-                        ->color('danger')
-                        ->requiresConfirmation()
-                        ->action(function ( $record) {
-                            $record->update(['status' => 'rejected']);
-                        }),
-                ]),
-            ]);
+            ->defaultSort('created_at', 'desc');
+            // ->bulkActions([
+            //     Tables\Actions\BulkActionGroup::make([
+            //         Tables\Actions\Action::make('approve')
+            //             ->label('Approve')
+            //             ->icon('heroicon-o-check')
+            //             ->color('success')
+            //             ->requiresConfirmation()
+            //             ->action(function ( $record) {
+            //                 $record->update(['status' => 'approved']);
+            //             }),
+            //         Tables\Actions\Action::make('reject')
+            //             ->label('Reject')
+            //             ->icon('heroicon-o-x-mark')
+            //             ->color('danger')
+            //             ->requiresConfirmation()
+            //             ->action(function ( $record) {
+            //                 $record->update(['status' => 'rejected']);
+            //             }),
+            //     ]),
+            // ]);
     }
 
     public static function infolist(Infolist $infolist): Infolist
@@ -121,6 +165,9 @@ class WithdrawResource extends Resource
             ->schema([
                 TextEntry::make('user.name'),
                 TextEntry::make('amount'),
+                TextEntry::make('in_the_name_of'),
+                TextEntry::make('bank_account'),
+                TextEntry::make('no_bank_account'),
                 TextEntry::make('status'),
                 TextEntry::make('created_at'),
             ]);
