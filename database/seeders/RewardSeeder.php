@@ -16,7 +16,7 @@ class RewardSeeder extends Seeder
         Reward::create([
             'name' => 'ZONK',
             'description' => 'ZONK',
-            'image' => 'reward//01JMY95X6XXH94TBGACN99KG2E.png',
+            'image' => null,
             'quantity' => null,
             'probability' => 1.00,
             'is_available' => 1,
