@@ -4,31 +4,41 @@
 
         <div class="relative z-10 max-w-4xl w-full space-y-8">
             <h1 class="text-5xl md:text-7xl font-extrabold text-white text-center mb-4 drop-shadow-lg">
-                Ultra Modern Gacha 🎁✨
+                Gacha Game 🎁✨
             </h1>
             <p class="text-xl md:text-2xl text-white text-center mb-8 drop-shadow">
-                Choose a box to unveil your fortune!
+                Pilih kotak untuk mengambil hadiahmu!
             </p>
+
+            
 
             @if (session()->has('error'))
                 <div class="text-red-500 font-bold text-center">
                     {{ session('error') }}
                 </div>
             @endif
-
-
-            <div class="grid grid-cols-3 gap-4 md:gap-6 max-w-lg mx-auto">
-                @for ($i = 0; $i < 9; $i++)
-                    <button wire:click="spin" class="relative w-full aspect-square cursor-pointer overflow-hidden rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:rotate-3">
-                        <div class="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500"></div>
-                        <div class="absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-white bg-opacity-30">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                            </svg>
-                        </div>
-                    </button>
-                @endfor
+            <div class="flex justify-between">
+                <p class="text-lg text-white text-center font-semibold">
+                    Setiap putaran membutuhkan <span class="text-yellow-300 font-bold">{{ $poingame }} Poin 🪙</span>
+                </p>
+                <p class="text-lg text-white text-center font-semibold">
+                    Poin Anda: <span class="text-yellow-300 font-bold">{{ $userPerformance }} 🪙</span>
+                </p>
             </div>
+            <p class="text-lg text-white text-center font-semibold">
+                <div class="grid grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
+                    @for ($i = 0; $i < 12; $i++)
+                        <button wire:click="spin" class="relative w-full h-24 md:h-32 cursor-pointer overflow-hidden rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:rotate-3">
+                            <div class="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500"></div>
+                            <div class="absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-white bg-opacity-30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 md:h-16 md:w-16 text-white drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                                </svg>
+                            </div>
+                        </button>
+                    @endfor
+                </div>
+                
         </div>
 
         <!-- Prize Modal -->
@@ -39,7 +49,7 @@
                         {{ $prize['name'] === 'ZONK' ? 'Better luck next time!' : 'Congratulations! 🎉' }}
                     </h2>
                     <div class="flex flex-col items-center">
-                        <img src="{{ $prize['image'] }}" alt="Prize" class="w-48 h-48 object-cover mb-4 rounded-lg shadow-lg">
+                        <img src="{{ asset('storage/' . $prize['image']) }}" alt="Prize" class="w-48 h-48 object-cover mb-4 rounded-lg shadow-lg">
                         <p class="text-xl font-semibold text-center text-purple-600 mb-2">
                             {{ $prize['name'] === 'ZONK' ? 'You got:' : 'You won:' }}
                         </p>
@@ -57,7 +67,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
-    <script>
+    {{-- <script>
         // Initialize particles.js
         particlesJS("particles-js", {
             particles: {
@@ -76,35 +86,48 @@
             },
             retina_detect: true
         });
-    </script>
+    </script> --}}
     <script>
         function startConfetti() {
-            const duration = 5 * 1000,
-                animationEnd = Date.now() + duration,
-                defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+            const count = 200,
+            defaults = {
+                origin: { y: 0.7 },
+            };
 
-            function randomInRange(min, max) {
-                return Math.random() * (max - min) + min;
+            function fire(particleRatio, opts) {
+            confetti(
+                Object.assign({}, defaults, opts, {
+                particleCount: Math.floor(count * particleRatio),
+                })
+            );
             }
 
-            const interval = setInterval(function () {
-                const timeLeft = animationEnd - Date.now();
+            fire(0.25, {
+            spread: 26,
+            startVelocity: 55,
+            });
 
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
-                }
+            fire(0.2, {
+            spread: 60,
+            });
 
-                const particleCount = 50 * (timeLeft / duration);
+            fire(0.35, {
+            spread: 100,
+            decay: 0.91,
+            scalar: 0.8,
+            });
 
-                confetti(Object.assign({}, defaults, {
-                    particleCount,
-                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-                }));
-                confetti(Object.assign({}, defaults, {
-                    particleCount,
-                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-                }));
-            }, 250);
+            fire(0.1, {
+            spread: 120,
+            startVelocity: 25,
+            decay: 0.92,
+            scalar: 1.2,
+            });
+
+            fire(0.1, {
+            spread: 120,
+            startVelocity: 45,
+            });
         }
 
         // Listen for changes to the reward-modal

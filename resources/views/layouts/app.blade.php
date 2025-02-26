@@ -308,7 +308,11 @@
                                     <span>Dompet</span>
                                 </a>
 
-                                <a href="{{ route('mini-game.index') }}"
+                                @php
+                                    $miniGameStatus = App\Models\Setting::where('key_name', 'Mini Game')->first()->value;
+                                @endphp
+
+                                <a href="{{ $miniGameStatus == 'on' ? route('mini-game.index') : route('mini-game-cooming-soon.index') }}"
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
                                         class="fas fa-gamepad text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>

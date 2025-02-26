@@ -23,6 +23,7 @@ class RewardResource extends Resource
     protected static ?string $model = Reward::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-gift';
+    protected static ?string $navigationGroup = 'Master Data';
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -34,26 +35,24 @@ class RewardResource extends Resource
             ->directory('reward/')
             ->visibility('public'),
             TextInput::make('quantity')->numeric()->required(),
-            Select::make('rarity')
-                ->options([
-                    'common' => 'Common',
-                    'rare' => 'Rare',
-                    'epic' => 'Epic',
-                    'legendary' => 'Legendary',
-                ])->required(),
             TextInput::make('probability')->numeric()->step(0.01)->required(),
-            Select::make('status')
-                ->options([
-                    'available' => 'Available',
-                    'out_of_stock' => 'Out of Stock',
-                    'hidden' => 'Hidden',
-                ])->default('available')->required(),
+            Toggle::make('is_available')
+                ->default(true)->required(),
         ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table
     {
-        return $table->columns([
+        $headerActions = [];
+        if (\App\Models\Reward::where('is_available', 1)->sum('probability') != 1) {
+            $headerActions[] = Tables\Actions\Action::make('info')
+                ->label('⚠️ Total probability tidak 100% total probability saat ini: ' . \App\Models\Reward::where('is_available', 1)->sum('probability') . '%')
+                ->color('gray')
+                ->disabled();
+        }
+        return $table 
+        ->headerActions($headerActions)
+        ->columns([
             TextColumn::make('name')->sortable()->searchable(),
             ImageColumn::make('image')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')
             ->size(50)
@@ -61,22 +60,13 @@ class RewardResource extends Resource
                 ? URL::route('storage.fetch', ['filename' => $record->image]) 
                 : null),
             TextColumn::make('quantity')->sortable(),
-            TextColumn::make('rarity')->sortable(),
             TextColumn::make('probability')->sortable(),
-            TextColumn::make('status')->sortable(),
+            TextColumn::make('is_available')->sortable()
+                ->label('Status')
+                ->formatStateUsing(fn ($state) => $state ? 'Available' : 'Not Available'),
             TextColumn::make('created_at')->dateTime()->sortable(),
         ])->filters([
-            SelectFilter::make('rarity')->options([
-                'common' => 'Common',
-                'rare' => 'Rare',
-                'epic' => 'Epic',
-                'legendary' => 'Legendary',
-            ]),
-            SelectFilter::make('status')->options([
-                'available' => 'Available',
-                'out_of_stock' => 'Out of Stock',
-                'hidden' => 'Hidden',
-            ]),
+            
         ]);
     }
 

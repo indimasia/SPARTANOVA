@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Reward;
+use App\Models\Setting;
 use Livewire\Component;
+use App\Models\UserPerformance;
 
 class MiniGame extends Component
 {
@@ -12,48 +14,59 @@ class MiniGame extends Component
     
     public function spin()
     {
-        $user = auth()->user(); // Ambil user yang login
+        $user = auth()->user();
+        $performance = $user->userPerformance;
+        $poingame = Setting::where('key_name', 'Poin Game')->pluck('value')->first();
 
-        // Cek apakah user memiliki catatan di UserPerformance
-        $performance = $user->userPerformance; // Pastikan ada relasi di model User
-
-        if (!$performance || $performance->total_reward < 10) {
+        if (!$performance || $performance->total_reward < $poingame) {
             session()->flash('error', 'You do not have enough points to spin.');
             return;
         }
 
-        // Kurangi 10 poin sebelum melakukan spin
-        $performance->decrement('total_reward', 10);
+        $performance->decrement('total_reward', $poingame);
 
-        $rewards = Reward::where('status', 'available')->where('quantity', '>', 0)->get();
+        $rewards = Reward::where('is_available', 1)->where('quantity', '>', 0)->get();
 
-        // Tambahkan ZONK sebagai pilihan
-        $rewardPool = [];
-        foreach ($rewards as $reward) {
-            for ($i = 0; $i < $reward->weight; $i++) {
-                $rewardPool[] = $reward;
+        $rand = mt_rand() / mt_getrandmax();
+        
+        $cumulative = 0;
+        $selectedReward = null;
+    
+        foreach ($rewards as $section) {
+            $cumulative += $section['probability'];
+
+            if ($rand <= $cumulative) {
+                $selectedReward = $section;
+                break;
             }
         }
-
-        // Ambil hasil spin
-        $selectedReward = $rewardPool[array_rand($rewardPool)];
-
-        if ($selectedReward) {
-            if ($selectedReward->name != 'ZONK') {
-                $selectedReward->decrement('quantity');
-            }
+        if (!$selectedReward) {
+            $selectedReward = Reward::where('name', 'ZONK')->first();
             $this->prize = [
                 'name' => $selectedReward->name,
                 'image' => $selectedReward->image,
             ];
-            $this->dispatch('triggerConfetti');
+        } else {
+            $selectedReward->decrement('quantity');
+    
+            if ($selectedReward->quantity <= 0) {
+                $selectedReward->update(['is_available' => 0]);
+            }
         }
+
+        $this->prize = [
+            'name' => $selectedReward->name,
+            'image' => $selectedReward->image,
+        ];
     }
+
 
 
     public function render()
     {
-        return view('livewire.mini-game')->layout('layouts.app');
+        $userPerformance = UserPerformance::where('user_id', auth()->user()->id)->pluck('total_reward')->first();
+        $poingame = Setting::where('key_name', 'Poin Game')->pluck('value')->first();
+        return view('livewire.mini-game', compact('userPerformance', 'poingame'))->layout('layouts.app');
     }
 }
 

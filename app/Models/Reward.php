@@ -14,20 +14,8 @@ class Reward extends Model
         'description',
         'image',
         'quantity',
-        'rarity',
         'probability',
-        'status',
+        'is_available',
     ];
-
-    public function getWeightAttribute()
-    {
-        return match ($this->rarity) {
-            'common' => 60,
-            'rare' => 25,
-            'epic' => 10,
-            'legendary' => 5,
-            default => 0,
-        };
-    }
 
 }

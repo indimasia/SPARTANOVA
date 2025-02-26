@@ -22,6 +22,7 @@ use App\Http\Middleware\PasukanMiddleware;
 use App\Livewire\Pasukan\RiwayatPekerjaan;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\JobDetailController;
+use App\Livewire\MiniGameCoomingSoon;
 
 Route::get('/', Home::class)->name('home');
 Route::get('/register', Register::class)->name('register');
@@ -47,6 +48,7 @@ Route::middleware([PasukanMiddleware::class])->group(
         // Route::get('/notification/read/{notification}', RiwayatPekerjaan::class)->name('notification.read');
         Route::get('/withdraw', WithdrawPoints::class)->name('withdraw.index');
         Route::get('/mini-game', MiniGame::class)->name('mini-game.index');
+        Route::get('/mini-game-cooming-soon', MiniGameCoomingSoon::class)->name('mini-game-cooming-soon.index');
         Route::get('/articles/{slug}', DetailArticle::class)->name('articles.detail');
         Route::get('/job/{jobId}', JobDetailPage::class)->name('job.detail');
     }
