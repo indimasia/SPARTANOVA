@@ -35,7 +35,7 @@
                             {{ $selectedJob->platform->value }}
                         </span>
                         <span class="text-sm text-gray-500">
-                            {{ $selectedJob->created_at->format('d M Y') }}
+                            {{ $selectedJob->created_at->format('d M Y') }} | {{ $selectedJob->createdBy->name ?? 'Admin' }}
                         </span>
                     </div>
 
