@@ -37,4 +37,14 @@ class PackageRate extends Model
         });
 
     }
+    public function getPriceRupiahAttribute()
+    {
+        $conversionRate = ConversionRate::first()?->conversion_rate ?? 0;
+        return 'Rp. ' . number_format($this->price * $conversionRate, 0, ',', '.');
+    }
+    public function getRewardRupiahAttribute()
+    {
+        $conversionRate = ConversionRate::first()?->conversion_rate ?? 0;
+        return 'Rp. ' . number_format($this->reward * $conversionRate, 0, ',', '.');
+    }
 }
