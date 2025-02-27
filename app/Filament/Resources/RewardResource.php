@@ -40,8 +40,13 @@ class RewardResource extends Resource
             ->disk('r2')
             ->directory('reward/')
             ->visibility('public'),
-            TextInput::make('quantity')->numeric(),
-            TextInput::make('probability')->numeric()->step(0.01)->required(),
+            TextInput::make('quantity')
+            ->numeric()
+            ->visible(fn ($get) => $get('name') !== 'ZONK'),
+            TextInput::make('probability')
+            ->numeric()
+            ->step(0.01)
+            ->required(),
             Toggle::make('is_available')
                 ->default(true)->required(),
         ]);
@@ -50,9 +55,9 @@ class RewardResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         $headerActions = [];
-        if (\App\Models\Reward::where('is_available', 1)->sum('probability') != 1) {
+        if (Reward::where('is_available', 1)->sum('probability') != 1) {
             $headerActions[] = Tables\Actions\Action::make('info')
-                ->label('⚠️ Total probability tidak 100% total probability saat ini: ' . \App\Models\Reward::where('is_available', 1)->sum('probability') . '%')
+                ->label('⚠️ Total probability tidak 100% total probability saat ini: ' . Reward::where('is_available', 1)->sum('probability') . '%')
                 ->color('gray')
                 ->disabled();
         }
@@ -73,6 +78,9 @@ class RewardResource extends Resource
             TextColumn::make('created_at')->dateTime()->sortable(),
         ])->filters([
             
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
         ]);
     }
 
