@@ -21,8 +21,6 @@ use App\Filament\Resources\ArticlesResource\Pages\EditArticle;
 use App\Filament\Resources\ArticlesResource\Pages\ListArticle;
 use App\Filament\Resources\ArticlesResource\Pages\CreateArticle;
 
-
-
 class ArticleResource extends Resource {
     protected static ?string $model = Article::class;
 
@@ -72,7 +70,12 @@ class ArticleResource extends Resource {
                     : null),
 
                 TextColumn::make('title')->searchable()->sortable(),
-                TextColumn::make('status')->badge(),
+                TextColumn::make('status')
+                ->badge()
+                ->color(fn ($record) => match ($record->status) {
+                    'published' => 'success',
+                    'draft' => 'warning',
+                }),
                 TextColumn::make('published_at')->dateTime(),
                 TextColumn::make('created_at')->since(),
             ])
