@@ -47,7 +47,7 @@ class WithdrawResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('user.name'),
-                TextColumn::make('type'),
+                // TextColumn::make('type'),
                 TextColumn::make('user.userPerformance.total_reward')
                     ->label('Poin Dimiliki')
                     ->color('success')
