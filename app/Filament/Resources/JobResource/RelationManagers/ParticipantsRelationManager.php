@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
 use Filament\Tables\Actions\Action;
 use App\Models\UserPerformance;
+use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Infolist;
 use Illuminate\Support\Facades\URL;
 use Filament\Notifications\Notification;
@@ -41,34 +42,34 @@ class ParticipantsRelationManager extends RelationManager
                     ->label('Username')
                     ->searchable()
                     ->sortable()
-                    ->getStateUsing(fn ($record) => 
+                    ->getStateUsing(fn ($record) =>
                         $record->user?->sosialMediaAccounts()
                             ->where('sosial_media', $record->job?->platform)
                             ->value('account') ?? 'Tidak Ada Username'
                     ),
-                
-                
+
+
                 Tables\Columns\ImageColumn::make('attachment')
                     ->disk('r2')
                     ->default('https://placehold.co/400x400?text=Belum+Upload')
                     ->size(100)
-                    ->getStateUsing(fn ($record) => $record->attachment 
-                        ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
-                        : null)
-                    ->extraAttributes(fn ($record) => [
-                        'class' => 'cursor-pointer',
-                        'wire:click' => "\$dispatch('open-modal', { image: '".(
-                            $record->attachment 
-                                ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
-                                : 'https://placehold.co/800x800?text=Belum+Upload'
-                        )."' })"
-                    ]),  
+                    ->getStateUsing(fn ($record) => $record->attachment
+                        ? URL::route('storage.fetch', ['filename' => $record->attachment])
+                        : null),
+                    // ->extraAttributes(fn ($record) => [
+                    //     'class' => 'cursor-pointer',
+                    //     'onclick' => "window.open('".(
+                    //         $record->attachment
+                    //             ? URL::route('storage.fetch', ['filename' => $record->attachment])
+                    //             : 'https://placehold.co/800x800?text=Belum+Upload'
+                    //     )."', '_blank')"
+                    // ]),
 
-                
+
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn ($record) => $record->status === JobStatusEnum::APPLIED->value ? 'warning' : ($record->status === JobStatusEnum::APPROVED->value  ? 'success' : ($record->status === JobStatusEnum::REJECTED->value ? 'danger' : 'info'))),
-                
+
             ])
             ->filters([
                 //
@@ -222,19 +223,26 @@ class ParticipantsRelationManager extends RelationManager
     {
         return $infolist
             ->schema([
+
                 ImageEntry::make('attachment')
                     ->disk('r2')
-                    ->getStateUsing(fn ($record) => $record->attachment 
-                        ? URL::route('storage.fetch', ['filename' => $record->attachment]) 
-                        : null)
                     ->default('https://placehold.co/600x400?text=Tidak+Ada+Bukti')
+                    // ->maxWidth(600)
+                    // ->size(700)
+
+                    ->getStateUsing(fn ($record) => $record->attachment
+                        ? URL::route('storage.fetch', ['filename' => $record->attachment])
+                        : null)
                     ->extraImgAttributes([
                         'alt' => 'Foto Bukti Pengerjaan',
                         'loading' => 'lazy',
+                        'style' => 'max-width:100%; height:auto; margin-inline: auto;',
+                        'class' => 'rounded-2xl '
                     ])
+                    ->columnSpanFull()
                     ->label('Bukti Pengerjaan')
-                    ->columnSpanFull(),
-            ]);
+
+                    ])->columns(1);
     }
 }
 

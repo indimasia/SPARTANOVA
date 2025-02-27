@@ -155,8 +155,12 @@
                         <td>{{ $participant->lokasi['county'] ?? '-' }}</td>
                         <td>{{ $participant->filtered_social_account ?? '-' }}</td>
                         <td>
-                            image
-                        </td>
+                            @if ($participant->attachment_url)
+                                <img src="{{ public_path('export/' . basename($participant->attachment)) }}" width="200">
+                            @else
+                                Tidak Ada Bukti
+                            @endif
+                        </td>                                                                  
                     </tr>
                 @endforeach
             </tbody>

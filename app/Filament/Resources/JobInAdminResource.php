@@ -598,19 +598,19 @@ class JobInAdminResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn ($record) => match (true) {
                         is_null($record->is_verified) => 'Belum Verifikasi',
-                        $record->is_verified === false => 'Verifikasi Ditolak',
-                        default => $record->status, // Gunakan status asli jika sudah diverifikasi
+                        $record->is_verified === 0 => 'Verifikasi Ditolak',
+                        $record->is_verified === 1 => $record->status, // Gunakan status asli jika sudah diverifikasi
                     })
                     ->icon(fn ($record) => match (true) {
                         is_null($record->is_verified) => 'heroicon-o-question-mark-circle',
-                        $record->is_verified === false => 'heroicon-o-x-circle',
+                        $record->is_verified === 0 => 'heroicon-o-x-circle',
                         $record->status === 'publish' => 'heroicon-o-check-circle',
                         $record->status === 'draft' => 'heroicon-o-exclamation-circle',
                         default => null,
                     })
                     ->color(fn ($record) => match (true) {
                         is_null($record->is_verified) => 'gray',
-                        $record->is_verified === false => 'danger',
+                        $record->is_verified === 0 => 'danger',
                         $record->status === 'publish' => 'success',
                         $record->status === 'draft' => 'warning',
                         default => 'gray',
@@ -632,7 +632,7 @@ class JobInAdminResource extends Resource
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'draft' || $record->is_verified === null)
+                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'draft' || $record->is_verified === null || $record->is_verified === 0)
                         ->action(function (JobCampaign $record) {
                             try {
                                 $record->update(['status' => 'publish']);
@@ -652,7 +652,7 @@ class JobInAdminResource extends Resource
                         ->icon('heroicon-o-exclamation-circle')
                         ->color('warning')
                         ->requiresConfirmation()
-                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'publish' || $record->is_verified === null)
+                        ->hidden(fn (JobCampaign $record): bool => $record->status !== 'publish' || $record->is_verified === null || $record->is_verified === 0)
                         ->action(function (JobCampaign $record) {
                             try {
                                 $record->update(['status' => 'draft']);

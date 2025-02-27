@@ -38,7 +38,7 @@ class PackageRateResource extends Resource
             ->schema([
                 Forms\Components\Select::make('type')
                 ->options(JobType::optionsWithout())
-       ->unique(ignoreRecord: true)
+                ->unique(ignoreRecord: true)
                 ->searchable()
                 ->required(),
                 Forms\Components\TextInput::make('price')
@@ -53,11 +53,21 @@ class PackageRateResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $conversionRate = \App\Models\ConversionRate::first()?->conversion_rate ?? 0;
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('type'),
-                Tables\Columns\TextColumn::make('price'),
-                Tables\Columns\TextColumn::make('reward'),
+                Tables\Columns\TextColumn::make('price')->label('Harga (Poin)')->formatStateUsing(fn ($record) => $record->price . ' Poin'),
+                Tables\Columns\TextColumn::make('price_rupiah')
+                ->label('Harga (Rupiah)')
+                ->sortable(),
+                Tables\Columns\TextColumn::make('reward')
+                ->label('Reward (Poin)')
+                ->formatStateUsing(fn ($record) => number_format($record->reward, 0, ',', '.') . ' Poin'),
+
+                Tables\Columns\TextColumn::make('reward_rupiah')
+                ->label('Reward (Rupiah)')
+                ->sortable(),
             ])
             ->filters([
                 //

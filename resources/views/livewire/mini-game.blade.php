@@ -1,155 +1,152 @@
-<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-orange-100 to-orange-300 overflow-hidden relative">
-    <!-- Animated background elements -->
-    <div class="absolute inset-0 overflow-hidden">
-        @for ($i = 0; $i < 20; $i++)
-            <div class="absolute animate-float" style="
-                left: {{ rand(0, 100) }}%;
-                top: {{ rand(0, 100) }}%;
-                animation-delay: {{ $i * 0.5 }}s;
-                animation-duration: {{ rand(10, 20) }}s;
-            ">
-                <i class="fas fa-gamepad text-orange-400 opacity-20 text-{{ rand(3, 6) }}xl"></i>
-            </div>
-        @endfor
-    </div>
+<div>
+    <div class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 overflow-hidden relative">
+        <div id="particles-js" class="absolute inset-0 z-0"></div>
 
-    <!-- Animated gamer -->
-    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-8">
-        <div class="gamer">
-            <div class="head"></div>
-            <div class="body"></div>
-            <div class="arms">
-                <div class="arm left"></div>
-                <div class="arm right"></div>
-            </div>
-            <div class="legs">
-                <div class="leg left"></div>
-                <div class="leg right"></div>
-            </div>
-            <div class="controller"></div>
-        </div>
-    </div>
+        <div class="relative z-10 max-w-4xl w-full space-y-8">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white text-center mb-4 drop-shadow-lg">
+                Gatcha Game 🎁✨
+            </h1>
+            <p class="text-xl md:text-2xl text-white text-center mb-8 drop-shadow">
+                Pilih kotak untuk mengambil hadiahmu!
+            </p>
 
-    <div class="text-center z-10">
-        <h1 class="text-4xl md:text-6xl font-bold text-orange-800 mb-4 animate-pulse">
-            Mini Game Coming Soon!
-        </h1>
-        <p class="text-xl md:text-2xl text-orange-700 mb-8 animate-bounce">
-            We're working hard to bring you an exciting new mini game. Stay tuned!
-        </p>
-        <div class="flex justify-center space-x-4 mb-8">
-            <div class="flex items-center text-orange-800 animate-pulse">
-                <i class="fas fa-clock mr-2"></i>
-                <span>Launch Date: TBA</span>
+            @if (session()->has('error'))
+                <div class="text-red-500 font-bold text-center">
+                    {{ session('error') }}
+                </div>
+            @endif
+            <div class="flex justify-between">
+                <p class="text-lg text-white text-center font-semibold">
+                    Setiap putaran membutuhkan <span class="text-yellow-300 font-bold">{{ $poingame }} Poin 🪙</span>
+                </p>
+                <p class="text-lg text-white text-center font-semibold">
+                    Poin Anda: <span class="text-yellow-300 font-bold">{{ $userPerformance }} 🪙</span>
+                </p>
             </div>
-            <div class="flex items-center text-orange-800 animate-pulse">
-                <i class="fas fa-rocket mr-2"></i>
-                <span>Get Ready for Fun!</span>
-            </div>
+            <p class="text-lg text-white text-center font-semibold">
+                <div class="grid grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
+                    @for ($i = 0; $i < 12; $i++)
+                        <button wire:click="spin" class="relative w-full h-24 md:h-32 cursor-pointer overflow-hidden rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:rotate-3">
+                            <div class="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500"></div>
+                            <div class="absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-white bg-opacity-30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 md:h-16 md:w-16 text-white drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                                </svg>
+                            </div>
+                        </button>
+                    @endfor
+                </div>
+                
         </div>
-        <div class="w-16 h-16 mx-auto mb-8 border-4 border-orange-600 border-t-orange-300 rounded-full animate-spin"></div>
-        
-        @if (session()->has('message'))
-            <div class="mb-4 text-green-600 font-semibold animate-fade-in-down">
-                {{ session('message') }}
+
+        <!-- Prize Modal -->
+        @if ($prize)
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 reward-modal">
+                <div class="bg-white bg-opacity-80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl max-w-sm w-full m-4">
+                    <h2 class="text-3xl font-bold text-center mb-4 text-purple-700">
+                        {{ $prize['name'] === 'ZONK' ? 'Better luck next time!' : 'Congratulations! 🎉' }}
+                    </h2>
+                    <div class="flex flex-col items-center">
+                        <img src="{{ $prize['image'] ? asset('storage/' . $prize['image']) : 'https://placehold.co/400x400?text=Tidak+Ada+Gambar' }}" alt="Prize" class="w-48 h-48 object-cover mb-4 rounded-lg shadow-lg">
+                        <p class="text-xl font-semibold text-center text-purple-600 mb-2">
+                            {{ $prize['name'] === 'ZONK' ? 'You got:' : 'You won:' }}
+                        </p>
+                        <p class="text-2xl font-bold text-purple-700 mt-2">
+                            {{ $prize['name'] }}
+                        </p>
+                    </div>
+                    <button wire:click="$set('prize', null)" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        Close
+                    </button>
+                </div>
             </div>
         @endif
-
-        <form wire:submit.prevent="notifyMe" class="mb-4">
-            <input type="email" wire:model="email" placeholder="Enter your email" 
-                   class="px-4 py-2 border border-orange-400 rounded-l-md focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent">
-            <button type="submit" 
-                    class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-r-md transition duration-300 animate-pulse">
-                Notify Me
-            </button>
-        </form>
-        @error('email') <span class="text-red-600 text-sm animate-shake">{{ $message }}</span> @enderror
     </div>
-    <style>
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-            100% { transform: translateY(0px) rotate(360deg); }
-        }
-        @keyframes fade-in-down {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        .animate-float { animation: float 15s infinite; }
-        .animate-fade-in-down { animation: fade-in-down 0.5s ease-out; }
-        .animate-shake { animation: shake 0.5s ease-in-out; }
-    
-        /* Gamer animation styles */
-        .gamer {
-            width: 100px;
-            height: 150px;
-            position: relative;
-        }
-        .gamer .head {
-            width: 40px;
-            height: 40px;
-            background-color: #FFA500;
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 30px;
-        }
-        .gamer .body {
-            width: 60px;
-            height: 70px;
-            background-color: #FF8C00;
-            position: absolute;
-            top: 40px;
-            left: 20px;
-        }
-        .gamer .arm {
-            width: 20px;
-            height: 50px;
-            background-color: #FFA500;
-            position: absolute;
-            top: 50px;
-        }
-        .gamer .arm.left {
-            left: 0;
-            animation: move-left-arm 0.5s infinite alternate;
-        }
-        .gamer .arm.right {
-            right: 0;
-            animation: move-right-arm 0.5s infinite alternate;
-        }
-        .gamer .leg {
-            width: 20px;
-            height: 50px;
-            background-color: #FF8C00;
-            position: absolute;
-            bottom: 0;
-        }
-        .gamer .leg.left { left: 20px; }
-        .gamer .leg.right { right: 20px; }
-        .gamer .controller {
-            width: 60px;
-            height: 30px;
-            background-color: #333;
-            position: absolute;
-            bottom: 60px;
-            left: 20px;
-            border-radius: 5px;
-        }
-    
-        @keyframes move-left-arm {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(-15deg); }
-        }
-        @keyframes move-right-arm {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(15deg); }
-        }
-    </style>
 
-</div>    
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+    {{-- <script>
+        // Initialize particles.js
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: false },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            retina_detect: true
+        });
+    </script> --}}
+    <script>
+        function startConfetti() {
+            const count = 200,
+            defaults = {
+                origin: { y: 0.7 },
+            };
 
+            function fire(particleRatio, opts) {
+            confetti(
+                Object.assign({}, defaults, opts, {
+                particleCount: Math.floor(count * particleRatio),
+                })
+            );
+            }
+
+            fire(0.25, {
+            spread: 26,
+            startVelocity: 55,
+            });
+
+            fire(0.2, {
+            spread: 60,
+            });
+
+            fire(0.35, {
+            spread: 100,
+            decay: 0.91,
+            scalar: 0.8,
+            });
+
+            fire(0.1, {
+            spread: 120,
+            startVelocity: 25,
+            decay: 0.92,
+            scalar: 1.2,
+            });
+
+            fire(0.1, {
+            spread: 120,
+            startVelocity: 45,
+            });
+        }
+
+        // Listen for changes to the reward-modal
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.classList && node.classList.contains('reward-modal')) {
+                            // Only start confetti if it's not a ZONK prize
+                            if (!document.querySelector('.reward-modal').textContent.includes('Better luck next time!')) {
+                                startConfetti();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    </script>
+</div>

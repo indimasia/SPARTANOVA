@@ -67,14 +67,33 @@
                                                 ->where('user_id', Auth::id());
                                         })
                                         ->get();
-                                    @endphp
+                                    @endphp                          
                                     @foreach(auth()->user()->unreadNotifications as $notification)
-                                        <a href="{{ route('pasukan.riwayat-pekerjaan') }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
-                                            <div class="ml-3">
-                                                <div class="text-sm font-medium text-gray-900">{{ $notification->data['message'] }}</div>
-                                                <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
-                                            </div>
-                                        </a>
+                                    @php
+                                        $redirectUrl = '#';
+
+                                        switch ($notification->type) {
+                                            case 'Withdraw Rejected':
+                                                $redirectUrl = route('withdraw.index');
+                                                break;
+                                            case 'Withdraw Approved':
+                                                $redirectUrl = route('withdraw.index');
+                                                break;
+                                            case 'Job Approved':
+                                                $redirectUrl = route('pasukan.riwayat-pekerjaan');
+                                                break;
+
+                                        }
+                                    @endphp
+
+                                    
+                                    <a href="{{ $redirectUrl }}" class="flex items-center px-4 py-3 hover:bg-gray-100 transition ease-in-out duration-150">
+                                        <div class="ml-3">
+                                            <div class="text-sm font-medium text-gray-900">{{ $notification->data['message'] }}</div>
+                                            <div class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</div>
+                                        </div>
+                                    </a>
+
                                     @endforeach
                                 
                                     @foreach($notifications as $notification)
@@ -136,22 +155,19 @@
                         <nav class="flex-1 overflow-y-auto py-4 bg-white">
                             <a href="{{ route('dashboard') }}"
                                 class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
-                                <i
-                                    class="fas fa-chart-line text-sm mr-3 {{ request()->routeIs('dashboard') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                <i class="fas fa-chart-line text-sm mr-3 {{ request()->routeIs('dashboard') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
                                 <span>Dashboard</span>
                             </a>
 
                             <a href="{{ route('pasukan.apply-job') }}"
                                 class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
-                                <i
-                                    class="fas fa-briefcase text-sm mr-3 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                <i class="fas fa-briefcase text-sm mr-3 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
                                 <span>Misi</span>
                             </a>
 
                             <a href="{{ route('misi.progres') }}"
                                 class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
-                                <i
-                                    class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                <i class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Misi yang Diambil</span>
                             </a>
                             @php
@@ -191,10 +207,8 @@
                                         ->get();
                                         $count = $notifications->count();
                                     @endphp
-                            <a href="{{ route('articles.index') }}"
-                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
-                                <i
-                                    class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                            <a href="{{ route('articles.index') }}"class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Artikel</span>
                                 @if($count > 0)
                                         <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -202,14 +216,32 @@
                                         </span>
                                     @endif
                             </a>
+
+                            @php
+                            $withdrawNotificationCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')
+                                ->where('type', 'Withdraw Rejected')
+                                ->where('read_at', null)
+                                ->get();
+
+                                $WithdrawCount = $withdrawNotificationCount->count();
+                            @endphp
                             <a href="{{ route('withdraw.index') }}"
                                 class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                 <i
                                     class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Dompet</span>
+                                @if( $WithdrawCount > 0)
+                                <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                    {{  $WithdrawCount }}
+                                </span>
+                            @endif
                             </a>
 
-                            <a href="{{ route('mini-game.index') }}"
+                            @php
+                                $miniGameStatus = App\Models\Setting::where('key_name', 'Mini Game')->first()->value;
+                            @endphp
+
+                            <a href="{{ $miniGameStatus == 'on' ? route('mini-game.index') : route('mini-game-cooming-soon.index') }}"
                                 class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                 <i
                                     class="fas fa-gamepad text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
@@ -301,14 +333,32 @@
                                     @endif
                                 </a>
 
+                                @php
+                            $withdrawNotificationCount = App\Models\Notification::where('notifiable_type', 'App\Models\User')
+                                ->where('type', 'Withdraw Rejected')
+                                ->where('read_at', null)
+                                ->get();
+
+                                $WithdrawCount = $withdrawNotificationCount->count();
+                            @endphp
+
                                 <a href="{{ route('withdraw.index') }}"
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
                                         class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Dompet</span>
+                                    @if( $WithdrawCount > 0)
+                                <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                    {{  $WithdrawCount }}
+                                </span>
+                            @endif
                                 </a>
 
-                                <a href="{{ route('mini-game.index') }}"
+                                @php
+                                    $miniGameStatus = App\Models\Setting::where('key_name', 'Mini Game')->first()->value;
+                                @endphp
+
+                                <a href="{{ $miniGameStatus == 'on' ? route('mini-game.index') : route('mini-game-cooming-soon.index') }}"
                                     class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
                                         class="fas fa-gamepad text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
