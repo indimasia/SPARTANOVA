@@ -6,9 +6,12 @@ use Livewire\Component;
 use App\Models\Annoucement;
 use Livewire\Attributes\On;
 use App\Models\JobParticipant;
+use App\Models\Notification;
+use App\Models\Transaction;
 use App\Models\UserPerformance;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class Dashboard extends Component
 {
@@ -44,11 +47,13 @@ class Dashboard extends Component
             $recentActivities = array_filter($recentActivities, function ($activity) use ($userId) {
                 return isset($activity['user_id']) && $activity['user_id'] == $userId;
             });
+            // dd($recentActivities);
                 $annoucements = Annoucement::whereIn('role', ['pasukan', 'both'])->get();
 
             $totalEarnings = UserPerformance::where('user_id', $userId)->pluck('total_reward')->first();
 
-            return view('livewire.pasukan.dashboard', compact('totalJobs', 'pendingJobs', 'approvedJobs', 'recentActivities', 'totalEarnings', 'annoucements'))
+            $dataWithdraw = auth()->user()->unreadNotifications;
+            return view('livewire.pasukan.dashboard', compact('totalJobs', 'pendingJobs', 'approvedJobs', 'recentActivities', 'totalEarnings', 'annoucements', 'dataWithdraw'))
                 ->layout('layouts.app');
         }
 

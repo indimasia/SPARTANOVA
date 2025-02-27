@@ -19,8 +19,12 @@ use Filament\Infolists\Components\TextEntry;
 use App\Filament\Resources\WithdrawResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\WithdrawResource\RelationManagers;
+use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification ;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class WithdrawResource extends Resource
 {
@@ -109,13 +113,42 @@ class WithdrawResource extends Resource
                         
                     ])
                     ->action(function (Transaction $record, array $data) {
+                    try {
                         $record->update([
                             'transfer_proof' => $data['transfer_proof'],
                             'status' => 'approved', 
                         ]);
-           
-                    }) ,
 
+                        Notification::make()
+                        ->title('Approve Successful')
+                        ->success()
+                        ->send();
+
+                        $userId = $record->user_id;
+                                
+                                if ($userId) {
+                                    DB::table('notifications')->insert([
+                                        'id' => (string) Str::uuid(),
+                                        'type' => 'Withdraw Approved',
+                                        'notifiable_id' => $userId,
+                                        'notifiable_type' => User::class,
+                                        'data' => json_encode([
+                                            'message'  => 'Your withdraw has been approved',
+                                            'transaction_id' => $record->id,
+                                            
+                                        ]),
+                                        'read_at' => null,
+                                        'created_at' => now(),
+                                        'updated_at' => now(),
+                                        ]);
+                                }
+                    } catch (\Throwable $th) {
+                        Notification::make()
+                        ->title('Approve Failed')
+                        ->danger()
+                        ->send();
+                    }
+                }),
                     
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
@@ -128,10 +161,44 @@ class WithdrawResource extends Resource
                             ->minLength(5)
                         ])
                         ->action(function ( Transaction $record, Array $data) {
-                            $record->update([
-                                'description' => $data['description'],
-                                'status' => 'rejected'
-                            ]);
+                        
+                            try {
+                                $record->update([
+                                    'description' => $data['description'],
+                                    'status' => 'rejected'
+                                ]);
+
+                                Notification::make()
+                                ->title('Successfully rejected')
+                                ->success()
+                                ->send();
+
+                                $userId = $record->user_id;
+                                
+                                if ($userId) {
+                                    DB::table('notifications')->insert([
+                                        'id' => (string) Str::uuid(),
+                                        'type' => 'Withdraw Rejected',
+                                        'notifiable_id' => $userId,
+                                        'notifiable_type' => User::class,
+                                        'data' => json_encode([
+                                            'message'  => 'Your withdraw has been rejeted',
+                                            'transaction_id' => $record->id,
+                                            'description' => $record->description
+                                        ]),
+                                        'read_at' => null,
+                                        'created_at' => now(),
+                                        'updated_at' => now(),
+                                        ]);
+                                }
+
+                            } catch (\Throwable $th) {
+                                Notification::make()
+                                ->title(title: 'Withdraw Rejected Failed')
+                                ->danger()
+                                ->send();
+                            }
+
                         }),
                     ]),
             ])

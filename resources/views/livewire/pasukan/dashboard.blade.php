@@ -63,6 +63,26 @@
                     <h3 class="text-lg font-semibold text-gray-800">Aktivitas Terbaru</h3>
                 </div>
                 <div class="p-4">
+
+                    
+                    @if (isset($dataWithdraw))
+                    <div class="space-y-4">
+                        @foreach ($dataWithdraw as $withdraw)
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center">
+
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-600">{{ $withdraw->data['message'] }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">
+                                        {{ \Carbon\Carbon::parse($withdraw['created_at'])->diffForHumans() }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @endif
+
                     @if (!empty($recentActivities) && count($recentActivities) > 0)
                         <div class="space-y-4">
                             @foreach ($recentActivities as $activity)
@@ -86,7 +106,7 @@
                                         @endswitch
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-sm text-gray-600">{{ $activity['description'] ?? 'Aktivitas' }}</p>
+                                        <p class="text-sm text-gray-600">{{ $withdrawData['message'] }}</p>
                                         <p class="text-xs text-gray-400 mt-1">
                                             {{ \Carbon\Carbon::parse($activity['created_at'])->diffForHumans() }}
                                         </p>
@@ -94,7 +114,9 @@
                                 </div>
                             @endforeach
                         </div>
-                    @else
+                    @endif
+
+                    @if (count($recentActivities) === 0 && count($dataWithdraw) === 0 )
                         <div class="text-center py-6">
                             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3">
                                 <i class="fas fa-clock text-xl text-gray-400"></i>
