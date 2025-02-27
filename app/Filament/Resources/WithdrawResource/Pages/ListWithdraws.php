@@ -2,9 +2,15 @@
 
 namespace App\Filament\Resources\WithdrawResource\Pages;
 
-use App\Filament\Resources\WithdrawResource;
 use Filament\Actions;
+use App\Exports\JobExport;
+use Filament\Actions\Action;
+use App\Exports\WithdrawExport;
+use App\Exports\WithdrawPdfExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\WithdrawResource;
+
 
 class ListWithdraws extends ListRecords
 {
@@ -13,7 +19,15 @@ class ListWithdraws extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\CreateAction::make(),
+            Action::make('Export Excel')
+                ->label('Export Excel')
+                ->color('success')
+                ->action(fn () => Excel::download(new WithdrawExport, 'withdraws.xlsx')),
+            Action::make('Export PDF')
+                ->label('Export PDF')
+                ->color('primary')
+                ->action(fn () => (new WithdrawPdfExport())->download()),
+            
         ];
     }
 }

@@ -57,12 +57,18 @@ class WithdrawResource extends Resource
                         return ($state + $amountPoints) . ' Poin';
                     }),
 
-                TextColumn::make('amount')
+                TextColumn::make('poin_ditarik')
                     ->label('Poin Ditarik')
                     ->color('danger')
-                    ->formatStateUsing(function ($state) {
-                        $conversionRate = ConversionRate::value('conversion_rate') ?? 1; // Pastikan nilai tidak null
-                        return $state ? round($state / $conversionRate) . ' Poin' : '-';
+                    ->getStateUsing(function ($record) {
+                        return $record->getPoinDitarikAttribute($record->amount);
+                    }),
+
+                TextColumn::make('amount')
+                    ->label('Uang Ditarik')
+                    ->color('danger')
+                    ->formatStateUsing(function ($state){
+                        return 'Rp ' . number_format($state, 0, ',', '.') ?? '-';
                     }),
 
                     TextColumn::make('in_the_name_of')

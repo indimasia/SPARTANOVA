@@ -13,4 +13,10 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getPoinDitarikAttribute($value)
+    {
+        $conversionRate = ConversionRate::value('conversion_rate') ?? 1; // Pastikan nilai tidak null
+        return $value ? round($value / $conversionRate) . ' Poin' : '-';
+    }
 }
