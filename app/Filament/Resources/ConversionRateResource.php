@@ -82,7 +82,7 @@ class ConversionRateResource extends Resource
             ->columns([
                 TextColumn::make('rupiah_amount')->label('Nominal (Rp)')->money('IDR'),
                 TextColumn::make('points_amount')->label('Jumlah Poin'),
-                TextColumn::make('conversion_rate')->label('1 Poin = Rp')->formatStateUsing(fn ($state) => number_format($state, 4)),
+                TextColumn::make('conversion_rate')->label('1 Poin = Rp')->formatStateUsing(fn ($state) => number_format($state)),
                 TextColumn::make('created_at')->label('Dibuat')->date(),
             ])
             ->filters([])
