@@ -15,6 +15,18 @@
                     {{ session('error') }}
                 </div>
             @endif
+            <!-- Daftar Hadiah yang Tersedia -->
+            <div class="mt-6">
+                <h2 class="text-3xl font-bold text-center text-white mb-4">Dapatkan Hadiah 🏆</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    @foreach ($rewards as $reward)
+                            <div class="bg-white bg-opacity-80 backdrop-blur-lg p-4 rounded-xl shadow-lg flex flex-col items-center">
+                                <img src="{{ $reward->image ? asset('storage/' . $reward->image) : 'https://placehold.co/150x150?text=No+Image' }}" class="w-24 h-24 object-cover rounded-lg mb-2">
+                                <p class="text-lg font-semibold text-purple-700">{{ $reward->name }}</p>
+                            </div>
+                    @endforeach
+                </div>
+            </div>
             <div class="flex justify-between">
                 <p class="text-lg text-white text-center font-semibold">
                     Setiap putaran membutuhkan <span class="text-yellow-300 font-bold">{{ $poingame }} Poin 🪙</span>
@@ -23,6 +35,7 @@
                     Poin Anda: <span class="text-yellow-300 font-bold">{{ $userPerformance }} 🪙</span>
                 </p>
             </div>
+            
             <p class="text-lg text-white text-center font-semibold">
                 <div class="grid grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
                     @for ($i = 0; $i < 12; $i++)
