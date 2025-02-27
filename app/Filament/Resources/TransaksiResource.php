@@ -44,6 +44,19 @@ class TransaksiResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereNull('type');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Transaction::where(function ($query) {
+            $query->whereNull('type') // Ambil yang type NULL
+                  ->orWhereNotIn('type', ['withdrawal']); // Ambil yang bukan withdrawal
+        })->where('status', 'pending')->count();
+    }
+
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
