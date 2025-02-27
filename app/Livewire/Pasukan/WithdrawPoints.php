@@ -5,6 +5,7 @@ namespace App\Livewire\Pasukan;
 use Livewire\Component;
 use App\Models\Transaction;
 use App\Models\ConversionRate;
+use App\Models\Notification;
 use App\Models\UserPerformance;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,6 +23,7 @@ class WithdrawPoints extends Component
     public $in_the_name_of = '';
     public $no_bank_account = '';
 
+    public $userTransactions = [];
     public $bank_account;
 
     public $isOpen = false;
@@ -58,11 +60,13 @@ class WithdrawPoints extends Component
     $this->transactions = $query->get()->map(function ($transaction) {
         return [
             'id' => $transaction->id,
+            'user_id' => $transaction->user_id,
             'amount' => $transaction->amount,
             'status' => $transaction->status,
             'in_the_name_of' => $transaction->in_the_name_of,
             'no_bank_account' => $transaction->no_bank_account,
             'bank_account' => $transaction->bank_account,
+            'description' => $transaction->description,
             'created_at' => $transaction->created_at->format('Y-m-d H:i:s'), // Format ke string yang bisa diproses
         ];
     })->toArray();
@@ -144,6 +148,7 @@ class WithdrawPoints extends Component
 
     public function render()
     {
+        Notification::whereNull('read_at')->update(['read_at' => now()]);
         return view('livewire.pasukan.withdraw-points')->layout('layouts.app');
     }
 }

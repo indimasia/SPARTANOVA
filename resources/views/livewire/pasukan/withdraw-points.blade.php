@@ -209,15 +209,17 @@
                         <div class="bg-white p-4 rounded-lg shadow">
                             <div class="flex justify-between items-center">
                                 <p class="text-gray-700 font-medium" x-text="`Penarikan Rp${transaction.amount.toLocaleString()}`"></p>
-                                <span :class="{
-                                    'bg-yellow-500 text-white': transaction.status === 'pending',
-                                    'bg-green-500 text-white': transaction.status === 'approved',
-                                    'bg-red-500 text-white': transaction.status === 'reject'
-                                }" class="px-3 py-1 text-sm font-semibold rounded" x-text="transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)"></span>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-2" 
-                            x-text="transaction.created_at ? new Date(transaction.created_at).toLocaleString('id-ID') : 'Tanggal Tidak Tersedia'">
-                            </p>
+                                <div>
+                                    <span :class="{
+                                        'bg-yellow-500 text-white': transaction.status === 'pending',
+                                        'bg-green-500 text-white': transaction.status === 'approved',
+                                        'bg-red-500 text-white': transaction.status === 'reject'
+                                    }" class=" py-1 text-sm font-semibold rounded" x-text="transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)"></span>
+                                    <p class="text-sm text-gray-500 mt-2" 
+                                    x-text="transaction.created_at ? new Date(transaction.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: 'numeric'})  : 'Tanggal Tidak Tersedia'">
+                                    </p>
+                                </div>
+                                </div>
                             <p class="text-sm text-gray-500 mt-2" 
                             x-text="`Atas Nama : ${transaction.in_the_name_of}`">
                             </p>
@@ -229,6 +231,9 @@
                             </p>
                             <p class="text-sm text-gray-500 mt-2" 
                             x-text="transaction.amount ? `${(transaction.amount / $wire.conversionRate).toLocaleString()} Poin` : 'Jumlah Poin Tidak Tersedia'">
+                            </p>
+                            <p x-show="transaction.status === 'rejected'" class="text-sm text-gray-500 mt-2" 
+                            x-text="`Alasan : ${transaction.description}`">
                             </p>
                         </div>
                     </template>
