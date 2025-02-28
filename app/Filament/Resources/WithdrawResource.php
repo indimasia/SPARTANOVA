@@ -130,11 +130,14 @@ class WithdrawResource extends Resource
                             'transfer_proof' => $data['transfer_proof'],
                             'status' => 'approved', 
                         ]);
-                        $record->user->notify(new UserApprovedNotification(
-                            'Withdraw Approved',
-                            'Your withdraw has been approved',
-                            '/dashboard'
-                        ));
+                        
+                            $user->notify(new UserApprovedNotification(
+                                'Withdraw Approved',
+                                'Your withdraw has been approved',
+                                '/dashboard'
+                            ));
+                        
+
                         Notification::make()
                         ->title('Approve Successful')
                         ->success()
@@ -159,7 +162,7 @@ class WithdrawResource extends Resource
                                         ]);
                                 }
                     } catch (\Throwable $th) {
-                        $record->user->notify(new UserApprovedNotification(
+                        $record->notify(new UserApprovedNotification(
                             'Withdraw Approved Failed',
                             'Your withdraw has been rejected',
                             '/dashboard'
@@ -188,7 +191,11 @@ class WithdrawResource extends Resource
                                     'description' => $data['description'],
                                     'status' => 'rejected'
                                 ]);
-
+                                $record->user->notify(new UserApprovedNotification(
+                                    'Withdraw Rejected',
+                                    'Your withdraw has been rejected',
+                                    '/dashboard'
+                                ));
                                 Notification::make()
                                 ->title('Successfully rejected')
                                 ->success()
