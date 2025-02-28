@@ -16,6 +16,14 @@ class CreateArticle extends CreateRecord
 
     protected function afterCreate(): void
     {
+        $users = User::role('pasukan')->get();
+        foreach ($users as $user) {
+            $user->notify(new UserApprovedNotification(
+                'Article Created',
+                'New article has been created!',
+                '/dashboard'
+            ));
+        }
         // Simpan satu notifikasi untuk semua user dengan role 'pasukan'
         Notification::create([
             'id' => (string) Str::uuid(),
