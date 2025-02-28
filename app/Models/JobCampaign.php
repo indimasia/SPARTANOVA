@@ -14,7 +14,7 @@ class JobCampaign extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'type', 'platform', 'quota', 'reward', 'status', 'due_date', 'is_multiple', 'is_verified', 'start_date', 'end_date', 'instructions', 'created_by'];
+    protected $fillable = ['title', 'type', 'platform', 'quota', 'reward', 'status', 'due_date', 'is_multiple', 'is_verified', 'start_date', 'end_date', 'instructions', 'created_by', 'description'];
 
     protected $appends = ['participant_count', 'active_participant'];
 
