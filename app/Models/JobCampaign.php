@@ -20,7 +20,7 @@ class JobCampaign extends Model
 
     public function getParticipantCountAttribute(): int
     {
-        return $this->participants()->count();
+        return $this->participants()->where('status', 'Approved')->count();
     }
 
     public function getActiveParticipantAttribute(): int

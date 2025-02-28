@@ -42,6 +42,11 @@ class WithdrawResource extends Resource
             ]);
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return Transaction::where('type', 'withdrawal')->where('status', 'pending')->count();
+    }
+
     public static function table(Table $table): Table
     {
         return $table

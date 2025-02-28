@@ -90,7 +90,7 @@
                                             {{ $campaign->platform->value }}
                                         </span>
                                         <span class="text-xs text-gray-500">
-                                            {{ $campaign->created_at->format('d M Y') }}
+                                            {{ $campaign->created_at->format('d M Y') }} | {{ $campaign->createdBy->name ?? 'Admin' }}
                                         </span>
                                     </div>
         
