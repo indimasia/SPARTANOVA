@@ -4,6 +4,7 @@ use App\Livewire\Home;
 use App\Models\Reward;
 use App\Livewire\Topup;
 use App\Livewire\MiniGame;
+use Illuminate\Http\Request;
 use App\Livewire\ArticleList;
 use App\Livewire\MisiProgres;
 use App\Livewire\Auth\Register;
@@ -14,6 +15,8 @@ use App\Livewire\NotificationRead;
 use App\Livewire\Pasukan\ApplyJob;
 use App\Livewire\ReferralRegister;
 use App\Livewire\Pasukan\Dashboard;
+use Illuminate\Support\Facades\Auth;
+use App\Livewire\MiniGameCoomingSoon;
 use App\Livewire\Pasukan\ViewProfile;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Auth\RegisterPasukan;
@@ -22,7 +25,7 @@ use App\Http\Middleware\PasukanMiddleware;
 use App\Livewire\Pasukan\RiwayatPekerjaan;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\JobDetailController;
-use App\Livewire\MiniGameCoomingSoon;
+use App\Http\Controllers\PushNotificationController;
 
 Route::get('/', Home::class)->name('home');
 Route::get('/register', Register::class)->name('register');
@@ -32,6 +35,11 @@ Route::get('storage/{filename}', [StorageController::class, 'fetchFile'])
     ->name('storage.fetch');
 Route::get('/rewards', function () {
     return Reward::where('status', 'available')->get();
+});
+
+Route::post('/subscribe', [PushNotificationController::class, 'subscribe']);
+Route::get('/vapid-public-key', function() {
+    return response()->json(['key' => config('webpush.vapid.public_key')]);
 });
 
 

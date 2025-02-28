@@ -3,28 +3,29 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Transaction;
+use Illuminate\Support\Str;
 use App\Models\ConversionRate;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\DB;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\FileUpload;
+use Filament\Notifications\Notification ;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
+use App\Notifications\UserApprovedNotification;
 use App\Filament\Resources\WithdrawResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\WithdrawResource\RelationManagers;
-use App\Models\User;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification ;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class WithdrawResource extends Resource
 {
@@ -129,7 +130,11 @@ class WithdrawResource extends Resource
                             'transfer_proof' => $data['transfer_proof'],
                             'status' => 'approved', 
                         ]);
-
+                        $record->user->notify(new UserApprovedNotification(
+                            'Withdraw Approved',
+                            'Your withdraw has been approved',
+                            '/dashboard'
+                        ));
                         Notification::make()
                         ->title('Approve Successful')
                         ->success()
@@ -154,6 +159,11 @@ class WithdrawResource extends Resource
                                         ]);
                                 }
                     } catch (\Throwable $th) {
+                        $record->notify(new UserApprovedNotification(
+                            'Withdraw Approved Failed',
+                            'Your withdraw has been rejected',
+                            '/dashboard'
+                        ));
                         Notification::make()
                         ->title('Approve Failed')
                         ->danger()
