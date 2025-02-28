@@ -263,7 +263,7 @@
         }
     }
 </script>
-<script>
+{{-- <script>
     document.addEventListener('DOMContentLoaded', async function() {
     alert('Halaman telah dimuat. Kami ingin mengirimkan notifikasi kepada Anda.');
     
@@ -306,4 +306,4 @@ async function subscribeUser() {
         alert('Gagal berlangganan notifikasi. Coba lagi nanti.');
     }
 }
-</script>
+</script> --}}
