@@ -7,10 +7,12 @@ use App\Models\Transaction;
 use App\Models\ConversionRate;
 use App\Models\Notification;
 use App\Models\UserPerformance;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class WithdrawPoints extends Component
 {
+    public $editTransaction;
     public $totalReward;
     public $selectedPoints;
     public $customPoints;
@@ -27,6 +29,7 @@ class WithdrawPoints extends Component
     public $bank_account;
 
     public $isOpen = false;
+    public $IsOpenEdit = false;
 
     public $rules = [
         'in_the_name_of' => ['required','string','min:3'],
@@ -34,7 +37,7 @@ class WithdrawPoints extends Component
         'bank_account' => ['required','string','max:255'],
     ];
 
-    protected $listeners = ['refreshTransactions'];
+    protected $listeners = ['refreshTransactions', 'refreshData'];
 
     public function mount()
     {
@@ -119,7 +122,30 @@ class WithdrawPoints extends Component
         $this->isOpen = false;
     }
 
-    public function openModal($points) {
+    public function updateWithdraw()
+    {
+        $this->validate([
+            'editTransaction.in_the_name_of' => 'required|min:3',
+            'editTransaction.bank_account' => 'required',
+            'editTransaction.no_bank_account' => 'required|min:8',
+        ]);
+
+
+        $transaction = Transaction::findOrFail($this->editTransaction['id']);
+
+
+        $transaction->update([
+            'in_the_name_of' => $this->editTransaction['in_the_name_of'],
+            'bank_account' => $this->editTransaction['bank_account'],
+            'no_bank_account' => $this->editTransaction['no_bank_account'],
+            'updated_at' => Carbon::now(), 
+        ]);
+        $this->IsOpenEdit = false;
+        $this->refreshTransactions();
+    }
+
+
+        public function openModal($points) {
         
         $pointsToWithdraw = $points;
 
@@ -136,14 +162,25 @@ class WithdrawPoints extends Component
         }
 
         $this->isOpen = true;
+    }
 
-        
+    public function editModal($transactionId) {
+        $transaction = Transaction::findOrFail($transactionId);
 
+        $this->editTransaction = [
+            'id' => $transaction->id,
+            'in_the_name_of' => $transaction->in_the_name_of,
+            'bank_account' => $transaction->bank_account,
+            'no_bank_account' => $transaction->no_bank_account,
+        ];
+    
+        $this->IsOpenEdit = true;
 
     }
 
     public function closeModal() {
         $this->isOpen = false;
+        $this->IsOpenEdit = false;
     }
 
     public function render()

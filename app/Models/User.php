@@ -18,8 +18,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasPushSubscriptions;
-
+    use HasFactory, Notifiable, HasRoles;
+    // HasPushSubscriptions
     /**
      * The attributes that are mass assignable.
      *
