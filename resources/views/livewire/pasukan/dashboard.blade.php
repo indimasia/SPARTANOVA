@@ -6,7 +6,7 @@
                 <i class="fas fa-chart-line text-yellow-500"></i>
                 Dashboard
             </h2>
-            <button onclick="subscribeUser()">Aktifkan Notifikasi</button>
+            {{-- <button onclick="subscribeUser()">Aktifkan Notifikasi</button> --}}
 
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -108,7 +108,7 @@
                                         @endswitch
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-sm text-gray-600">{{ $withdrawData['message'] }}</p>
+                                        <p class="text-sm text-gray-600">{{ $activity['description'] ?? 'Aktivitas' }}</p>
                                         <p class="text-xs text-gray-400 mt-1">
                                             {{ \Carbon\Carbon::parse($activity['created_at'])->diffForHumans() }}
                                         </p>
