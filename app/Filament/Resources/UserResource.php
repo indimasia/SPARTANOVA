@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use App\Models\SosialMediaAccount;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Collection;
+use App\Notifications\UserApprovedNotification;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
@@ -234,6 +235,12 @@ Tables\Columns\TextColumn::make('Whatsapp')
                         ->requiresConfirmation()
                         ->action(function ($record) {
                             $record->update(['status' => UserStatusEnum::ACTIVE->value]);
+                            $record->notify(new UserApprovedNotification(
+                                'Akun Anda Disetujui!',
+                                'Selamat, akun Anda telah di-approve oleh admin.',
+                                '/dashboard'
+                            ));
+                            
                             Notification::make()
                                 ->title('Berhasil')
                                 ->body('User berhasil di-approve.')

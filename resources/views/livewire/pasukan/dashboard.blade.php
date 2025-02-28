@@ -6,6 +6,8 @@
                 <i class="fas fa-chart-line text-yellow-500"></i>
                 Dashboard
             </h2>
+            <button onclick="subscribeUser()">Aktifkan Notifikasi</button>
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
@@ -268,5 +270,30 @@
             alert('Browser Anda tidak mendukung Geolocation.');
         }
 
+        
+
+
     });
+</script>
+<script>
+    async function subscribeUser() {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: 'BN77r8Fxr66uWMEmKjvojYkmW_d0_LonsLVBIbBFzXeDEJYsuGPBs3oIePDqIM_c6GB79LF8XmPDEkLdHW4artg',
+    });
+
+
+    await fetch('/subscribe', {
+        method: 'POST',
+        body: JSON.stringify(subscription),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    });
+
+    alert('Berhasil berlangganan notifikasi!');
+}
+
 </script>
