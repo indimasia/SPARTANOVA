@@ -40,6 +40,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\JobInAdminResource\Pages;
 use App\Filament\Resources\JobInAdminResource\RelationManagers;
 use App\Filament\Resources\JobResource\RelationManagers\ParticipantsRelationManager;
+use App\Models\User;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class JobInAdminResource extends Resource
 {
@@ -681,13 +685,55 @@ class JobInAdminResource extends Resource
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
+                        ->form([
+                            TextInput::make('description')
+                            ->required()
+                            ->minLength(3)
+                            ->maxLength(255)
+                        ])
                         ->hidden(fn (JobCampaign $record): bool => $record->is_verified === 0)
-                        ->action(function (JobCampaign $record) {
-                            $record->update(['is_verified' => false]);
-                            Notification::make()
-                                ->title('Berhasil Tolak Verifikasi')
-                                ->success()
-                                ->send();
+                        ->action(
+                            function (JobCampaign $record, Array $data) {
+
+                                try {
+                                    $record->update([
+                                        'description' => $data['description'],
+                                        'is_verified' => false,
+                                    ]);
+    
+                                    $userId = $record->created_by;
+                                    
+                                    if ($userId) {
+                                        DB::table('notifications')->insert([
+                                            'id' => (string) Str::uuid(),
+                                            'type' => 'Job Rejected',
+                                            'notifiable_type' => User::class,
+                                            'notifiable_id' => $userId,
+                                            'data' => json_encode([
+                                                'message' => 'Your job has been rejected',
+                                                'jobCampaign_id' => $record->id,
+                                            ]),
+                                            'read_at' => null,
+                                            'created_at' => now(),
+                                            'updated_at' => now(),
+                                            
+                                        ])
+                                        ;
+                                        
+                                        Notification::make()
+                                        ->title('Berhasil Tolak Verifikasi')
+                                        ->success()
+                                        ->send()
+                                        ->toDatabase();
+        
+                                    }
+
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                    ->title('Gagal Tolak Verifikasi')
+                                    ->success()
+                                    ->send();
+                                }                            
                         }),
                     Tables\Actions\DeleteAction::make(),
                 ]),
@@ -700,7 +746,7 @@ class JobInAdminResource extends Resource
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->action(function (Collection $records) {
+                        ->action(function (Collection $records, array $data) {
                             try {
                                 $records->each->update(['status' => 'publish']);
                                 Notification::make()
