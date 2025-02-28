@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\ArticleResource;
+use App\Notifications\UserApprovedNotification;
 
 class CreateArticle extends CreateRecord
 {
