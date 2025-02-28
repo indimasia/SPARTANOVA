@@ -620,26 +620,28 @@ class JobResource extends Resource
                 Tables\Columns\TextColumn::make('quota')->label('Kuota'),
                 // Tables\Columns\TextColumn::make('reward')->label('Hadiah'),
                 Tables\Columns\TextColumn::make('status')
-                    ->badge()
-                    ->formatStateUsing(fn ($record) => match (true) {
-                        is_null($record->is_verified) => 'Belum Verifikasi',
-                        $record->is_verified === false => 'Verifikasi Ditolak',
-                        default => $record->status, // Gunakan status asli jika sudah diverifikasi
-                    })
-                    ->icon(fn ($record) => match (true) {
-                        is_null($record->is_verified) => 'heroicon-o-question-mark-circle',
-                        $record->is_verified === false => 'heroicon-o-x-circle',
-                        $record->status === 'publish' => 'heroicon-o-check-circle',
-                        $record->status === 'draft' => 'heroicon-o-exclamation-circle',
-                        default => null,
-                    })
-                    ->color(fn ($record) => match (true) {
-                        is_null($record->is_verified) => 'gray',
-                        $record->is_verified === false => 'danger',
-                        $record->status === 'publish' => 'success',
-                        $record->status === 'draft' => 'warning',
-                        default => 'gray',
-                    }),
+                ->badge()
+                ->formatStateUsing(fn ($record) => match (true) {
+                    is_null($record->is_verified) => 'Belum Verifikasi',
+                    $record->is_verified === 0 => 'Verifikasi Ditolak',
+                    $record->is_verified === 1 => $record->status, // Gunakan status asli jika sudah diverifikasi
+                })
+                ->icon(fn ($record) => match (true) {
+                    is_null($record->is_verified) => 'heroicon-o-question-mark-circle',
+                    $record->is_verified === 0 => 'heroicon-o-x-circle',
+                    $record->status === 'publish' => 'heroicon-o-check-circle',
+                    $record->status === 'draft' => 'heroicon-o-exclamation-circle',
+                    default => null,
+                })
+                ->color(fn ($record) => match (true) {
+                    is_null($record->is_verified) => 'gray',
+                    $record->is_verified === 0 => 'danger',
+                    $record->status === 'publish' => 'success',
+                    $record->status === 'draft' => 'warning',
+                    default => 'gray',
+                }),
+                Tables\Columns\TextColumn::make('description')
+                ->default('Tidak ada description'),
                 Tables\Columns\TextColumn::make('start_date')->date()->label('Tanggal Mulai')->toggleable(),
                 Tables\Columns\TextColumn::make('end_date')->date()->label('Tanggal Selesai')->toggleable(),
             ])

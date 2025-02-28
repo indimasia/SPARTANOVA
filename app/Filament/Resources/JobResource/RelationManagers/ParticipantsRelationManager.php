@@ -10,15 +10,16 @@ use Filament\Tables\Table;
 use App\Models\PackageRate;
 use Illuminate\Support\Str;
 use App\Enums\JobStatusEnum;
-use Filament\Tables\Actions\Action;
 use App\Models\UserPerformance;
-use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Infolist;
+use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\URL;
+use Filament\Infolists\Components\Grid;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
+use App\Notifications\UserApprovedNotification;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -130,6 +131,11 @@ class ParticipantsRelationManager extends RelationManager
                                 ]);
 
                                     $record->update(['status' => JobStatusEnum::APPROVED->value]);
+                                    $record->user->notify(new UserApprovedNotification(
+                                        'Job Approved',
+                                        'Your job has been approved!',
+                                        '/dashboard'
+                                    ));
                                     Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
@@ -151,6 +157,11 @@ class ParticipantsRelationManager extends RelationManager
                             try {
                                 $record->update(['status' => JobStatusEnum::REJECTED->value]);
                                 // TODO: update data user performance if rejected
+                                $record->user->notify(new UserApprovedNotification(
+                                    'Job Rejected',
+                                    'Your job has been rejected!',
+                                    '/dashboard'
+                                ));
                                 Notification::make()
                                     ->title('Successfully rejected')
                                     ->success()

@@ -4,20 +4,22 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\SosialMediaAccount;
+use Illuminate\Support\Facades\Http;
 use Spatie\Permission\Traits\HasRoles;
+use App\Notifications\PushNotification;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Http;
 
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
-
+    // HasPushSubscriptions
     /**
      * The attributes that are mass assignable.
      *
@@ -151,6 +153,20 @@ class User extends Authenticatable implements FilamentUser
     public function getSocialMediaUsername($platform)
     {
         return $this->sosialMediaAccounts->where('sosial_media', $platform)->first()?->account ?? 'Tidak punya akun';
+    }
+
+    public function sendPushNotification($title, $body, $url)
+    {
+        $user = User::find(3); // Ganti dengan ID user yang ingin dikirim notifikasi
+$user->notify(new PushNotification());
+    }
+
+    public function updatePushSubscription($endpoint, $keys)
+    {
+        $this->pushSubscriptions()->updateOrCreate(
+            ['endpoint' => $endpoint],
+            ['public_key' => $keys['p256dh'], 'auth_token' => $keys['auth'], 'content_encoding' => 'aesgcm']
+        );
     }
 
 }

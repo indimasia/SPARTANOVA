@@ -66,7 +66,8 @@ class MiniGame extends Component
     {
         $userPerformance = UserPerformance::where('user_id', auth()->user()->id)->pluck('total_reward')->first();
         $poingame = Setting::where('key_name', 'Poin Game')->pluck('value')->first();
-        return view('livewire.mini-game', compact('userPerformance', 'poingame'))->layout('layouts.app');
+        $rewards = Reward::where('is_available', 1)->where('quantity', '>', 0)->get();
+        return view('livewire.mini-game', compact('userPerformance', 'poingame', 'rewards'))->layout('layouts.app');
     }
 }
 

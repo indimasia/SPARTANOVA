@@ -24,6 +24,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
+use App\Notifications\UserApprovedNotification;
 use App\Filament\Resources\TransaksiResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
@@ -99,7 +100,11 @@ class TransaksiResource extends Resource
                         ->action(function (Transaction $record) {
                             try {
                                 $record->update(['status' => 'approved']);
-                            
+                                $record->user->notify(new UserApprovedNotification(
+                                    'Top Up Approved',
+                                    'Top up has been approved!',
+                                    '/dashboard'
+                                ));
                                 Notification::make()
                                     ->title('Successfully approved')
                                     ->success()
@@ -135,6 +140,11 @@ class TransaksiResource extends Resource
                         ->action(function ( $record) {
                             try {
                                 $record->update(['status' => 'rejected']);
+                                $record->user->notify(new UserApprovedNotification(
+                                    'Top Up Rejected',
+                                    'Top up has been rejected!',
+                                    '/dashboard'
+                                ));
                                 Notification::make()
                                     ->title('Successfully rejected')
                                     ->success()

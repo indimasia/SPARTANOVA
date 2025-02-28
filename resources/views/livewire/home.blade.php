@@ -263,3 +263,47 @@
         }
     }
 </script>
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+    alert('Halaman telah dimuat. Kami ingin mengirimkan notifikasi kepada Anda.');
+    
+    if (Notification.permission === 'granted') {
+        console.log('Notification.permission === granted');
+        subscribeUser();
+    } else if (Notification.permission !== 'denied') {
+        let permission = await Notification.requestPermission();
+        
+        if (permission === 'granted') {
+            subscribeUser();
+        } else {
+            alert('Anda menolak notifikasi.');
+        }
+    } else {
+        alert('Anda sebelumnya telah menolak notifikasi. Jika ingin mengaktifkannya, silakan ubah pengaturan browser.');
+    }
+});
+
+async function subscribeUser() {
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: 'BN77r8Fxr66uWMEmKjvojYkmW_d0_LonsLVBIbBFzXeDEJYsuGPBs3oIePDqIM_c6GB79LF8XmPDEkLdHW4artg',
+        });
+        
+        await fetch('/subscribe', {
+            method: 'POST',
+            body: JSON.stringify(subscription),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        });
+        
+        alert('Berhasil berlangganan notifikasi!');
+    } catch (error) {
+        console.error('Gagal berlangganan notifikasi:', error);
+        alert('Gagal berlangganan notifikasi. Coba lagi nanti.');
+    }
+}
+</script> --}}

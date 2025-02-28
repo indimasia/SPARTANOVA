@@ -6,6 +6,8 @@
                 <i class="fas fa-chart-line text-yellow-500"></i>
                 Dashboard
             </h2>
+            {{-- <button onclick="subscribeUser()">Aktifkan Notifikasi</button> --}}
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
@@ -106,7 +108,7 @@
                                         @endswitch
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-sm text-gray-600">{{ $withdrawData['message'] }}</p>
+                                        <p class="text-sm text-gray-600">{{ $activity['description'] ?? 'Aktivitas' }}</p>
                                         <p class="text-xs text-gray-400 mt-1">
                                             {{ \Carbon\Carbon::parse($activity['created_at'])->diffForHumans() }}
                                         </p>
@@ -268,5 +270,74 @@
             alert('Browser Anda tidak mendukung Geolocation.');
         }
 
+        
+
+
     });
+</script>
+<script>
+    async function subscribeUser() {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: 'BN77r8Fxr66uWMEmKjvojYkmW_d0_LonsLVBIbBFzXeDEJYsuGPBs3oIePDqIM_c6GB79LF8XmPDEkLdHW4artg',
+    });
+
+
+    await fetch('/subscribe', {
+        method: 'POST',
+        body: JSON.stringify(subscription),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    });
+
+    alert('Berhasil berlangganan notifikasi!');
+}
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        alert('Halaman telah dimuat. Kami ingin mengirimkan notifikasi kepada Anda.');
+        
+        if (Notification.permission === 'granted') {
+            console.log('Notification.permission === granted');
+            subscribeUser();
+        } else if (Notification.permission !== 'denied') {
+            let permission = await Notification.requestPermission();
+            
+            if (permission === 'granted') {
+                subscribeUser();
+            } else {
+                alert('Anda menolak notifikasi.');
+            }
+        } else {
+            alert('Anda sebelumnya telah menolak notifikasi. Jika ingin mengaktifkannya, silakan ubah pengaturan browser.');
+        }
+    });
+
+    async function subscribeUser() {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: 'BN77r8Fxr66uWMEmKjvojYkmW_d0_LonsLVBIbBFzXeDEJYsuGPBs3oIePDqIM_c6GB79LF8XmPDEkLdHW4artg',
+            });
+            
+            await fetch('/subscribe', {
+                method: 'POST',
+                body: JSON.stringify(subscription),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+            
+            alert('Berhasil berlangganan notifikasi!');
+        } catch (error) {
+            console.error('Gagal berlangganan notifikasi:', error);
+            alert('Gagal berlangganan notifikasi. Coba lagi nanti.');
+        }
+    }
 </script>
