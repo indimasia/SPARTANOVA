@@ -131,11 +131,11 @@ class WithdrawResource extends Resource
                             'status' => 'approved', 
                         ]);
                         
-                            $user->notify(new UserApprovedNotification(
-                                'Withdraw Approved',
-                                'Your withdraw has been approved',
-                                '/dashboard'
-                            ));
+                        $record->user->notify(new UserApprovedNotification(
+                            'Withdraw Approved',
+                            'Your withdraw has been approved',
+                            '/dashboard'
+                        ));
                         
 
                         Notification::make()
@@ -162,7 +162,7 @@ class WithdrawResource extends Resource
                                         ]);
                                 }
                     } catch (\Throwable $th) {
-                        $record->notify(new UserApprovedNotification(
+                        $record->user->notify(new UserApprovedNotification(
                             'Withdraw Approved Failed',
                             'Your withdraw has been rejected',
                             '/dashboard'
