@@ -3,6 +3,7 @@
 namespace App\Livewire\Pasukan;
 
 use App\Models\User;
+use App\Models\SosialMediaAccount;
 use App\Models\Regency;
 use App\Models\Village;
 use Livewire\Component;
@@ -34,6 +35,8 @@ class Profile extends Component
     public $sosialMediaAccounts = [];
     public $regencies = [];
     public $provinces = [];
+
+    public $user_id;
 
     public function updatedProvinceKode($value)
 {
@@ -67,6 +70,7 @@ public function updateVillageKode($value)
 
     public function mount()
 {
+    $this->user_id = auth()->id();
     $this->user = Auth::user()->load('village', 'district', 'regency', 'province');
     $this->name = $this->user->name;
     $this->email = $this->user->email;
@@ -161,6 +165,35 @@ public function updateVillageKode($value)
                 'sosialMediaAccounts.*.string' => 'URL sosial media harus berupa string.',
                 'sosialMediaAccounts.*.max' => 'URL sosial media harus memiliki paling banyak 255 karakter.',
             ]);
+
+
+            $errors = [];
+            $invalidAccounts = [];
+        
+            if (!empty($this->sosialMediaAccounts)) {
+                foreach ($this->sosialMediaAccounts as $platform => $account) {
+                    if (!empty($account) && $account !== 'Tidak punya akun') {
+                        $existingAccount = SosialMediaAccount::where([
+                            ['sosial_media', $platform],
+                            ['account', $account]
+                        ])->first();
+        
+                        if ($existingAccount && $existingAccount->user_id !== auth()->id()) {
+                            $invalidAccounts[$platform] = $account;
+                        }
+                    }
+                }
+        
+                if (!empty($invalidAccounts)) {
+                    foreach ($invalidAccounts as $platform => $account) {
+                        $errors["sosialMediaAccounts.$platform"] = "Akun '$account' sudah digunakan pada platform '$platform'.";
+                    }
+        
+                    throw ValidationException::withMessages($errors);
+                }
+            }
+
+
             } catch (ValidationException $e) {
                 $errorField = array_key_first($e->validator->errors()->toArray());
                 $this->js(<<<JS
