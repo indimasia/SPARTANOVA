@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use App\Enums\GenEnum;
 use App\Enums\JobType;
@@ -11,18 +12,20 @@ use App\Models\Village;
 use Filament\Forms\Get;
 use Filament\Infolists;
 use App\Models\District;
-use App\Models\Province;
 
+use App\Models\Province;
 use Filament\Forms\Form;
 use App\Enums\PackageEnum;
 use Filament\Tables\Table;
 use App\Enums\PlatformEnum;
 use App\Models\JobCampaign;
 use App\Models\PackageRate;
+use Illuminate\Support\Str;
 use App\Enums\UserInterestEnum;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\URL;
@@ -32,18 +35,16 @@ use Filament\Forms\Components\Wizard;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\ToggleButtons;
+use App\Notifications\UserApprovedNotification;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\JobInAdminResource\Pages;
 use App\Filament\Resources\JobInAdminResource\RelationManagers;
 use App\Filament\Resources\JobResource\RelationManagers\ParticipantsRelationManager;
-use App\Models\User;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class JobInAdminResource extends Resource
 {
@@ -679,6 +680,15 @@ class JobInAdminResource extends Resource
                         ->hidden(fn (JobCampaign $record): bool => $record->is_verified === 1)
                         ->action(function (JobCampaign $record) {
                             $record->update(['is_verified' => true]);
+                            $record->createdBy->notify(new UserApprovedNotification(
+                                'Job Approved',
+                                'Your job has been approved!',
+                                '/dashboard'
+                            ));
+                            Notification::make()
+                                ->title('Berhasil Verifikasi')
+                                ->success()
+                                ->send();
                         }),
                     Tables\Actions\Action::make('reject')
                         ->label('Tolak Verifikasi')
@@ -719,7 +729,11 @@ class JobInAdminResource extends Resource
                                             
                                         ])
                                         ;
-                                        
+                                        $record->createdBy->notify(new UserApprovedNotification(
+                                            'Job Rejected',
+                                            'Your job has been rejected',
+                                            '/dashboard'
+                                        ));
                                         Notification::make()
                                         ->title('Berhasil Tolak Verifikasi')
                                         ->success()
