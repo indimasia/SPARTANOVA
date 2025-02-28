@@ -159,7 +159,7 @@ class WithdrawResource extends Resource
                                         ]);
                                 }
                     } catch (\Throwable $th) {
-                        $record->notify(new UserApprovedNotification(
+                        $record->user->notify(new UserApprovedNotification(
                             'Withdraw Approved Failed',
                             'Your withdraw has been rejected',
                             '/dashboard'
