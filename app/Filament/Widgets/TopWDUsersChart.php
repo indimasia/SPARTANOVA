@@ -24,6 +24,7 @@ class TopWDUsersChart extends ChartWidget
                 [
                     'label' => 'Total Withdraw',
                     'data' => $topWDUsers->pluck('total_amount')->toArray(),
+                    'backgroundColor' => ['#6488ea', '#7494ec', '#83a0ee', '#93acf0', '#a2b8f2', '#b2c4f5', '#c1cff7', '#d1dbf9', '#e0e7fb', '#f0f3fd'],
                 ],
             ],
             'labels' => $topWDUsers->pluck('user.name')->toArray(),

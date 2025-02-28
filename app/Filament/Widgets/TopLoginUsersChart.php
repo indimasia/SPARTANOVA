@@ -19,7 +19,7 @@ class TopLoginUsersChart extends ChartWidget
                 [
                     'label' => 'Login Count',
                     'data' => $users->pluck('login_count')->toArray(),
-                    'backgroundColor' => ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8A2BE2', '#32CD32', '#FFD700', '#DC143C'],
+                    'backgroundColor' => ['#E81919', '#EA3333', '#ED4d4d', '#EF6666', '#F28080', '#F59999', '#FF9F40', '#F7B3B3', '#FACCCC', '#FCE6E6', '#FFFFFF'],
                 ],
             ],
             'labels' => $users->pluck('name')->toArray(),

@@ -25,7 +25,7 @@ class TopReferralUsersChart extends ChartWidget
                 [
                     'label' => 'Total Referral',
                     'data' => $topReferralUsers->pluck('total')->toArray(),
-                    'backgroundColor' => ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8A2BE2', '#32CD32', '#FFD700', '#DC143C'],
+                    'backgroundColor' => ['#977a59', '#a2896b', '#ae977e', '#b9a690', '#c5b5a3', '#d1c4b5', '#dcd3c8', '#e8e1da', '#f3f0ed', '#ffffff'],
                 ],
             ],
             'labels' => $topReferralUsers->pluck('referred_by')->toArray(),
