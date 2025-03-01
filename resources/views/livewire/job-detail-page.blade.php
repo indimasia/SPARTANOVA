@@ -238,9 +238,20 @@
                             </h4>
                             <p class="text-gray-600">{{ $selectedJob->end_date }}</p>
                         </div>
+
+                    </div>
+                    <!-- notes -->
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                            Catatan:
+                        </h4>
+                        <p class="text-gray-600">
+                            Setelah mengerjakan misi, silahkan pindah ke halaman LAPORAN
+                        </p>
                     </div>
                 @endif
             </div>
+
 
             <!-- Page Footer -->
             <div class="p-6 sm:p-10 border-t border-gray-200 flex justify-end gap-4">
