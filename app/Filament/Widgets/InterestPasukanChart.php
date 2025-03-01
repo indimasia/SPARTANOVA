@@ -23,6 +23,7 @@ class InterestPasukanChart extends ChartWidget
                     'label' => 'Minat',
                     'data' => $interestCounts->values()->toArray(),
                     'backgroundColor' => $colors,
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => $labels,
