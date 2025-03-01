@@ -5,10 +5,12 @@ namespace App\Livewire\Pasukan;
 use Livewire\Component;
 use App\Enums\JobStatusEnum;
 use App\Models\Notification;
+use App\Services\OcrService;
 use Livewire\WithFileUploads;
 use App\Models\JobParticipant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class RiwayatPekerjaan extends Component
 {
@@ -63,40 +65,59 @@ class RiwayatPekerjaan extends Component
     }
 
     public function uploadBukti()
-    {
-        $this->validate([
-            'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ], [
-            'attachment.required' => 'File bukti harus diunggah.',
-            'attachment.file' => 'Harap unggah file yang valid.',
-            'attachment.mimes' => 'File harus berupa: jpg, jpeg, png, pdf.',
-            'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
-        ]);
-    
-        $jobParticipant = JobParticipant::find($this->selectedJobHistory);
-    
-        if (!$jobParticipant) {
-            session()->flash('error', 'Data tidak ditemukan.');
-            return;
-        }
-    
-        $userId = auth()->id();
-        $fileName = time() . '_' . $this->attachment->getClientOriginalName();
-        $path = "pasukan/attachment/{$userId}/{$fileName}";
-    
-        // Simpan ke Cloudflare R2
-        $this->attachment->storeAs('pasukan/attachment/'.$userId, $fileName, 'r2');
-    
-        // Update database
-        $jobParticipant->update([
-            'attachment' => $path,
-            'status' => JobStatusEnum::REPORTED->value,
-        ]);
-    
-        $this->showModal = false;
-        session()->flash('message', 'Bukti berhasil diupload!');
-        $this->getData();
+{
+    $this->validate([
+        'attachment' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    $jobParticipant = JobParticipant::find($this->selectedJobHistory);
+    if (!$jobParticipant) {
+        session()->flash('error', 'Data tidak ditemukan.');
+        return;
     }
+
+    $userId = auth()->id();
+    $fileName = time() . '_' . $this->attachment->getClientOriginalName();
+    $path = "pasukan/attachment/{$userId}/{$fileName}";
+
+    // Simpan ke Cloudflare R2
+    $this->attachment->storeAs("pasukan/attachment/{$userId}", $fileName, 'r2');
+
+
+
+
+    $this->attachment->storeAs('ocr', $fileName, 'public');
+    
+    // ✅ Pastikan path benar untuk OCR
+    $localPath = public_path("ocr/{$fileName}");
+    
+    if (!file_exists($localPath)) {
+        dd('test');
+        session()->flash('error', 'File gagal disimpan.');
+        return;
+    }
+    dd($localPath);
+
+    // ✅ Jalankan OCR dengan path lokal
+    $ocrViews = OcrService::extractText($localPath);
+    dd($ocrViews); // Debug hasil OCR
+    
+    if ($ocrViews === null) {
+        session()->flash('error', 'Gagal membaca angka dari screenshot');
+        return;
+    }
+
+    // Update database
+    $jobParticipant->update([
+        'attachment' => $path,
+        'ocr_extracted_views' => $ocrViews,
+        'status' => JobStatusEnum::REPORTED->value,
+    ]);
+
+    $this->showModal = false;
+    session()->flash('message', 'Bukti berhasil diupload!');
+    $this->getData();
+}
 
 
     public function showAttachmentModal($historyId)
