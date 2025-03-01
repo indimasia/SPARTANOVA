@@ -13,6 +13,7 @@ use App\Filament\Pengiklan\Pages\DashboardPengiklan;
 use Filament\Http\Middleware\Authenticate;
 use App\Http\Middleware\PengiklanMiddleware;
 use App\Livewire\spartavTag;
+use Filament\Facades\Filament;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -20,11 +21,21 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Support\Facades\View;
 
 class PengiklanPanelProvider extends PanelProvider
 {
+
+    public function boot()
+    {
+        Filament::registerRenderHook(
+            'panels::body.end',
+            fn () => View::make('filament.pengiklan.settings.footer')
+        );
+    }
     public function panel(Panel $panel): Panel
     {
         return $panel
