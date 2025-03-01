@@ -54,6 +54,14 @@ class MiniGame extends Component
             }
         }
 
+        
+        \App\Models\UserReward::create([
+            'user_id' => auth()->user()->id,
+            
+            'reward_id' => $selectedReward->id ?? null
+        ]);
+    
+        
         $this->prize = [
             'name' => $selectedReward->name,
             'image' => $selectedReward->image,
