@@ -18,4 +18,9 @@ class Reward extends Model
         'is_available',
     ];
 
+
+    public function userRewaards(){
+        $this->hasMany(UserReward::class, 'reward_id', 'id');
+    }
+
 }
