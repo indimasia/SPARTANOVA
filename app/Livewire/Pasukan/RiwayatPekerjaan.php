@@ -79,38 +79,33 @@ class RiwayatPekerjaan extends Component
     $userId = auth()->id();
     $fileName = time() . '_' . $this->attachment->getClientOriginalName();
     $path = "pasukan/attachment/{$userId}/{$fileName}";
+    $localPath = "ocr/{$fileName}";
+    $publicPath = public_path("storage/ocr/{$fileName}");
 
-    // Simpan ke Cloudflare R2
+
+
     $this->attachment->storeAs("pasukan/attachment/{$userId}", $fileName, 'r2');
-
-
-
 
     $this->attachment->storeAs('ocr', $fileName, 'public');
     
-    // ✅ Pastikan path benar untuk OCR
-    $localPath = public_path("ocr/{$fileName}");
     
-    if (!file_exists($localPath)) {
-        dd('test');
-        session()->flash('error', 'File gagal disimpan.');
-        return;
-    }
-    dd($localPath);
+    $text = OcrService::extractText($publicPath);
+    // Cari angka setelah kata "Views"
+if (preg_match('/oleh\s+(\d+)/i', $text, $matches)) {
+    $views = $matches[1]; // Ambil angka yang ditemukan
+} else {
+    $views = null; // Kalau tidak ketemu, kosongkan
+}
 
-    // ✅ Jalankan OCR dengan path lokal
-    $ocrViews = OcrService::extractText($localPath);
-    dd($ocrViews); // Debug hasil OCR
-    
-    if ($ocrViews === null) {
+    if ($views === null) {
         session()->flash('error', 'Gagal membaca angka dari screenshot');
         return;
     }
 
-    // Update database
+    
     $jobParticipant->update([
         'attachment' => $path,
-        'ocr_extracted_views' => $ocrViews,
+        'view_by_image' => $views,
         'status' => JobStatusEnum::REPORTED->value,
     ]);
 
