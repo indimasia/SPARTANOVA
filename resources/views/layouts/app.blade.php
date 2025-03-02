@@ -392,8 +392,8 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     <!-- Left Column -->
                     <div class="lg:col-span-2">
-                        <img src="{{ asset('images/spartavlogofooter.png') }}" alt="SPARTAV Logo" class="h-24 object-contain" />
-                        <p class="text-white/90 max-w-4xl text-lg leading-relaxed">
+                        <img src="{{ asset('images/spartavlogofooter.png') }}" alt="SPARTAV Logo" class="lg:h-24 object-contain lg:justify-self-start justify-self-center h-16" />
+                        <p class="text-white/90 max-w-4xl lg:text-lg leading-relaxed text-md">
                             SPARTAV adalah platform manajemen periklanan dan pemasaran digital yang memfasilitasi advertiser untuk
                             memperluas target market dengan memberdayakan pasukan netizen sebagai 'adsman' untuk melakukan kegiatan
                             branding, marketing, dan selling secara online.
@@ -402,23 +402,23 @@
         
                     <!-- Right Column -->
                     <div class="space-y-4 sm:space-y-6">
-                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold">PT Sinergi Mitra Mediatama</h2>
+                        <h2 class="lg:text-lg text-md md:text-2xl font-bold">PT Sinergi Mitra Mediatama</h2>
                         <div class="space-y-3 sm:space-y-4 font-bold">
                             <div class="flex items-center gap-2 sm:gap-3">
-                                <i class="fa-regular fa-envelope text-lg sm:text-xl"></i>
-                                <a href="mailto:eov.eventrue@gmail.com" class="hover:text-white/80 text-base sm:text-xl">
+                                <i class="fa-regular fa-envelope text-sm lg:text-lg"></i>
+                                <a href="mailto:eov.eventrue@gmail.com" class="hover:text-white/80 lg:text-base text-sm">
                                     eov.eventrue@gmail.com
                                 </a>
                             </div>
                             <div class="flex items-center gap-2 sm:gap-3">
-                                <i class="fa-brands fa-whatsapp text-lg sm:text-xl"></i>
-                                <a href="tel:08999950006" class="hover:text-white/80 text-base sm:text-xl">
+                                <i class="fa-brands fa-whatsapp lg:text-lg text-sm"></i>
+                                <a href="tel:08999950006" class="hover:text-white/80 lg:text-base text-sm">
                                     08999950006
                                 </a>
                             </div>
                             <div class="flex items-center gap-2 sm:gap-3">
-                                <i class="fa-solid fa-location-dot text-lg sm:text-xl"></i>
-                                <span class="text-base sm:text-xl">Semarang, Indonesia</span>
+                                <i class="fa-solid fa-location-dot lg:text-lg text-sm"></i>
+                                <span class="lg:text-base text-sm">Semarang, Indonesia</span>
                             </div>
                         </div>
                     </div>
