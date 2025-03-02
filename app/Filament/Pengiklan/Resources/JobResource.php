@@ -383,9 +383,19 @@ class JobResource extends Resource
                             Forms\Components\RichEditor::make('instructions')
                                 ->required()
                                 ->toolbarButtons([
+                                    'attachFiles',
+                                    'blockquote',
+                                    'bold',
                                     'bulletList',
+                                    'codeBlock',
+                                    'h2',
+                                    'h3',
+                                    'italic',
+                                    'link',
                                     'orderedList',
                                     'redo',
+                                    'strike',
+                                    'underline',
                                     'undo',
                                 ])
                                 ->validationMessages([

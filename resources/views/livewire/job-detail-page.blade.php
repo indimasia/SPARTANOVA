@@ -143,9 +143,9 @@
                                                 </svg>
                                                 Petunjuk:
                                             </h5>
-                                            <p class="text-gray-600 leading-relaxed whitespace-pre-line">
+                                            <div class="prose text-gray-600 leading-relaxed whitespace-pre-line  ">
                                                 {!! ($selectedJob->instructions) !!}
-                                            </p>
+                                            </div>
                                         </div>
                                     @endif
 
