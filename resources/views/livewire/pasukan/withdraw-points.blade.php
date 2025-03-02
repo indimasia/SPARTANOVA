@@ -211,20 +211,14 @@
                                 <p class="text-gray-700 font-medium" x-text="`Penarikan Rp${transaction.amount.toLocaleString()}`"></p>
                                 <div>
                                     <span :class="{
-                                        'bg-yellow-500 text-white': transaction.status === 'pending',
-                                        'bg-green-500 text-white': transaction.status === 'approved',
-                                        'bg-red-500 text-white': transaction.status === 'reject'
+                                        ' text-yellow-500': transaction.status === 'pending',
+                                        ' text-green-500': transaction.status === 'approved',
+                                        ' text-red-500': transaction.status === 'rejected'
                                     }" class=" py-1 text-sm font-semibold rounded" x-text="transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)"></span>
                                     <p class="text-sm text-gray-500 mt-2" 
                                     x-text="transaction.created_at ? new Date(transaction.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: 'numeric'})  : 'Tanggal Tidak Tersedia'">
                                     </p>
-                                    <button 
-                                        @click="$wire.editModal(transaction.id)" 
-                                        class="w-36 flex justify-center py-1 px-2 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                                        >
-                                        Edit
-                                    </button>
-                                    
+                                 
             
                                     <div class="w-full relative" x-data="{ open: @entangle('IsOpenEdit') }">
                                         <div 
@@ -297,6 +291,13 @@
                             <p x-show="transaction.status === 'rejected'" class="text-sm text-gray-500 mt-2" 
                             x-text="`Alasan : ${transaction.description}`">
                             </p>
+                            <button 
+                            @click="$wire.editModal(transaction.id)" 
+                            class="w-36 flex justify-center justify-self-end py-1 px-2 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                            >
+                            Edit
+                        </button>
+                        
                         </div>
                     </template>
                 </div>
