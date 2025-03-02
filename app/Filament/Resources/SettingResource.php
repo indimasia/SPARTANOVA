@@ -50,6 +50,16 @@ class SettingResource extends Resource
                             ->afterStateUpdated(fn ($state) => 
                                 Setting::where('key_name', 'Poin Game')->update(['value' => $state])
                             ),
+
+                        TextInput::make('minimum_withdraw')
+                            ->label('Minimum Withdraw')
+                            ->default(Setting::where('key_name', 'Minimum Withdraw')->value('value'))
+                            ->numeric()
+                            ->live()
+                            ->afterStateUpdated(fn ($state) => 
+                                Setting::where('key_name', 'Minimum Withdraw')->update(['value' => $state])
+                            ),
+
                     ]),
             ]);
     }
