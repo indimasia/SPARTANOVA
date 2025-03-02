@@ -22,5 +22,10 @@ class SettingSeeder extends Seeder
             ['key_name' => 'Poin Game'],
             ['value' => '100']
         );
+
+        Setting::updateOrCreate(
+            ['key_name' => 'Minimum Withdraw'],
+            ['value' => '250']
+        );
     }
 }
