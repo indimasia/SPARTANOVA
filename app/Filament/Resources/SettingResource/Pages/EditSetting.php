@@ -27,6 +27,10 @@ class EditSetting extends EditRecord
             'mini_game' => $settings['Mini Game'] ?? 'off', // Ambil dari database
             'poin_game' => $settings['Poin Game'] ?? 0,
             'minimum_withdraw' => $settings['Minimum Withdraw'] ?? 0,
+            'company_name' => $settings['Company Name'] ?? '',
+            'email' => $settings['Email'] ?? '',
+            'phone' => $settings['Phone'] ?? '',
+            'address' => $settings['Address'] ?? '',
         ];
     }
 

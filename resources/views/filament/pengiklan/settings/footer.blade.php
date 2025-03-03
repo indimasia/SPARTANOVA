@@ -13,19 +13,19 @@
 
             <!-- Right Column -->
             <div class="footer-right">
-                <h2 class="footer-title">PT Sinergi Mitra Mediatama</h2>
+                <h2 class="footer-title">{{ App\Models\Setting::where('key_name', 'Company Name')->value('value') }}</h2>
                 <div class="footer-info">
                     <div class="footer-item">
                         <i class="fa-regular fa-envelope"></i>
-                        <a href="mailto:eov.eventrue@gmail.com" class="footer-link">eov.eventrue@gmail.com</a>
+                        <a href="mailto:{{ App\Models\Setting::where('key_name', 'Email')->value('value') }}" class="footer-link">{{ App\Models\Setting::where('key_name', 'Email')->value('value') }}</a>
                     </div>
                     <div class="footer-item">
                         <i class="fa-brands fa-whatsapp"></i>
-                        <a href="tel:08999950006" class="footer-link">08999950006</a>
+                        <a href="tel:{{ App\Models\Setting::where('key_name', 'Phone')->value('value') }}" class="footer-link">{{ App\Models\Setting::where('key_name', 'Phone')->value('value') }}</a>
                     </div>
                     <div class="footer-item">
                         <i class="fa-solid fa-location-dot"></i>
-                        <span class="footer-text">Semarang, Indonesia</span>
+                        <span class="footer-text">{{ App\Models\Setting::where('key_name', 'Address')->value('value') }}</span>
                     </div>
                 </div>
             </div>
