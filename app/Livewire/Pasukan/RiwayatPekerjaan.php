@@ -55,7 +55,7 @@ class RiwayatPekerjaan extends Component
     public function showUploadModal($historyId)
     {
         $this->attachment = null;
-        $this->selectedJobHistory = $historyId;
+        $this->selectedJobHistory = $historyId;    
         $this->showModal = true;
     }
 
@@ -91,27 +91,41 @@ class RiwayatPekerjaan extends Component
     
     $text = OcrService::extractText($publicPath);
     // Cari angka setelah kata "Views"
-if (preg_match('/oleh\s+(\d+)/i', $text, $matches)) {
-    $views = $matches[1]; // Ambil angka yang ditemukan
-} else {
-    $views = null; // Kalau tidak ketemu, kosongkan
-}
+    if (preg_match('/oleh\s+(\d+)/i', $text, $matches)) {
+        $views = $matches[1]; // Ambil angka yang ditemukan
+    } else {
+        $views = null; // Kalau tidak ketemu, kosongkan
+    }
 
     if ($views === null) {
-        session()->flash('error', 'Gagal membaca angka dari screenshot');
+        session()->flash('error', 'Gagal membaca jumlah view dari gambar');
         return;
     }
 
-    
-    $jobParticipant->update([
-        'attachment' => $path,
-        'view_by_image' => $views,
-        'status' => JobStatusEnum::REPORTED->value,
-    ]);
+    if ($jobParticipant->views == 0) {
+        $jobParticipant->update([
+            'attachment' => $path,
+            'view_by_image' => 0,
+            'status' => JobStatusEnum::REPORTED->value,
+        ]);
 
-    $this->showModal = false;
-    session()->flash('message', 'Bukti berhasil diupload!');
-    $this->getData();
+        $this->showModal = false;
+        session()->flash('message', 'Bukti berhasil diupload!');
+        $this->getData();
+    } elseif ($jobParticipant->views == $views) {
+        $jobParticipant->update([
+            'attachment' => $path,
+            'view_by_image' => $views,
+            'status' => JobStatusEnum::REPORTED->value,
+        ]);
+
+        $this->showModal = false;
+        session()->flash('message', 'Bukti berhasil diupload!');
+        $this->getData();
+    } else {
+        session()->flash('error', 'Jumlah view tidak sesuai dengan yang diinputkan');
+        return;
+    }
 }
 
 
