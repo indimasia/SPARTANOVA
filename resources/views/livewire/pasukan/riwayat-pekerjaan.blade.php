@@ -1,4 +1,13 @@
 <div class="p-4 sm:p-6 lg:p-8">
+    @if(session()->has('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <ul class="mt-1 list-disc list-inside">
+                <li>{{ session('error') }}</li>
+            </ul>
+        </div>
+    @endif
+    
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <i class="fas fa-history text-yellow-500"></i>
@@ -22,6 +31,8 @@
                             Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Tanggal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            View</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Aksi</th>
                     </tr>
@@ -118,6 +129,9 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $history->created_at->format('d M Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $history->views }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
                                 <div x-data="{ open: false }" class="inline-block text-left">
