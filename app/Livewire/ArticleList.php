@@ -37,8 +37,17 @@ class ArticleList extends Component
                 'notification_id' => $notification->id,
             ]);
         }
-        
-        
-        return view('livewire.article-list', compact('articles'))->layout('layouts.app');
+        $viewsCount = [];
+
+        foreach ($articles as $article) {
+            $notification = Notification::where('notifiable_id', $article->id)
+                                        ->where('notifiable_type', 'App\Models\Article')
+                                        ->pluck('id')
+                                        ->first();
+
+            // Hitung jumlah views
+            $viewsCount[$article->id] = NotificationRead::where('notification_id', $notification)->count();
+        }
+        return view('livewire.article-list', compact('articles', 'viewsCount'))->layout('layouts.app');
     }
 }

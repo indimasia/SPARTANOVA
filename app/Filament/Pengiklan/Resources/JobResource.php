@@ -383,9 +383,19 @@ class JobResource extends Resource
                             Forms\Components\RichEditor::make('instructions')
                                 ->required()
                                 ->toolbarButtons([
+                                    'attachFiles',
+                                    'blockquote',
+                                    'bold',
                                     'bulletList',
+                                    'codeBlock',
+                                    'h2',
+                                    'h3',
+                                    'italic',
+                                    'link',
                                     'orderedList',
                                     'redo',
+                                    'strike',
+                                    'underline',
                                     'undo',
                                 ])
                                 ->validationMessages([
@@ -541,6 +551,8 @@ class JobResource extends Resource
                                                 ->content(function (Get $get) {
                                                     $type = $get('type');
                                                     $price = \App\Models\PackageRate::where('type', $type)->value('price') ?? 0;
+                                                    $convertion = \App\Models\ConversionRate::pluck('conversion_rate')->first() ?? 0;
+                                                    $price = $price * $convertion;
                                                     return 'Rp. ' . number_format($price, 0, ',', '.');
                                                 })
                                                 ->label('Harga Satuan'),
@@ -551,6 +563,8 @@ class JobResource extends Resource
                                                     $packageRate = $get('package_rate');
                                                     $price = \App\Models\PackageRate::where('type', $type)->value('price') ?? 0;
                                                     $total = $price * $packageRate;
+                                                    $convertion = \App\Models\ConversionRate::pluck('conversion_rate')->first() ?? 0;
+                                                    $total = $total * $convertion;
                                                     return 'Rp. ' . number_format($total, 0, ',', '.');
                                                 })
                                                 ->label('Harga Total'),
@@ -558,6 +572,8 @@ class JobResource extends Resource
                                                 ->content(function (Get $get) {
                                                     $price = \App\Models\PackageRate::where('type', $get('type'))->value('price') ?? 0;
                                                     $total = $price * $get('package_rate');
+                                                    $convertion = \App\Models\ConversionRate::pluck('conversion_rate')->first() ?? 0;
+                                                    $total = $total * $convertion;
                                                     $additional = 0;
 
                                                     if ($get('gender')) $additional += 10;

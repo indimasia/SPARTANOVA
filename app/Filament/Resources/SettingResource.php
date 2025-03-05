@@ -24,6 +24,7 @@ class SettingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $navigationGroup = 'Master Data';
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
@@ -49,6 +50,48 @@ class SettingResource extends Resource
                             ->afterStateUpdated(fn ($state) => 
                                 Setting::where('key_name', 'Poin Game')->update(['value' => $state])
                             ),
+
+                        TextInput::make('minimum_withdraw')
+                            ->label('Minimum Withdraw')
+                            ->default(Setting::where('key_name', 'Minimum Withdraw')->value('value'))
+                            ->numeric()
+                            ->live()
+                            ->afterStateUpdated(fn ($state) => 
+                                Setting::where('key_name', 'Minimum Withdraw')->update(['value' => $state])
+                            ),
+
+                        TextInput::make('company_name')
+                            ->label('Nama Perusahaan')
+                            ->default(Setting::where('key_name', 'Company Name')->value('value'))
+                            ->live()
+                            ->afterStateUpdated(fn ($state) => 
+                                Setting::where('key_name', 'Company Name')->update(['value' => $state])
+                            ),
+
+                        TextInput::make('email')
+                            ->label('Email')
+                            ->default(Setting::where('key_name', 'Email')->value('value'))
+                            ->live()
+                            ->afterStateUpdated(fn ($state) => 
+                                Setting::where('key_name', 'Email')->update(['value' => $state])
+                            ),
+
+                        TextInput::make('phone')
+                            ->label('Nomor Telepon')
+                            ->default(Setting::where('key_name', 'Phone')->value('value'))
+                            ->live()
+                            ->afterStateUpdated(fn ($state) => 
+                                Setting::where('key_name', 'Phone')->update(['value' => $state])
+                            ),
+
+                        TextInput::make('address')
+                            ->label('Alamat')
+                            ->default(Setting::where('key_name', 'Address')->value('value'))
+                            ->live()
+                            ->afterStateUpdated(fn ($state) => 
+                                Setting::where('key_name', 'Address')->update(['value' => $state])
+                            ),
+                            
                     ]),
             ]);
     }

@@ -98,7 +98,7 @@
                                                                 <i
                                                                     class="fas fa-eye flex items-center mr-1.5 h-5 w-5 text-yellow-700"></i>
                                                                 <p>
-                                                                    1.2k views
+                                                                    {{ $viewsCount[$article->id] }} views
                                                                 </p>
                                                             </div>
                                                         </div>

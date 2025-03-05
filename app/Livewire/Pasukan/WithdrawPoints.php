@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Pasukan;
 
+use Carbon\Carbon;
+use App\Models\Setting;
 use Livewire\Component;
 use App\Models\Transaction;
-use App\Models\ConversionRate;
 use App\Models\Notification;
+use App\Models\ConversionRate;
 use App\Models\UserPerformance;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class WithdrawPoints extends Component
@@ -24,7 +25,7 @@ class WithdrawPoints extends Component
     public $notificationType = '';
     public $in_the_name_of = '';
     public $no_bank_account = '';
-
+    public $minimumWithdraw;
     public $userTransactions = [];
     public $bank_account;
 
@@ -186,6 +187,9 @@ class WithdrawPoints extends Component
     public function render()
     {
         Notification::whereNull('read_at')->update(['read_at' => now()]);
-        return view('livewire.pasukan.withdraw-points')->layout('layouts.app');
+        $minimumWithdraw = Setting::where('key_name', 'Minimum Withdraw')->value('value');
+        return view('livewire.pasukan.withdraw-points', [
+            'minimumWithdraw' => $minimumWithdraw
+        ])->layout('layouts.app');
     }
 }

@@ -392,7 +392,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     <!-- Left Column -->
                     <div class="lg:col-span-2">
-                        <img src="{{ asset('images/spartavlogofooter.png') }}" alt="SPARTAV Logo" class="lg:h-24 object-contain justify-self-center h-16" />
+                        <img src="{{ asset('images/spartavlogofooter.png') }}" alt="SPARTAV Logo" class="lg:h-24 object-contain lg:justify-self-start justify-self-center h-16" />
                         <p class="text-white/90 max-w-4xl lg:text-lg leading-relaxed text-md">
                             SPARTAV adalah platform manajemen periklanan dan pemasaran digital yang memfasilitasi advertiser untuk
                             memperluas target market dengan memberdayakan pasukan netizen sebagai 'adsman' untuk melakukan kegiatan
