@@ -21,11 +21,8 @@
                                   @foreach ($annoucements as $annoucement)
                                 {
                                     imgSrc: '{{ $annoucement['image'] ? URL::route('storage.fetch', ['filename' => $annoucement['image']]) : null, }}',
-                                    imgAlt: 'Vibrant abstract painting with swirling blue and light pink hues on a canvas.',  
                                     title: '{{ $annoucement['title'] }}',
-                                    description: '{{ $annoucement['content'] }}',    
-                                    ctaUrl: 'https://example.com',
-                                    ctaText: 'Become a Developer',          
+                                    description: '{{ $annoucement['content'] }}',             
                                     },                
                                     @endforeach
                                     ],             
@@ -65,15 +62,15 @@
                                 <!-- slides -->
                                 <div class="relative min-h-[50vh] lg:w-full">
                                     <template x-for="(slide, index) in slides">
-                                        <div x-cloak x-show="currentSlideIndex == index + 1" class="absolute inset-0 grid rounded-radius  max-full grid-cols-1 md:grid-cols-10 overflow-y-auto bg-surface-alt text-on-surface  dark:bg-surface-dark-alt dark:text-on-surface-dark" x-transition.opacity.duration.1000ms>
+                                        <div x-cloak x-show="currentSlideIndex == index + 1" class="absolute inset-0 grid rounded-radius w-full grid-cols-1 md:grid-cols-8 gap-4 overflow-y-auto bg-surface-alt text-on-surface dark:bg-surface-dark-alt dark:text-on-surface-dark" x-transition.opacity.duration.1000ms>
 
                                             {{-- <article class="group grid rounded-radius  max-full grid-cols-1 md:grid-cols-8 overflow-hidden border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark"> --}}
                                                 <!-- image -->
-                                                <div class="col-span-3 overflow-hidden w-[15rem] lg:w-[20rem] h-[15rem] lg:h-[20rem] align-self-center rounded">
-                                                    <img src='' class=" w-[15rem] lg:w-[20rem] h-[15rem] lg:h-[20rem]  transition duration-700 align-self-center ease-out group-hover:scale-105" alt="a men wearing VR goggles" x-bind:src="slide.imgSrc" x-bind:alt="slide.imgAlt" />
+                                                <div class="col-span-8 lg:col-span-3 rounded">
+                                                    <img src='' class="w-full rounded transition duration-700 ease-out group-hover:scale-105" alt="a men wearing VR goggles" x-bind:src="slide.imgSrc" x-bind:alt="slide.imgAlt" />
                                                 </div>
                                                 <!-- body -->
-                                                <div class="flex flex-col  pt-2  col-span-7">
+                                                <div class="flex flex-col  pt-2  col-span-5">
                                                     {{-- <small class="mb-4 font-medium">Artificial Intelligence</small> --}}
                                                     <h3 class="text-balance text-md font-bold text-on-surface-strong lg:text-2xl dark:text-on-surface-dark-strong"   x-text="slide.title" x-bind:aria-describedby="'slide' + (index + 1) + 'Description'" ></h3>
                                                     <p id="articleDescription" class="my-4 lg:max-w-lg md:max-w-md text-pretty text-sm" x-text="slide.description" x-bind:id="'slide' + (index + 1) + 'Description'">
