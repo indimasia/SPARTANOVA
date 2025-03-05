@@ -20,6 +20,7 @@ class TopSaldoUsersChart extends ChartWidget
                     'label' => 'Total Reward',
                     'data' => $topSaldoUsers->pluck('total_reward')->toArray(),
                     'backgroundColor' => ['#fac424', '#fbca3a', '#fbd050', '#fcd666', '#fcdc7c', '#fde292', '#fde7a7', '#feedbd', '#fef3d3', '#fff9e9'],
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => $topSaldoUsers->pluck('user.name')->toArray(),
