@@ -66,6 +66,10 @@ class JobCampaign extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function jobType()
+    {
+        return $this->belongsTo(PackageRate::class, 'type', 'type', 'reward');
+    }
     
 
 }

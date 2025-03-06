@@ -19,6 +19,7 @@ class PackageRate extends Model
     {
         return $query->whereNotIn('type', $type);
     }
+    
     public static function packageList($type = null)
     {
         $packageList = PackageEnum::options();

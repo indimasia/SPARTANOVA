@@ -4,6 +4,7 @@ namespace App\Filament\Resources\JobInAdminResource\Pages;
 
 use Filament\Actions;
 use App\Models\PackageRate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -23,6 +24,7 @@ class CreateJobInAdmin extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+        Log::info(json_encode($data,JSON_PRETTY_PRINT));
         $data['reward'] = $data['reward'];
         $jobData = static::getModel()::create($data);
         if (isset($data['jobDetail'])) {

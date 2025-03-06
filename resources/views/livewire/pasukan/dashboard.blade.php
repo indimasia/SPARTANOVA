@@ -67,7 +67,7 @@
                                             {{-- <article class="group grid rounded-radius  max-full grid-cols-1 md:grid-cols-8 overflow-hidden border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark"> --}}
                                                 <!-- image -->
                                                 <div class="col-span-8 lg:col-span-3 rounded">
-                                                    <img src='' class="w-full rounded transition duration-700 ease-out group-hover:scale-105" alt="a men wearing VR goggles" x-bind:src="slide.imgSrc" x-bind:alt="slide.imgAlt" />
+                                                    <img src='' class="w-full rounded object-cover transition duration-700 ease-out group-hover:scale-105" alt="a men wearing VR goggles" x-bind:src="slide.imgSrc" x-bind:alt="slide.imgAlt" />
                                                 </div>
                                                 <!-- body -->
                                                 <div class="flex flex-col  pt-2  col-span-5">

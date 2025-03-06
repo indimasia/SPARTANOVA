@@ -48,6 +48,8 @@
                 }
                 return !Auth::user()->jobParticipants()->where('job_id', $campaign->id)->exists();
             });
+
+            Log::info(json_encode($availableJobs,JSON_PRETTY_PRINT));
             @endphp
 
 
@@ -110,7 +112,9 @@
                                         {{ $campaign->type->value }}
                                     </span>
                                     <span class="text-sm font-semibold text-gray-900">
-                                        {{ $packageRate }} Poin
+                                        {{ number_format($campaign->jobType->reward, 0, ',', '.') }} Poin
+                                        {{-- {{ $campaign->jobType->reward }} Poin --}}
+                                        {{-- {{ $packageRate }} Poin --}}
                                     </span>
                                 </div>
 

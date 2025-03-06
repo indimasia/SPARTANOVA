@@ -63,7 +63,9 @@
                             @endif
                         </div>
                         <span class="text-3xl font-bold text-yellow-500">
-                            Rp {{ number_format($selectedJob->reward, 0, ',', '.') }}
+                            {{-- Rp {{ number_format($selectedJob->reward, 0, ',', '.') }} --}}
+                            {{ number_format($selectedJob->reward, 0, ',', '.') }} Poin
+                            {{-- {{ $selectedJob->jobType->reward }} Poin --}}
                         </span>
                     </div>
 

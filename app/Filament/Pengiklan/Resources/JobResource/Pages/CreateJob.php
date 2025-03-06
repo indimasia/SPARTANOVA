@@ -4,15 +4,16 @@ namespace App\Filament\Pengiklan\Resources\JobResource\Pages;
 
 use Filament\Actions;
 use App\Enums\JobType;
+use App\Models\Wallet;
 use App\Enums\PackageEnum;
 use App\Models\PackageRate;
+use App\Models\ConversionRate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Pengiklan\Resources\JobResource;
-use App\Models\ConversionRate;
-use App\Models\Wallet;
 
 class CreateJob extends CreateRecord
 {
@@ -27,6 +28,10 @@ class CreateJob extends CreateRecord
     }
     protected function handleRecordCreation(array $data): Model
     {
+
+        // Log::info("LOGOOGG===========");
+        // Log::info(json_encode($data,JSON_PRETTY_PRINT));
+
         $data['reward'] = PackageRate::where('type', $data['type'])->pluck('reward')->first();
         if($data['type'] == JobType::SELLING->value){
             $data['is_multiple'] = true;
@@ -58,6 +63,9 @@ class CreateJob extends CreateRecord
         if (!empty($data['province_kode']) || !empty($data['regency_kode']) || !empty($data['district_kode']) || !empty($data['village_kode'])) {
             $incrementPercentage += 10;
         }
+
+        Log::info(json_encode($data,JSON_PRETTY_PRINT));
+
         $packageRate = PackageRate::where('type', $data['type'])->pluck('price')->first();
         $totalPackageRate = $packageRate * $data['quota'];
 
