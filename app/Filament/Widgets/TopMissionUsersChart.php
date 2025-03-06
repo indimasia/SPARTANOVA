@@ -20,7 +20,7 @@ class TopMissionUsersChart extends ChartWidget
                     'label' => 'Job Completed',
                     'data' => $userperformances->pluck('job_completed')->toArray(),
                     'backgroundColor' => ['#19635B', '#33756d', '#4d8680', '#669792', '#80a9a4', '#99bab6', '#b3cbc8', '#ccdcdb', '#e6eeed', '#ffffff'],
-                    
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => $userperformances->pluck('user.name')->toArray(),

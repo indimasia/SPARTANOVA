@@ -20,6 +20,7 @@ class GenderOverview extends ChartWidget
                     'label' => 'Gender',
                     'data' => [$male, $female],
                     'backgroundColor' => ['#42A5F5', '#EC407A'],
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => ['Laki-laki', 'Perempuan'],
