@@ -112,7 +112,7 @@
                                         {{ $campaign->type->value }}
                                     </span>
                                     <span class="text-sm font-semibold text-gray-900">
-                                        {{ number_format($campaign->jobType->reward, 0, ',', '.') }} Poin
+                                        {{ number_format($campaign->reward, 0, ',', '.') }} Poin
                                         {{-- {{ $campaign->jobType->reward }} Poin --}}
                                         {{-- {{ $packageRate }} Poin --}}
                                     </span>
