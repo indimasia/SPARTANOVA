@@ -630,7 +630,7 @@ class JobResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('participant_count')->label('Jumlah Peserta'),
+                Tables\Columns\TextColumn::make('active_participant')->label('Jumlah Peserta'),
                 Tables\Columns\TextColumn::make('type')->label('Tipe Misi'),
                 Tables\Columns\TextColumn::make('platform')
                     ->label('Social Media')
@@ -799,7 +799,7 @@ class JobResource extends Resource
                                     Infolists\Components\Group::make([
                                         Infolists\Components\TextEntry::make('participant_count')
                                             ->label('Jumlah Peserta')
-                                            ->getStateUsing(fn ($record) => $record->getParticipantCountAttribute() . ' / ' . $record->quota),
+                                            ->getStateUsing(fn ($record) => $record->getActiveParticipantAttribute() . ' / ' . $record->quota),
                                         Infolists\Components\TextEntry::make('reward'),
                                             // ->icon('heroicon-o-cash')
                                         Infolists\Components\TextEntry::make('status')->badge()->color(fn ($state) => match ($state) {

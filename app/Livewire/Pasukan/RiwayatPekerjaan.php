@@ -8,9 +8,10 @@ use App\Models\Notification;
 use App\Services\OcrService;
 use Livewire\WithFileUploads;
 use App\Models\JobParticipant;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class RiwayatPekerjaan extends Component
 {
@@ -155,7 +156,12 @@ class RiwayatPekerjaan extends Component
             'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
+        
         $jobParticipant = JobParticipant::find($this->selectedJobHistory);
+        
+        Log::info("here =================>");
+        // Log::info(json_encode($jobParticipant),JSON_PRETTY_PRINT);
+        // Log::debug(json_encode($jobParticipant),JSON_PRETTY_PRINT);
 
         if (!$jobParticipant) {
             session()->flash('message', 'Data tidak ditemukan!');
@@ -164,17 +170,47 @@ class RiwayatPekerjaan extends Component
 
         $userId = auth()->id();
         $directory = "pasukan/attachment/{$userId}";
-        if ($jobParticipant->attachment) {
-            \Storage::disk('r2')->delete($jobParticipant->attachment);
-        }
 
         $fileName = $this->attachment->hashName();
-        $filePath = $this->attachment->storeAs($directory, $fileName, 'r2');
+        $publicPath = public_path("storage/ocr/{$fileName}");
+
+        $this->attachment->storeAs('ocr', $fileName, 'public');
         
-        $jobParticipant->update([
-            'attachment' => $filePath,
-        ]);
-        session()->flash('message', 'Bukti berhasil diperbarui!');
+        Log::info("PUBLIC PATH");
+        Log::info($publicPath);
+
+        $text = OcrService::extractText($publicPath);
+
+        // Cari angka setelah kata "Views"
+        if (preg_match('/oleh\s+(\d+)/i', $text, $matches)) {
+            $views = $matches[1]; // Ambil angka yang ditemukan
+        } else {
+            $views = null; // Kalau tidak ketemu, kosongkan
+        }
+
+        if ($views === null) {
+            session()->flash('error', 'Gagal membaca jumlah view dari gambar');
+            return;
+            // exit;
+        } else if ($jobParticipant->job->views !== $views) {
+            session()->flash('error', 'Jumlah view tidak valid');
+            return;
+        } else {
+            if ($jobParticipant->attachment) {
+                \Storage::disk('r2')->delete($jobParticipant->attachment);
+            }
+    
+            $filePath = $this->attachment->storeAs($directory, $fileName, 'r2');
+            
+            $jobParticipant->update([
+                'attachment' => $filePath,
+            ]);
+    
+            Log::info("berhasil");
+            session()->flash('message', 'Bukti berhasil diperbarui!');
+        }
+
+
     }
 
 
