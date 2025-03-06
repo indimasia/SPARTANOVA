@@ -192,7 +192,15 @@ class RiwayatPekerjaan extends Component
             session()->flash('error', 'Gagal membaca jumlah view dari gambar');
             return;
             // exit;
-        } else if ($jobParticipant->job->views !== $views) {
+        } else if ($jobParticipant->views != $views) {
+
+            Log::info("views tidak sesuai");
+            // Log::info($views);
+            Log::info(json_encode([
+                'views' => $views,
+                'job_views' => $jobParticipant->views
+            ], JSON_PRETTY_PRINT));
+            // Log::info($jobParticipant->job->views);
             session()->flash('error', 'Jumlah view tidak valid');
             return;
         } else {

@@ -27,7 +27,8 @@ class OcrService
                 'isTable' => "false",
             ]);
         
-            Log::debug($response->json()['ParsedResults'][0]['ParsedText']);
+            // Log::debug($response->json()['ParsedResults'][0]['ParsedText']);
+            Log::debug(json_encode($response->json(),JSON_PRETTY_PRINT));
             return $response->json()['ParsedResults'][0]['ParsedText'];
 
         } catch (\Exception $e) {
