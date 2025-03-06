@@ -17,6 +17,7 @@ use App\Models\JobParticipant;
 use App\Models\UserPerformance;
 use Livewire\Attributes\Layout;
 use App\Models\SosialMediaAccount;
+use Illuminate\Support\Facades\Log;
 use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Auth;
 
@@ -100,6 +101,7 @@ class ApplyJob extends Component
                 }
             });
         })
+        ->with('jobType')
         ->withCount('participants as participantCount')
         ->latest()
         ->get()
@@ -109,7 +111,14 @@ class ApplyJob extends Component
         });
         $jobTypes = $jobCampaigns->pluck('type')->toArray();
 
+        // Log::info("JOB TYPES===========");
+        // Log::info(json_encode($jobTypes,JSON_PRETTY_PRINT));
+
+
         $packageRate = PackageRate::whereIn('type', $jobTypes)->pluck('reward')->first();
+        // Log::info("PACKAGE RATE===========");
+        // Log::info(json_encode($packageRate,JSON_PRETTY_PRINT));
+
         $sosialMediaPlatforms = SosialMediaAccount::where('user_id', $user->id)
         ->where('account', '!=', 'Tidak punya akun')
         ->pluck('sosial_media')

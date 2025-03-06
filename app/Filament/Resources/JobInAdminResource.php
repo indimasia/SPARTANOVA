@@ -357,6 +357,7 @@ class JobInAdminResource extends Resource
                                     Forms\Components\TextInput::make('reward')
                                         ->required()
                                         ->label('Reward')
+                                        ->numeric()
                                         ->validationMessages([
                                             'required' => 'Reward Harus Diisi',
                                         ])
@@ -364,6 +365,7 @@ class JobInAdminResource extends Resource
                                     Forms\Components\TextInput::make('quota')
                                         ->required()
                                         ->label('Kuota')
+                                        ->numeric()
                                         ->validationMessages([
                                             'required' => 'Kuota Harus Diisi',
                                         ])

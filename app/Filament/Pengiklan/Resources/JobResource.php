@@ -25,6 +25,7 @@ use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Filament\Support\Enums\IconSize;
 use Illuminate\Support\Facades\Auth;
@@ -253,6 +254,7 @@ class JobResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('package_rate')
                                 ->options(function(Get $get){
+                                    Log::info($get('type'));
                                     return PackageRate::packageList($get('type'));
                                 })
                                 ->live()
