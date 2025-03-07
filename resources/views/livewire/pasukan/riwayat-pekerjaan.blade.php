@@ -249,7 +249,7 @@
                                 <div class="text-red-500 mt-2" wire:loading wire:target="attachment">Uploading...</div> 
                                 @error('attachment') <span class="text-red-500">{{ $message }}</span> @enderror
                                 <div class="flex justify-between mt-4">
-                                    <button type="submit" class="px-4 py-2 text-white bg-green-600 rounded-md">Simpan</button>
+                                    <button type="submit" wire:loading.class="opacity-50" wire:loading.attr="disabled" wire:target="attachment" class="px-4 py-2 text-white bg-green-600 rounded-md">Simpan</button>
                                     <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="editing = false">Batal</button>
                                 </div>
                             </form>
@@ -266,6 +266,7 @@
                         <div class="mb-4">
                             <label for="attachment" class="block text-sm font-medium text-gray-700">Pilih File</label>
                             <input type="file" id="attachment" wire:model="attachment" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md">
+                            <div class="text-red-500 mt-2" wire:loading wire:target="attachment">Uploading...</div>
                             @error('attachment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
                             @if(session()->has('error'))
@@ -282,7 +283,7 @@
                 
                         <div class="flex justify-end gap-2">
                             <button type="button" class="px-4 py-2 text-white bg-gray-600 rounded-md" @click="open = false">Batal</button>
-                            <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md">Upload</button>
+                            <button type="submit" wire:loading.class="opacity-50" wire:loading.attr="disabled" wire:target="attachment" class="px-4 py-2 text-white bg-blue-600 rounded-md">Upload</button>
                         </div>
                     </form>
                 </div>
