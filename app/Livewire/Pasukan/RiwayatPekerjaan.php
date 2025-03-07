@@ -56,7 +56,7 @@ class RiwayatPekerjaan extends Component
     public function showUploadModal($historyId)
     {
         $this->attachment = null;
-        $this->selectedJobHistory = $historyId;    
+        $this->selectedJobHistory = $historyId;
         $this->showModal = true;
     }
 
@@ -83,50 +83,56 @@ class RiwayatPekerjaan extends Component
     $localPath = "ocr/{$fileName}";
     $publicPath = public_path("storage/ocr/{$fileName}");
 
-
-
     $this->attachment->storeAs("pasukan/attachment/{$userId}", $fileName, 'r2');
 
     $this->attachment->storeAs('ocr', $fileName, 'public');
-    
-    
-    $text = OcrService::extractText($publicPath);
-    // Cari angka setelah kata "Views"
-    if (preg_match('/oleh\s+(\d+)/i', $text, $matches)) {
-        $views = $matches[1]; // Ambil angka yang ditemukan
-    } else {
-        $views = null; // Kalau tidak ketemu, kosongkan
-    }
 
-    if ($views === null) {
-        session()->flash('error', 'Gagal membaca jumlah view dari gambar');
-        return;
-    }
+    $jobParticipant->update([
+        'attachment' => $path,
+        'status' => JobStatusEnum::REPORTED->value,
+    ]);
+    $this->showModal = false;
+    session()->flash('message', 'Bukti berhasil diupload!');
+    $this->getData();
 
-    if ($jobParticipant->views == 0) {
-        $jobParticipant->update([
-            'attachment' => $path,
-            'view_by_image' => 0,
-            'status' => JobStatusEnum::REPORTED->value,
-        ]);
 
-        $this->showModal = false;
-        session()->flash('message', 'Bukti berhasil diupload!');
-        $this->getData();
-    } elseif ($jobParticipant->views == $views) {
-        $jobParticipant->update([
-            'attachment' => $path,
-            'view_by_image' => $views,
-            'status' => JobStatusEnum::REPORTED->value,
-        ]);
+    // $text = OcrService::extractText($publicPath);
+    // // Cari angka setelah kata "Views"
+    // if (preg_match('/oleh\s+(\d+)/i', $text, $matches)) {
+    //     $views = $matches[1]; // Ambil angka yang ditemukan
+    // } else {
+    //     $views = null; // Kalau tidak ketemu, kosongkan
+    // }
 
-        $this->showModal = false;
-        session()->flash('message', 'Bukti berhasil diupload!');
-        $this->getData();
-    } else {
-        session()->flash('error', 'Jumlah view tidak sesuai dengan yang diinputkan');
-        return;
-    }
+    // if ($views === null) {
+    //     session()->flash('error', 'Gagal membaca jumlah view dari gambar');
+    //     return;
+    // }
+
+    // if ($jobParticipant->views == 0) {
+    //     $jobParticipant->update([
+    //         'attachment' => $path,
+    //         'view_by_image' => 0,
+    //         'status' => JobStatusEnum::REPORTED->value,
+    //     ]);
+
+    //     $this->showModal = false;
+    //     session()->flash('message', 'Bukti berhasil diupload!');
+    //     $this->getData();
+    // } elseif ($jobParticipant->views == $views) {
+    //     $jobParticipant->update([
+    //         'attachment' => $path,
+    //         'view_by_image' => $views,
+    //         'status' => JobStatusEnum::REPORTED->value,
+    //     ]);
+
+    //     $this->showModal = false;
+    //     session()->flash('message', 'Bukti berhasil diupload!');
+    //     $this->getData();
+    // } else {
+    //     session()->flash('error', 'Jumlah view tidak sesuai dengan yang diinputkan');
+    //     return;
+    // }
 }
 
 
@@ -156,9 +162,9 @@ class RiwayatPekerjaan extends Component
             'attachment.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
         ]);
 
-        
+
         $jobParticipant = JobParticipant::find($this->selectedJobHistory);
-        
+
         Log::info("here =================>");
         // Log::info(json_encode($jobParticipant),JSON_PRETTY_PRINT);
         // Log::debug(json_encode($jobParticipant),JSON_PRETTY_PRINT);
@@ -175,7 +181,7 @@ class RiwayatPekerjaan extends Component
         $publicPath = public_path("storage/ocr/{$fileName}");
 
         $this->attachment->storeAs('ocr', $fileName, 'public');
-        
+
         Log::info("PUBLIC PATH");
         Log::info($publicPath);
 
@@ -207,13 +213,13 @@ class RiwayatPekerjaan extends Component
             if ($jobParticipant->attachment) {
                 \Storage::disk('r2')->delete($jobParticipant->attachment);
             }
-    
+
             $filePath = $this->attachment->storeAs($directory, $fileName, 'r2');
-            
+
             $jobParticipant->update([
                 'attachment' => $filePath,
             ]);
-    
+
             Log::info("berhasil");
             session()->flash('message', 'Bukti berhasil diperbarui!');
         }
@@ -272,7 +278,7 @@ class RiwayatPekerjaan extends Component
     public function render()
     {
         Notification::whereNull('read_at')->update(['read_at' => now()]);
-        
+
         return view('livewire.pasukan.riwayat-pekerjaan')->layout('layouts.app');
     }
 }
