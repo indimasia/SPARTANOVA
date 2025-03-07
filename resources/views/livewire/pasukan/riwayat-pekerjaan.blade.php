@@ -7,6 +7,15 @@
             </ul>
         </div>
     @endif
+
+    @if(session()->has('message'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <ul class="mt-1 list-disc list-inside">
+                <li>{{ session('message') }}</li>
+            </ul>
+        </div>
+    @endif
     
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
@@ -258,6 +267,17 @@
                             <label for="attachment" class="block text-sm font-medium text-gray-700">Pilih File</label>
                             <input type="file" id="attachment" wire:model="attachment" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-md">
                             @error('attachment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                            @if(session()->has('error'))
+                            {{-- <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <strong class="font-bold">Error!</strong>
+                                <ul class="mt-1 list-disc list-inside">
+                                    <li>{{ session('error') }}</li>
+                                </ul>
+                            </div> --}}
+                            <span class="text-red-500 text-xs">{{ session('error') }}</span> 
+                            @endif
+                            
                         </div>
                 
                         <div class="flex justify-end gap-2">
