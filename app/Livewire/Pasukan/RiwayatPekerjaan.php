@@ -30,6 +30,7 @@ class RiwayatPekerjaan extends Component
     public $showUpdateView = false;
     public $selectedJobId;
     public $views;
+    public $isLoading = true;
     public function toggleDropdown()
     {
         $this->dropdownVisible = !$this->dropdownVisible;
@@ -266,6 +267,12 @@ class RiwayatPekerjaan extends Component
 
         $this->showUpdateView = false;
         session()->flash('message', 'Jumlah view berhasil diperbarui!');
+    }
+
+    public function imageLoaded()
+    {
+        $this->isLoading = false;
+        $this->dispatch('image-loaded');
     }
 
 

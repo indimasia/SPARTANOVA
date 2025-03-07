@@ -226,15 +226,22 @@
                     <div class="mb-4">
                         {{-- @dd($history->attachment) --}}
                         @if($jobParticipant)
-                            <img src="{{ asset('storage/' . $jobParticipant->attachment) }}" 
-                                alt="Bukti Bayar" 
-                                class="mx-auto rounded-lg shadow-md" 
-                                style="max-width: 100%; max-height: 400px;">
+                        <div wire:key="{{ $jobParticipant->id }}" x-data="{ loaded: false }">
+                            <div x-show="!loaded" class="animate-pulse bg-gray-300 w-full h-40"></div>
+
+                        <img src="{{ asset('storage/' . $jobParticipant->attachment) }}" 
+                            alt="Bukti Bayar"
+                            @load="loaded = true"
+                            class="mx-auto rounded-lg shadow-md"
+                            style="max-width: 100%; max-height: 400px;"
+                            onload="@this.call('imageLoaded')">
+
+                        </div>
                         @else
                             <img src="https://placehold.co/400x400?text=Tidak+Ada+Gambar" alt="Tidak Ada Gambar" class="mx-auto rounded-lg shadow-md" style="max-width: 100%; max-height: 400px;">
                         @endif
-                    </div>
-                    <template x-if="!editing">
+                        </div>
+                        <template x-if="!editing">
                         <div class="flex justify-between">
                             <button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-md" 
                             x-show="status === '{{ \App\Enums\JobStatusEnum::REPORTED->value }}'" 
