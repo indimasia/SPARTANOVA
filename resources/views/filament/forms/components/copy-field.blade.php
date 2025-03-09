@@ -1,3 +1,4 @@
+
 <div class="bg-white shadow-sm rounded-lg w-full mt-4">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
       <div class="flex-grow">
@@ -19,17 +20,15 @@
     function copyToClipboard(selector) {
         const text = document.querySelector(selector).innerText;
         navigator.clipboard.writeText(text).then(function() {
-            // Menyembunyikan tombol Copy dan menampilkan feedback "Copied"
             const copyButton = document.getElementById('copy-button');
             const feedback = document.getElementById('copy-feedback');
             
-            copyButton.classList.add('hidden');  // Menyembunyikan tombol Copy
-            feedback.classList.remove('hidden');  // Menampilkan feedback
+            copyButton.classList.add('hidden');
+            feedback.classList.remove('hidden');
 
-            // Menampilkan feedback "Copied" selama 2000ms
             setTimeout(() => {
-                copyButton.classList.remove('hidden');  // Menampilkan kembali tombol Copy
-                feedback.classList.add('hidden');  // Menyembunyikan feedback setelah 2000ms
+                copyButton.classList.remove('hidden');
+                feedback.classList.add('hidden');
             }, 2000);
         }, function(err) {
             console.error('Failed to copy text: ', err);
