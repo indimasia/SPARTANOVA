@@ -3,6 +3,7 @@
 use App\Livewire\Home;
 use App\Models\Reward;
 use App\Livewire\Topup;
+use App\Mail\MyTestEmail;
 use App\Livewire\MiniGame;
 use Illuminate\Http\Request;
 use App\Livewire\ArticleList;
@@ -16,6 +17,7 @@ use App\Livewire\Pasukan\ApplyJob;
 use App\Livewire\ReferralRegister;
 use App\Livewire\Pasukan\Dashboard;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Livewire\MiniGameCoomingSoon;
 use App\Livewire\Pasukan\ViewProfile;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +28,7 @@ use App\Livewire\Pasukan\RiwayatPekerjaan;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\JobDetailController;
 use App\Http\Controllers\PushNotificationController;
+use App\Http\Controllers\TestEmailController;
 
 Route::get('/', Home::class)->name('home');
 Route::get('/register', Register::class)->name('register');
@@ -41,7 +44,6 @@ Route::post('/subscribe', [PushNotificationController::class, 'subscribe']);
 Route::get('/vapid-public-key', function() {
     return response()->json(['key' => config('webpush.vapid.public_key')]);
 });
-
 
 Route::middleware([PasukanMiddleware::class])->group(
     function () {

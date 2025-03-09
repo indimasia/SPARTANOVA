@@ -10,18 +10,21 @@ use App\Models\Village;
 use Filament\Forms\Get;
 use App\Models\District;
 use Filament\Forms\Form;
+use App\Mail\MyTestEmail;
 use Filament\Tables\Table;
 use App\Enums\UserStatusEnum;
 use Filament\Resources\Resource;
 use App\Models\SosialMediaAccount;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Collection;
-use App\Notifications\UserApprovedNotification;
+use Illuminate\Support\Facades\Mail;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
+use App\Notifications\UserApprovedNotification;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Jobs\ProcessSendEmail;
 
 class UserResource extends Resource
 {
@@ -234,12 +237,15 @@ Tables\Columns\TextColumn::make('Whatsapp')
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(function ($record) {
+                            // dd($record);
                             $record->update(['status' => UserStatusEnum::ACTIVE->value]);
                             $record->notify(new UserApprovedNotification(
                                 'Akun Anda Disetujui!',
                                 'Selamat, akun Anda telah di-approve oleh admin.',
                                 '/dashboard'
                             ));
+                            
+                            ProcessSendEmail::dispatch($record);
                             
                             Notification::make()
                                 ->title('Berhasil')
@@ -307,7 +313,9 @@ Tables\Columns\TextColumn::make('Whatsapp')
                                 if ($record->status != UserStatusEnum::ACTIVE->value) {
                                     $record->update(['status' => UserStatusEnum::ACTIVE->value]);
                                     $updatedCount++;
+                                    ProcessSendEmail::dispatch($record);
                                 }
+                                
                             });
 
                             Notification::make()

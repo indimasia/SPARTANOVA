@@ -64,7 +64,7 @@ class TransaksiResource extends Resource
             ->columns([
                 TextColumn::make('user.name')->label('User'),
                 TextColumn::make('amount')->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable(),
-                TextColumn::make('bank_account')->label('Rekening Tujuan'),
+                TextColumn::make('TopUpTransactions.nama_bank')->label('Rekening Tujuan'),
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
@@ -79,7 +79,6 @@ class TransaksiResource extends Resource
                 TextColumn::make('created_at')->label('Tanggal Pengajuan')->dateTime(),
             ])
             ->filters([
-                // Filter status
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
@@ -90,7 +89,6 @@ class TransaksiResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
-                    // Tables\Actions\DeleteAction::make(),
                     
                     Tables\Actions\Action::make('approve')
                         ->label('Approve')
