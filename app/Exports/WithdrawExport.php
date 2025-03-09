@@ -35,8 +35,8 @@ class WithdrawExport implements FromArray, WithStyles
         foreach ($withdrawals as $withdraw) {
             $data[] = [
                 $withdraw->user->name ?? '-',
+                $withdraw->TopUpTransactions->nama_bank ?? '-',
                 'Rp ' . number_format($withdraw->amount, 0, ',', '.'),
-                $withdraw->bank_account ?? '-',
                 $withdraw->in_the_name_of ?? '-',
                 $withdraw->no_bank_account ?? '-',
                 $withdraw->status ?? '-',

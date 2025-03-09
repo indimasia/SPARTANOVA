@@ -22,6 +22,16 @@ class ConversionRateResource extends Resource
     protected static ?string $pluralModelLabel = 'Konversi Poin';
     protected static ?string $modelLabel = 'Konversi Poin';
 
+
+    public static function canCreate(): bool
+    {
+        $conversionRate = ConversionRate::all()->count();
+        $conversionRate >=0 ? $result=false : $result=true;
+        return $result;
+    }
+
+
+
     public static function form(Forms\Form $form): Forms\Form
 {
     return $form
@@ -35,7 +45,6 @@ class ConversionRateResource extends Resource
                                 ->numeric()
                                 ->required(),
 
-                                
 
                             TextInput::make('points_amount')
                                 ->label('Jumlah Poin')

@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Transaction;
 use App\Models\ConversionRate;
+use App\Models\TopUpTransaction;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\URL;
@@ -51,9 +52,9 @@ class TopupResource extends Resource
                     Radio::make('amount')
                     ->label('Pilih Nominal Top Up')
                     ->options(function () {
-                        $conversionRate = ConversionRate::first(); // Ambil data pertama
+                        $conversionRate = ConversionRate::first();
                         if (!$conversionRate) {
-                            return []; // Jika tidak ada data, kosongkan opsi
+                            return [];
                         }
     
                         $conversionRateValue = $conversionRate->conversion_rate;
@@ -69,7 +70,6 @@ class TopupResource extends Resource
                     ->reactive()
                     ->required()
                     ->afterStateUpdated(function ($state, $set) {
-                        // Simpan nilai amount ke session setelah state berubah
                         session(['amount' => $state]);
                     }),
 
@@ -79,17 +79,28 @@ class TopupResource extends Resource
                     ->schema([
                         Section::make('Detail Pembayaran')
                             ->schema([
-                                Radio::make('bank_account')
+                                Radio::make('top_up_transactions_id')
                                     ->label('Pilih Rekening Tujuan')
-                                    ->options([
-                                        'BCA' => 'BCA - 1234567890 (PT Example Company)',
-                                        'Mandiri' => 'Mandiri - 0987654321 (PT Example Company)',
-                                    ])
-                                    ->reactive() // Agar bisa digunakan di step tinjauan
+                                    ->options(function(Get $get) {
+                                        return TopUpTransaction::all()
+                                            ->mapWithKeys(function ($item) {
+                                                return [$item->id => "{$item->nama_bank} - {$item->no_rekening} ({$item->nama_pemilik})"];
+                                            });
+                                    })
+                                    
+                                    ->reactive()
                                     ->required()
                                     ->afterStateUpdated(function ($state, $set) {
-                                        // Simpan nilai bank_account ke session setelah state berubah
-                                        session(['bank_account' => $state]);
+                                        $rekening = TopUpTransaction::find($state);
+                                    
+                                        if ($rekening) {
+                                            session([
+                                                'top_up_transactions_id' => $rekening->nama_bank,
+                                                'bank_account_id' => $rekening->id,
+                                                'bank_account_no_rekening' => $rekening->no_rekening,
+                                                'bank_account_nama_pemilik' => $rekening->nama_pemilik,
+                                            ]);
+                                        }
                                     }),
                             ])
                     ]),
@@ -103,39 +114,26 @@ class TopupResource extends Resource
                                     ->view('filament.forms.components.copyable-placeholder', [
                                         'amount' => 'Rp ' . number_format((int) (session('amount') ?? 0), 0, ',', '.')
                                     ]),
-
-
-
                 
                                 Forms\Components\ViewField::make('bank_view')
                                     ->label('Transfer ke')
                                     ->view('filament.forms.components.copy-field', [
-                                        'bank_account' => match (session('bank_account')) {
-                                            'BCA' => '1234567890',
-                                            'Mandiri' => '0987654321',
-                                            default => 'Pilih rekening terlebih dahulu',
-                                        }
+                                        'bank_account' => session('top_up_transactions_id') 
+                                            ? session('top_up_transactions_id') . ' - ' . session('bank_account_no_rekening') . ' (' . session('bank_account_nama_pemilik') . ')'
+                                            : 'Pilih rekening terlebih dahulu',
                                     ]),
 
                                     Forms\Components\Grid::make()
                                     ->schema([
                                         Forms\Components\Placeholder::make('jenis_bank_view')
                                             ->label('Jenis Bank')
-                                            ->content(fn (): string => match (session('bank_account')) {
-                                                'BCA' => 'BCA',
-                                                'Mandiri' => 'Mandiri',
-                                                default => 'Pilih rekening terlebih dahulu',
-                                            }),
+                                            ->content(fn (): string => session('top_up_transactions_id') ?? 'Pilih rekening terlebih dahulu'),
                                 
                                         Forms\Components\Placeholder::make('atas_nama_view')
                                             ->label('Atas Nama')
-                                            ->content(fn (): string => match (session('bank_account')) {
-                                                'BCA' => 'PT Example Company',
-                                                'Mandiri' => 'PT Example Company',
-                                                default => 'Pilih rekening terlebih dahulu',
-                                            }),
+                                            ->content(fn (): string => session('bank_account_nama_pemilik') ?? 'Pilih rekening terlebih dahulu'),
                                     ])
-                                    ->columns(2) // Membuat grid dengan 2 kolom
+                                    ->columns(2)
                                     ->columnSpan('full'),
                 
                                     Forms\Components\ViewField::make('instructions_placeholder')
@@ -180,7 +178,7 @@ class TopupResource extends Resource
             ->columns([
                 TextColumn::make('user.name')->label('User'),
                 TextColumn::make('amount')->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))->sortable(),
-                TextColumn::make('bank_account')->label('Rekening Tujuan'),
+                TextColumn::make('topUpTransaction.nama_bank')->label('Rekening Tujuan'),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -194,7 +192,7 @@ class TopupResource extends Resource
                 TextColumn::make('created_at')->label('Tanggal')->dateTime(),
             ])
             ->filters([
-                // Bisa ditambahkan filter status jika diperlukan
+                //
             ]);
     }
 
