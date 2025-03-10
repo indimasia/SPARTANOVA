@@ -6,7 +6,7 @@
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Detail Misi</h1>
                 <p class="text-yellow-100">Informasi lengkap tentang misi yang tersedia</p>
             </div>
-            
+
             <!-- Page Content -->
             <div class="p-6 sm:p-10">
                 @if ($selectedJob)
@@ -72,25 +72,25 @@
                     <!-- Job Details -->
                     @if ($jobDetail)
                         @if (!empty($jobDetail->image) )
-                        
+
                         <div class="mb-10">
                             <div class="relative w-full" style="padding-top: 40%;">
-                                <img 
-                                    src="{{ asset('storage/' . $jobDetail->image) }}" 
-                                    alt="Job Image" 
+                                <img
+                                    src="{{ asset('storage/' . $jobDetail->image) }}"
+                                    alt="Job Image"
                                     class="absolute inset-0 w-full h-full object-contain rounded-2xl"
                                 >
                             </div>
                         </div>
 
-                        
+
                         @else
-                            
+
                         <div class="mb-10">
                             <div class="relative w-full" style="padding-top: 40%;">
-                                <img 
-                                    src="https://placehold.co/400x400?text=Tidak+Ada+Gambar" 
-                                    alt="Job Image empty" 
+                                <img
+                                    src="https://placehold.co/400x400?text=Tidak+Ada+Gambar"
+                                    alt="Job Image empty"
                                     class="absolute inset-0 w-full h-full object-contain rounded-2xl"
                                 >
                             </div>
@@ -309,8 +309,8 @@
                         </div>
                         <p id="copiedMessage" class="text-sm text-green-500 mb-4 hidden">Caption copied to clipboard!</p>
                         <div class="flex gap-2">
-                            <a href="javascript:void(0);" 
-                                id="shareButton-{{ $jobDetail->id }}" 
+                            <a href="javascript:void(0);"
+                                id="shareButton-{{ $jobDetail->id }}"
                                 data-image-url="{{ asset('storage/' . $jobDetail->image) }}"
                                 class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                                 <i class="fas fa-external-link-alt mr-2"></i>
@@ -415,8 +415,8 @@
                             <p id="sellingDescription" class="text-sm text-gray-700 whitespace-pre-wrap"></p>
                         </div>
                         <div class="flex gap-2">
-                            <a href="javascript:void(0);" 
-                                id="shareButton-{{ $jobDetail->id }}" 
+                            <a href="javascript:void(0);"
+                                id="shareButton-{{ $jobDetail->id }}"
                                 data-image-url="{{ asset('storage/' . $jobDetail->image) }}"
                                 class="flex-1 inline-flex items-center justify-center px-3 py-3 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-200">
                                 <i class="fas fa-external-link-alt mr-2"></i>
@@ -444,14 +444,14 @@
         const missionImage = document.getElementById('missionImage');
         const missionCaption = document.getElementById('missionCaption');
         const copiedMessage = document.getElementById('copiedMessage');
-    
+
         let currentMission = { caption: '', imageUrl: '' };
 
         function openModal(caption, imageUrl, instructions) {
             currentMission = { caption, imageUrl };
             missionImage.src = imageUrl;
             missionCaption.textContent = caption;
-            missionInstruction.textContent = instructions;
+            missionInstruction.innerHTML = instructions;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
@@ -461,7 +461,7 @@
             modal.classList.remove('flex');
         }
 
-        openModalBtn.addEventListener('click', () => openModal('{{ $jobDetail->caption }}', '{{ asset('storage/' . $jobDetail->image) }}', '{{ $selectedJob->instructions }}'));
+        openModalBtn.addEventListener('click', () => openModal('{{ $jobDetail->caption }}', '{{ asset('storage/' . $jobDetail->image) }}', '{!! ($selectedJob->instructions) !!}'));
         closeModalBtn.addEventListener('click', closeModal);
 
         copyBtn.addEventListener('click', () => {
@@ -535,7 +535,7 @@
     const viewCopiedMessage = document.getElementById('viewCopiedMessage');
 
     function openViewModal(instructions, url) {
-        viewInstruction.textContent = instructions;
+        viewInstruction.innerHTML = instructions;
         viewLink.textContent = url;
         viewNowBtn.href = url;
         viewModal.classList.remove('hidden');
@@ -548,7 +548,7 @@
     }
 
     openViewModalBtn.addEventListener('click', () => openViewModal(
-        '{{ $selectedJob->instructions }}',
+        '{!! ($selectedJob->instructions) !!}',
         '{{ $jobDetail->url_link }}'
     ));
     closeViewModalBtn.addEventListener('click', closeViewModal);
@@ -572,7 +572,7 @@
     const commentCopiedMessage = document.getElementById('commentCopiedMessage');
 
     function openCommentModal(instructions, url) {
-        commentInstruction.textContent = instructions;
+        commentInstruction.innerHTML= instructions;
         commentLink.textContent = url;
         commentNowBtn.href = url;
         commentModal.classList.remove('hidden');
@@ -585,7 +585,7 @@
     }
 
     openCommentModalBtn.addEventListener('click', () => openCommentModal(
-        '{{ $selectedJob->instructions }}',
+        '{!! ($selectedJob->instructions) !!}',
         '{{ $jobDetail->url_link }}'
     ));
     closeCommentModalBtn.addEventListener('click', closeCommentModal);
@@ -617,7 +617,7 @@ function openSellingModal(link, caption, instructions, description, imageUrl) {
     currentSellingLink = link;
     sellingLink.textContent = link;
     sellingCaption.textContent = caption;
-    sellingInstruction.textContent = instructions;
+    sellingInstruction.innerHTML = instructions;
     sellingDescription.textContent = description;
     sellingImage.src = imageUrl;
     sellingModal.classList.remove('hidden');
@@ -628,7 +628,7 @@ function closeSellingModal() {
     sellingModal.classList.add('hidden');
     sellingModal.classList.remove('flex');
 }
-openSellingModalBtn.addEventListener('click', () => openSellingModal( '{{ $jobDetail->url_link }}', '{{ $jobDetail->caption }}', '{{ $selectedJob->instructions }}', '{{ $jobDetail->description }}', '{{ asset('storage/' . $jobDetail->image) }}'));
+openSellingModalBtn.addEventListener('click', () => openSellingModal( '{{ $jobDetail->url_link }}', '{{ $jobDetail->caption }}', '{!! ($selectedJob->instructions) !!}', '{{ $jobDetail->description }}', '{{ asset('storage/' . $jobDetail->image) }}'));
 closeSellingModalBtn.addEventListener('click', closeSellingModal);
 
     copySellingBtn.addEventListener('click', () => {
