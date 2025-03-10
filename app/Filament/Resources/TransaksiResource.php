@@ -73,8 +73,8 @@ class TransaksiResource extends Resource
                         'danger' => 'rejected',
                     ])
                     ->sortable(),
-                ImageColumn::make('transfer_proof')->label('Bukti Transfer')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->transfer_proof 
-                    ? URL::route('storage.fetch', ['filename' => $record->transfer_proof]) 
+                ImageColumn::make('transfer_proof')->label('Bukti Transfer')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->transfer_proof
+                    ? URL::route('storage.fetch', ['filename' => $record->transfer_proof])
                     : null),
                 TextColumn::make('created_at')->label('Tanggal Pengajuan')->dateTime(),
             ])
@@ -89,7 +89,7 @@ class TransaksiResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
-                    
+
                     Tables\Actions\Action::make('approve')
                         ->label('Approve')
                         ->icon('heroicon-o-check-circle')
@@ -107,7 +107,7 @@ class TransaksiResource extends Resource
                                     ->title('Successfully approved')
                                     ->success()
                                     ->send();
-                            
+
                                 $wallet = Wallet::where('user_id', $record->user_id)->first();
                                 $conversionRate = ConversionRate::first();
                                 $conversionRateValue = $conversionRate->conversion_rate;
@@ -121,14 +121,14 @@ class TransaksiResource extends Resource
                                         'total_points' => $record->amount / $conversionRateValue,
                                     ]);
                                 }
-                            
+
                             } catch (\Exception $e) {
                                 Notification::make()
                                     ->title('Failed to approve')
                                     ->danger()
                                     ->send();
                             }
-                            
+
                         }),
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
@@ -163,8 +163,8 @@ class TransaksiResource extends Resource
         return $infolist
             ->columns(2)
             ->schema([
-                ImageEntry::make('transfer_proof')->label('Bukti Transfer')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->transfer_proof 
-                ? URL::route('storage.fetch', ['filename' => $record->transfer_proof]) 
+                ImageEntry::make('transfer_proof')->label('Bukti Transfer')->disk('r2')->default('https://placehold.co/400x400?text=Tidak+Ada+Gambar')->size(50)->getStateUsing(fn ($record) => $record->transfer_proof
+                ? URL::route('storage.fetch', ['filename' => $record->transfer_proof])
                 : null),
                 TextEntry::make('user.name')->label('User'),
                 TextEntry::make('amount')->label('Amount'),
