@@ -2,11 +2,13 @@
 
 namespace App\Filament\Pengiklan\Resources;
 
+use Closure;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use App\Enums\GenEnum;
 use App\Enums\JobType;
+use App\Models\Wallet;
 use App\Models\Regency;
 use App\Models\Village;
 use Filament\Forms\Get;
@@ -271,6 +273,14 @@ class JobResource extends Resource
                                 ->required()
                                     ->validationMessages([
                                         'required' => 'Paket Harus Diisi',
+                                    ])
+                                    ->rules([
+                                        fn (): Closure => function (string $attribute, $value, Closure $fail) {
+                                            $points = Wallet::where('user_id', auth()->id())->pluck('total_points')->first() ?? 0;
+                                            if ($points < $value) {
+                                                $fail('Point tidak mencukupi.');
+                                            }
+                                        },
                                     ]),
                                     Forms\Components\TextInput::make('quota')
                                         ->visible(fn(Get $get)=>$get('package_rate') == PackageEnum::LAINNYA->value && $get('package_rate') != '')
