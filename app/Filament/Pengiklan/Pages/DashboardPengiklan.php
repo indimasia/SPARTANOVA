@@ -29,7 +29,7 @@ class DashboardPengiklan extends Page
     
     public static function getNavigationIcon(): string | Htmlable | null
     {
-        return 'heroicon-m-home'; // Gunakan ikon yang sesuai
+        return 'heroicon-m-home';
     }
 
     public static function getRoutePath(): string
@@ -73,13 +73,11 @@ class DashboardPengiklan extends Page
     {
         $user = Auth::user();
 
-        // Update data lokasi pengguna
         $user->update([
             'current_latitude' => $latitude,
             'current_longitude' => $longitude,
         ]);
 
-        // Set flash message
         session()->flash('status', 'Lokasi berhasil diperbarui.');
     }
 }
