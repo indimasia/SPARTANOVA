@@ -43,7 +43,7 @@
                                         this.currentSlideIndex = 1                
                                     }            
                                 },        
-                            }" class="relative w-full overflow-hidden">
+                            }" class="relative w-full overflow-hidden object-contain">
                             
                                 <!-- previous button -->
                                 <button type="button" class="absolute left-5 top-1/2 z-20 flex rounded-full -translate-y-1/2 items-center justify-center bg-surface/40 p-2 text-on-surface transition hover:bg-surface/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:outline-offset-0 dark:bg-surface-dark/40 dark:text-on-surface-dark dark:hover:bg-surface-dark/60 dark:focus-visible:outline-primary-dark" aria-label="previous slide" x-on:click="previous()">

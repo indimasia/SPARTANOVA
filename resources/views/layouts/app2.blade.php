@@ -26,8 +26,7 @@
             <div class="px-4 py-3">
                 <div class="flex items-center justify-between">
                     <div class="flex-shrink-0 transition-transform duration-300 hover:scale-105">
-                        <img src="{{ asset('images/spartav_logo.png') }}" alt="{{ config('app.name', 'Spartav') }}"
-                            class="h-10">
+                        <img style="height: 5rem;" src="{{ asset('images/spartav_logo.png') }}" alt="{{ config('app.name', 'Spartav') }}">
                     </div>
 
                     <!-- Mobile Menu Button -->
@@ -43,11 +42,11 @@
                     @if (!auth()->check())
                     <div class="flex items-center space-x-4">
                         <a href="{{ route('login') }}"
-                            class="text-sm font-medium text-gray-600 hover:text-yellow-500 transition-colors duration-300">
+                            class="text-lg font-medium text-gray-600 hover:text-yellow-500 transition-colors duration-300">
                             Masuk
                         </a>
                         <a href="{{ route('register') }}"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-300">
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-lg font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-300">
                             Daftar
                         </a>
                     </div>

@@ -27,7 +27,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex-shrink-0 transition-transform duration-300 hover:scale-105">
                         <img src="{{ asset('images/spartav_logo.png') }}" alt="{{ config('app.name', 'Spartav') }}"
-                            class="h-10">
+                            class="h-16">
                     </div>
 
                     <!-- Mobile Menu Button -->
@@ -154,20 +154,20 @@
                         <!-- Navigation -->
                         <nav class="flex-1 overflow-y-auto py-4 bg-white">
                             <a href="{{ route('dashboard') }}"
-                                class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
-                                <i class="fas fa-chart-line text-sm mr-3 {{ request()->routeIs('dashboard') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                class="flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
+                                <i class="fas fa-chart-line text-xl mr-3 {{ request()->routeIs('dashboard') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
                                 <span>Dashboard</span>
                             </a>
 
                             <a href="{{ route('pasukan.apply-job') }}"
-                                class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
-                                <i class="fas fa-briefcase text-sm mr-3 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                class="flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
+                                <i class="fas fa-briefcase text-xl mr-3 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
                                 <span>Misi</span>
                             </a>
 
                             <a href="{{ route('misi.progres') }}"
-                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
-                                <i class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i class="fas fa-tasks text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Misi yang Diambil</span>
                             </a>
                             @php
@@ -179,9 +179,9 @@
                                 @endphp
 
                                 <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
-                                class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
+                                class="flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-500 hover:border-l-2 hover:border-yellow-500 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-500 border-l-2 border-yellow-500' : '' }}">
                                 <i
-                                class="fas fa-history text-sm mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
+                                class="fas fa-history text-xl mr-3 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-500' : 'text-gray-400' }}"></i>
                                 <span>Laporan Riwayat Misi</span>
                                 @if($countApproved > 0)
                                         <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -191,9 +191,9 @@
                             </a>
 
                             <a href="{{ route('pasukan.profile') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-user text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                        class="fas fa-user text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Profile</span>
                             </a>
 
@@ -207,8 +207,8 @@
                                         ->get();
                                         $count = $notifications->count();
                                     @endphp
-                            <a href="{{ route('articles.index') }}"class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
-                                <i class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                            <a href="{{ route('articles.index') }}"class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                <i class="fas fa-newspaper text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Artikel</span>
                                 @if($count > 0)
                                         <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -226,9 +226,9 @@
                                 $WithdrawCount = $withdrawNotificationCount->count();
                             @endphp
                             <a href="{{ route('withdraw.index') }}"
-                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                 <i
-                                    class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    class="fas fa-credit-card text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Dompet</span>
                                 @if( $WithdrawCount > 0)
                                 <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -242,9 +242,9 @@
                             @endphp
 
                             <a href="{{ $miniGameStatus == 'on' ? route('mini-game.index') : route('mini-game-cooming-soon.index') }}"
-                                class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                 <i
-                                    class="fas fa-gamepad text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    class="fas fa-gamepad text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                 <span>Mini Game</span>
                             </a>
 
@@ -264,25 +264,25 @@
                 @if (auth()->user() && !request()->routeIs('register.pasukan'))
                     <div class="flex">
                         <!-- Desktop Sidebar -->
-                        <div class="hidden md:block w-64 bg-white shadow-sm border-r border-gray-100 min-h-screen">
+                        <div class="hidden md:block w-64 bg-white shadow-xl border-r border-gray-100 min-h-screen">
                             <nav class="py-4 sticky top-16">
                                 <a href="{{ route('dashboard') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
-                                    <i class="fas fa-chart-line text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i class="fas fa-chart-line text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Dashboard</span>
                                 </a>
 
 
                                 <a href="{{ route('pasukan.apply-job') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-briefcase text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                        class="fas fa-briefcase text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.apply-job') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Misi</span>
                                 </a>
                                 <a href="{{ route('misi.progres') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('misi.progres') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-tasks text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                        class="fas fa-tasks text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('misi.progres') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Misi yang Diambil</span>
                                 </a>
                                 
@@ -294,9 +294,9 @@
                                         $countApproved = $jobApprovedCount->count();
                                 @endphp
                                 <a href="{{ route('pasukan.riwayat-pekerjaan') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                    class="fas fa-history text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    class="fas fa-history text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.riwayat-pekerjaan') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Laporan Riwayat Misi</span>
                                     @if($countApproved > 0)
                                         <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -306,9 +306,9 @@
                                 </a>
 
                                 <a href="{{ route('pasukan.profile') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('pasukan.profile') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-user text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                        class="fas fa-user text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('pasukan.profile') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Profile</span>
                                 </a>
 
@@ -323,8 +323,8 @@
                                         $count = $notifications->count();
                                     @endphp
                                 <a href="{{ route('articles.index') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
-                                    <i class="fas fa-newspaper text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                    class="group flex items-center px-4 py-2.5 text-2xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('articles.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    <i class="fas fa-newspaper text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('articles.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Artikel</span>
                                     @if($count > 0)
                                         <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -343,9 +343,9 @@
                             @endphp
 
                                 <a href="{{ route('withdraw.index') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('withdraw.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-credit-card text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                        class="fas fa-credit-card text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('withdraw.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Dompet</span>
                                     @if( $WithdrawCount > 0)
                                 <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -359,9 +359,9 @@
                                 @endphp
 
                                 <a href="{{ $miniGameStatus == 'on' ? route('mini-game.index') : route('mini-game-cooming-soon.index') }}"
-                                    class="group flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
+                                    class="group flex items-center px-4 py-2.5 text-xl text-gray-600 hover:bg-gray-50 hover:text-yellow-700 hover:border-l-2 hover:border-yellow-700 transition-all duration-150 {{ request()->routeIs('mini-game.index') ? 'bg-gray-50 text-yellow-700 border-l-2 border-yellow-700' : '' }}">
                                     <i
-                                        class="fas fa-gamepad text-sm mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
+                                        class="fas fa-gamepad text-xl mr-3 transition-colors duration-150 {{ request()->routeIs('mini-game.index') ? 'text-yellow-700' : 'text-gray-600' }} group-hover:text-yellow-700"></i>
                                     <span>Mini Game</span>
                                 </a>
 

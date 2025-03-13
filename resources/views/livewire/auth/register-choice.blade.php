@@ -3,7 +3,7 @@
         <h2 class="text-center text-4xl font-extrabold text-gray-900">
             Pilih Tipe Akun Anda
         </h2>
-        <p class="mt-4 text-center text-lg text-gray-600">
+        <p class="mt-4 text-center text-xl text-gray-600">
             Silahkan pilih tipe akun yang sesuai dengan kebutuhan Anda
         </p>
     </div>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <h2 class="text-2xl font-semibold mb-4">Sebagai Pasukan</h2>
-                <p class="text-gray-600 mb-6">Saya ingin mendapatkan penghasilan tambahan dengan melakukan kegiatan promosi pemasaran, penjualan, dan iklan di akun medsos saya.</p>
+                <p class="text-gray-600 mb-6 text-xl">Saya ingin mendapatkan penghasilan tambahan dengan melakukan kegiatan promosi pemasaran, penjualan, dan iklan di akun medsos saya.</p>
                 <a href="{{ route('pasukan.register') }}"
                     class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 text-lg font-medium">Daftar
                     Sekarang</a>
@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <h2 class="text-2xl font-semibold mb-4">Sebagai Pengiklan</h2>
-                <p class="text-gray-600 mb-6">Saya ingin beriklan, saya ingin memberdayakan pasukan iklan (adsman) Spartav untuk mempromosikan brand / produk saya.</p>
+                <p class="text-gray-600 mb-6 text-xl">Saya ingin beriklan, saya ingin memberdayakan pasukan iklan (adsman) Spartav untuk mempromosikan brand / produk saya.</p>
                 <a href="{{ route('pengiklan.register') }}"
                     class="inline-block bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 text-lg font-medium">Daftar
                     Sekarang</a>
